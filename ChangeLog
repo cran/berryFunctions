@@ -1,0 +1,116 @@
+
+berryFunctions - development over time.
+
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
+Version 1.3 (2014-06-08)
+Description field much more verbose
+Shapefile (6 MB) removed from data
+examples in changeAttribute, showAttribute, shapeZoom changed accordingly
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
+Version 1.2 (2014-06-06)
+
+email address in DESCRIPTION Maintainer Field (how could I possibly miss that typo?!) is now corrected.
+This ChangeLog is now reformated to create a standard layout.
+A lot of examples have received line breaks (they were longer than 100 chars).
+
+berryFunctions-package: examples completed and grouped
+createDoc: seealso extended.
+funnelPLot and mReg: owa removed from function body
+lsc: argument returnsim included, output now vector. psi incluced. catchment area included, examples and documentation updated
+logVals: description updated
+owa: programming example included, description changed.
+combineTextfiles: example added.
+require2: example is set to dontrun
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
+Version 1.1 (2014-06-05)
+
+First Version to be published
+all functions have documentation.
+Function names are standardized in lowerCamel.
+Many of the already existing functions have been extended with more arguments and possibilities.
+The following 3 functions have been removed:
+info - use class or mode seperately
+Rand - use box("figure")
+vlast - use head() and tail()
+
+New functions:
+
+addAlpha
+addRows
+changeAttribute
+climateGraph
+cls
+combineTextfiles
+createDoc
+extremeStatLmom
+funnelPlot
+googleLink2pdf (formerly link_google2pdf)
+l2df
+lim0
+logVals
+lsc
+lsMem
+mReg
+nameSample
+nse
+owa
+pointZoom (formerly bzoom)
+require2
+rmse
+rsquare
+seqR
+showAttribute
+smoothLines (formerly blines)
+superPos
+tableColVal
+textField
+triangleArea (formerly dreieckflaeche)
+unitHydrograph
+yearSample
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
+Version 1.0 (2012-10-04)
+
+unpublished, mainly just to try building a package
+initial functions (Most of them had no or few documentation):
+
+blines
+bzoom
+ci
+cie
+circle
+colpoints
+colpointslegend
+distance
+dreieckflaeche
+extremSTAT
+horiz.hist
+info
+link_google2pdf
+linreg
+monthlabs
+movav
+Rand
+randompoints
+shapezoom
+vlast
+
