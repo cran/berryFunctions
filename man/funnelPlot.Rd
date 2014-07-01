@@ -3,8 +3,8 @@
 \title{Funnel plots for proportional data}
 \description{Funnel plots for proportional data with confdence interval based on sample size. Introduced by Stephen Few, 2013}
 \usage{funnelPlot(x, n, labels=NULL, method="classic", add=FALSE,
-xlim=range(n, finite=TRUE), ylim=range(x/n*100, finite=TRUE), las=1, xlab="Sample size n",
-ylab="Success rate [\%]", main="Funnel plot for Proportions",
+xlim=range(n, finite=TRUE), ylim=range(x/n*100, finite=TRUE), las=1,
+xlab="Sample size n", ylab="Success rate [\%]", main="Funnel plot for Proportions",
 a3=NULL, a2=NULL, am=NULL, ap=NULL, at=NULL, al=NULL, ...)}
 \arguments{
   \item{x}{Numeric vector with number of successes (cases).}
@@ -44,13 +44,13 @@ See Stephen Few and Katherine Rowel's PDF for details on the interpretation.
 }
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, Oct 2013}
 \section{Notes on method}{
-\bold{Wilson's Method:} algebraic approximation to the binomial distribution, very accurate, even for very small numbers.
+\bold{Wilson's Method:} algebraic approximation to the binomial distribution, very accurate, even for very small numbers.\cr
 \url{http://www.apho.org.uk/resource/item.aspx?RID=39445} see "contains".\cr
-\bold{classic = Stephen Few's Method = the way I knew it:} sqrt( mu*(1-mu) / n )
-\url{http://www.jerrydallal.com/LHSP/psd.htm},
+\bold{classic = Stephen Few's Method = the way I knew it:} sqrt( mu*(1-mu) / n )\cr
+\url{http://www.jerrydallal.com/LHSP/psd.htm}\cr
 \url{http://commons.wikimedia.org/wiki/File:ComparisonConfidenceIntervals.png}\cr
-The apho Wilson method first yielded wrong upper limits in my translation (it needs 0:1 instead of \%). Thus I added the wikipedia formula:
-\url{http://de.wikipedia.org/wiki/Konfidenzintervall_einer_unbekannten_Wahrscheinlichkeit#Wilson-Intervall},
+The apho Wilson method first yielded wrong upper limits in my translation (it needs 0:1 instead of \%). Thus I added the wikipedia formula:\cr
+\url{http://de.wikipedia.org/wiki/Konfidenzintervall_einer_unbekannten_Wahrscheinlichkeit#Wilson-Intervall}\cr
 \url{http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval}\cr
 Which other methods should I include? (That's not the hard part anymore)
 }

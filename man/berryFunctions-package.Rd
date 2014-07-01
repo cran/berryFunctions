@@ -18,8 +18,8 @@
 \tabular{ll}{
 Package: \tab berryFunctions\cr
 Type: \tab Package\cr
-Version: \tab 1.3\cr
-Date: \tab 2014-06-08\cr
+Version: \tab 1.4\cr
+Date: \tab 2014-07-01\cr
 License: \tab GPL-2\cr
 }
 At some places you'll find \code{## not run} in the examples.
@@ -39,7 +39,7 @@ I strongly depend on - and therefore welcome - any feedback!
 
 \dontrun{
 
-### HYDROLOGY ##################################################################
+### HYDROLOGY #################################################################
 
 # draw full climate diagram: climateGraph
 climateGraph(temp=c(-9.3,-8.2,-2.8,6.3,13.4,16.8,18.4,17,11.7,5.6,-1,-5.9),
@@ -76,7 +76,7 @@ rmse(QOBS, QSIM)
 rsquare(QOBS, QSIM)
 
 
-### SHAPEFILES, SPATIAL ########################################################
+### SHAPEFILES, SPATIAL #######################################################
 
 library(maptools, spatstat)
 xx <- readShapeLines(system.file("shapes/fylk-val.shp", package="maptools")[1],
@@ -111,13 +111,13 @@ abline(v=1:9, h=1:5, col=8,lty=2)
 triangleArea(a,b)
 
 
-### GRAPHICS ###################################################################
+### GRAPHICS ##################################################################
 
 # Zoom into graphics: pointZooom
 a <- rnorm(90); b <- rexp(90)
 windows(record=TRUE) # turn recording on
 plot(a,b, las=1)
-pointZoom(a,b) # now scroll through the plots (Pg Up and Pg Dn) to unzoom again.
+pointZoom(a,b) # scroll through the plots (Pg Up and Pg Dn) to unzoom again.
 
 # add transparency to colors: addAlpha
 NewColors <- addAlpha(c("red","blue","yellow","green", "purple"), 0:200/200)
@@ -142,7 +142,8 @@ N <- c(2, 400, 100, 1000, 2, 10, 500, 200, 10, 2) # possible succeses
 funnelPlot(X,N, letters[1:10])
 
 # Table with numbers and corresponding color: tableColVal
-Bsp <- matrix(c(21,23,26,27, 18,24,25,28, 14,17,23,23, 16,19,21,25), ncol=4, byrow=TRUE)
+Bsp <- matrix(c(21,23,26,27, 18,24,25,28, 14,17,23,23, 16,19,21,25), 
+              ncol=4, byrow=TRUE)
 colnames(Bsp) <- paste0("Measure", LETTERS[1:4])
 rownames(Bsp) <- paste("prod", 8:11, sep="_")
 tableColVal(Bsp, pdf=FALSE)
@@ -171,8 +172,10 @@ axis(2, lv$vals, lv$labs, las=1)
 
 # Label time axis in date-regular intervals: monthLabs
 monthLabs(2014,2014, 3)
-plot(sort(as.Date("2013-09-25")+sample(0:150, 30)), cumsum(rnorm(30)), type="o", xaxt="n", ann=F)
-axis(1, monthLabs(npm=1), format(monthLabs(npm=1), "%d.%m.\n%Y"), mgp=c(3,2,0), cex.axis=0.7 )
+plot(as.Date("2013-09-25")+sort(sample(0:150, 30)), 
+     cumsum(rnorm(30)), type="o", xaxt="n", ann=F)
+axis(1, monthLabs(npm=1), format(monthLabs(npm=1), "\%d.\%m.\n \%Y"),
+     mgp=c(3,2,0), cex.axis=0.7 )
 
 # Linear regression: plot data, model and r^2: linReg
 a <- 1:30   ; b <- a/2.345+rnorm(30,0,3)
@@ -189,7 +192,7 @@ plot(a, type="l", pch=16, las=1)
 lines(movAv(a), col=2, lwd=3)
 
 
-### MISCELLANEOUS ##############################################################
+### MISCELLANEOUS #############################################################
 
 # calculate confidence interval (and other EDA values): ci, cie
 ci(  c(5:8,3,14) )
@@ -224,15 +227,16 @@ Link <- paste0("http://www.google.de/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1",
         "&usg=AFQjCNGejDwPlor4togQZmQEQv72cK9z8A&bvm=bv.45580626,d.Yms")
 googleLink2pdf(Link)
 
-# concatenate the content of textfiles unchanged into one file: combineTextfiles
+# concatenate textfiles contents unchanged into one file: combineTextfiles
 cat("This is Sparta.\nKicking your face.", file="BujakashaBerry1.txt")
 cat("Chuck Norris will roundhousekick you.", file="BujakashaBerry2.txt")
-combineTextfiles(inFiles=paste0("BujakashaBerry", 1:2, ".txt"), outFile="Ausgabe.txt")
+combineTextfiles(inFiles=paste0("BujakashaBerry", 1:2, ".txt"), 
+                 outFile="BujakashaBerry3.txt")
 readLines("Ausgabe.txt")
-unlink(c(paste0("BujakashaBerry", 1:2, ".txt"),"Ausgabe.txt"))
+unlink(paste0("BujakashaBerry", 1:3, ".txt"))
 
 # create .Rd documentation from source code in Berry's format: createDoc
-# compare argument lists in Rd with source code, saving time at Rcmd check: compareDoc
+# compare arguments in Rd with source code, saves time Rcmd check: compareDoc
 
 # generate name from "random" sample: nameSample
 nameSample("berry")

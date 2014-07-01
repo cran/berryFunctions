@@ -9,8 +9,8 @@ Returns the fitted functions with their parameters and R^2 values in a data.fram
 \usage{mReg(x, y, Poly45=FALSE, exp_4=FALSE,
 xf=deparse(substitute(x)),  yf=deparse(substitute(y)), ncolumns=9, plot=TRUE,
 add=FALSE,  nbest=12, R2min, selection=NULL, digits=2, extend=0.4,
-xlim=range(x, finite=TRUE) + c(-1, 1) * extend * diff(range(x,  finite=TRUE)),
-ylim=range(y, finite=TRUE) + c(-1,  1) * extend * diff(range(y, finite=TRUE)),
+xlim=range(x, finite=TRUE) + c(-1,1)* extend * diff(range(x,  finite=TRUE)),
+ylim=range(y, finite=TRUE) + c(-1,1)* extend * diff(range(y, finite=TRUE)),
 xlab=xf,  ylab=yf, las=1, lwd=rep(1, 12), lty=rep(1, 12), col=NULL,
 pcol=par("col"), pch=16, legend=TRUE, legargs=NULL, legendform="nameform", ...)}
 \arguments{
@@ -110,7 +110,7 @@ mReg(x,y, nbest=4) # only 4 distributions plotted
 mReg(x,y, legargs=list(x=7, y=8, bty="o")) # Legend position as coordinates
 
 \dontrun{
-View(mReg(x,y, Poly45=TRUE, exp_4=TRUE, plot=FALSE)) # exp_4 fits some more distributions
+View(mReg(x,y, Poly45=TRUE, exp_4=TRUE, plot=FALSE)) # exp_4: fit more distributions
 }
 # optim methods often yield different results, so be careful using this.
 # I might insert a possibility to specify initial values for optim.
@@ -163,8 +163,8 @@ mReg(j,k, legargs=list(x="bottomright"), legendform="full")
 
 # The question that got me started on this whole function...
 # exponential decline of temperature of a mug of hot chocolate
-temp_lnk <- url("http://dl.dropbox.com/u/4836866/Sonstiges_Rclick/Temp.txt")
-temp <- read.table(temp_lnk, header=TRUE, dec=",")
+tfile <- system.file("extdata/Temp.txt", package="berryFunctions")
+temp <- read.table(tfile, header=TRUE, dec=",")
 head(temp)
 plot(temp)
 temp <- temp[-20,] # missing value - rmse would complain about it
@@ -178,13 +178,13 @@ mReg(x,y, exp_4=TRUE, selection=11)
 
 
 x <- seq(1, 1000, 1)
-y <- (x+22)/(x+123)     # can't find an analytical solution so far. Want to check out nls
+y <- (x+22)/(x+123) # can't find an analytical solution so far. Want to check out nls
 mReg(x, y, posx="right")
 
 
 # Solitaire Results. According to en.wikipedia.org/wiki/Klondike_(solitaire):
 # Points=700000/Time + Score
-# Note: I recorded my results on a windows XP system in 2010 as an excuse to play this game a lot.
+# I recorded my results on a windows XP system in 2010 as an excuse to play this game a lot.
 # Games longer than 100 seconds are intentionally bad to find what happens then...
 Time <- c(81, 89, 101, 81, 85, 86, 78, 104, 120, 81, 76, 79, 92, 81, 107, 108,
 73, 79, 77, 85, 141, 88, 92, 65, 96, 99, 93, 73, 91, 83, 96, 91, 93, 85, 70, 113,
@@ -200,7 +200,8 @@ Points <- c(9189, 8324, 7250, 9089, 8685, 8569, 9516, 7126, 6139, 9124, 9786,
 8699, 8853, 8969, 8900, 4790, 8027, 8314, 9451, 6716, 9194, 9806, 10167, 7417,
 7689, 6850, 7512, 12203, 6854, 4451, 10426, 9764, 10738, 4152, 2712, 10116, 6780,
 10693, 10563, 1918, 9881, 8799, 9074, 11403, 11193, 6226, 8429, 8087, 2383, 2150,
-7170, 11753, 2896, 3639, 2313, 2880, 9991, 10376, 8709, 6156, 8794, 2451, 1753, 6178, 6678)
+7170, 11753, 2896, 3639, 2313, 2880, 9991, 10376, 8709, 6156, 8794, 2451, 1753, 
+6178, 6678)
 
 mReg(Time, Points) # and yes, reciprocal ranks highest! Play Fast!
 

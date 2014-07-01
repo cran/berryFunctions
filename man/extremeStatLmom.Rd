@@ -29,16 +29,30 @@ Fits 13 distributions based on linear moments.}
   \item{legarg}{list of arguments passed to legend (except for legend, col, pch, lwd). DEFAULT: list(bty="o")}
   \item{\dots}{further graphic parameter passed to plot, points and lines}
 }
-\value{either distribution parameters \code{or} discharge for given return periods}
+\value{\emph{either} distribution parameters \emph{or} discharge for given return periods. The latter is a data.frame with the given RPs, the root mean square error (RMSE) for the top \code{gfProp} weibull and gringorton plotting positions as well as the p.values from a simple ks.test for each distribution function.}
 \references{\url{http://RclickHandbuch.wordpress.com} Chapter 15 (German)\cr
 Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen Bemessungsgroessen mit Verfahren der instationaeren Extremwertstatistik }
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, 2014}
 \seealso{the predecessor \code{\link{extremeStat}}, the package lmom}
 \examples{
 
+# 0. Data from river in Austria
+# 1. Basic Examples
+# 2. Goodness of fit
+# 2.1. Measures for GOF
+# 2.2. weights based on GOF
+# 2.3. weighted mean based on GOF
+# 2.4. effect of data proportion used to estimate GOF
+# 3. Parameters
+
+# 0. Data from river in Austria ############################################
+
 JM <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.9,
 60.1, 72.4, 61.6, 94.8, 82.6, 57.2,  63.1, 73.8, 51.3, 93.6, 56.9, 52.1, 40.4,
 48.9, 113.6, 35.4, 40.1, 89.6, 47.8, 57.6, 38.9, 69.7, 110.8)
+
+
+# 1. Basic Examples ########################################################
 
 extremeStatLmom(JM)
 
@@ -57,24 +71,54 @@ extremeStatLmom(JM, legarg=list(cex=0.5, x="bottom", box.col="red", col=3))
 # col is ignored. should be specified inside extremeStatLmom directly as vector
 
 
-# weighted mean based on goodness of fit:
 
+# 2. Goodness of fit ########################################################
+# 2.1. Measures for GOF ----------------------------------------------------
+# how well do the distributions fit the original data?
+k <- extremeStatLmom(JM); k
+pairs(k[,5:7]) # measures of goodness of fit are NOT really correlated
+# I wish they were - apparently, it does matter which one is used
+
+Ranks <- rank(k$RMSE.w)
+Ranks <- cbind(Ranks, rank(k$RMSE.g))
+Ranks <- cbind(Ranks, rank(1-k$kstp))
+rownames(Ranks) <- rownames(k)
+Ranks <- Ranks[ order(rowMeans(Ranks), decreasing=TRUE) , ]
+plot(Ranks[,1], 1:13, type="o", ylab="", xlab="Rank", yaxt="n", 
+     main="Ranking of distributions fitting the data best")
+axis(2, 1:13, rownames(Ranks), las=2)
+lines(Ranks[,2], 1:13, type="o", col=2, pch=2)
+lines(Ranks[,3], 1:13, type="o", col=3, pch=3)
+legend("topright", c("RMSE Weibull","RMSE gring.","KS-test P value"), 
+       lty=1, col=1:3, pch=1:3)
+# All three measures of goodness of fit indicate Kappa to be among the best,
+# but normal is either middel, best, or worst fitting distribution function!
+
+k <- extremeStatLmom(Nile); k
+pairs(k[,5:7]) # a little better
+
+
+# 2.2. weights based on GOF --------------------------------------
 esJM <- extremeStatLmom(JM)
 # normalized Goodness of Fit:
 GF <- esJM[,"RMSE.w"] # the lower, the better, the more weight
 GF <- max(GF)-GF#+mean(GF) # with mean added, the worst fit is not completely excluded
 GF <- GF/sum(GF)
+names(GF) <- rownames(esJM)
 #
 GF1 <- esJM[,"RMSE.w"]
 GF1 <- max(GF1)-GF1+min(GF1) # with mean or min added, the worst fit is not completely excluded
 GF1 <- GF1/sum(GF1)
-
-# Gewichte graphisch anschauen:
-plot(sort(GF1, decr=TRUE), ylim=c(0, 0.1), type="o", xaxt="n", ylab="Gewicht",
-    las=1, xlab="Dist")
+#
+plot(sort(GF1, decr=TRUE), ylim=c(0, 0.1), type="o", xaxt="n", ylab="Weight",
+     las=1, xlab="Dist", main="Weight of distributions for average")
 lines(sort(GF, decr=TRUE), pch=3, col=2, type="o")
 axis(1, 1:13, names(sort(GF, decr=TRUE)), las=2)
+legend("bottomleft", c("max(rw)-rw + min(rw)","max(rw)-rw"), col=1:2, pch=1:2, lty=1,
+       title="Weighted by RMSE weibull plotting pos. (rw)")
 
+
+# 2.3. weighted mean based on GOF --------------------------------------
 extremeStatLmom(JM)
 # range of discharges:
 yval <- seq(from=par("usr")[3], to=par("usr")[4], length=500)
@@ -96,7 +140,7 @@ lines(1/(1-weightedMean), yval, col="white")
 sum(GF * esJM[,"RP.50"]) # 117.2784
 
 
-# effect of data proportion used to estimate goodness of fit:
+# 2.4. effect of data proportion used to estimate GOF ----------------
 Goodness <- function(gfProp)
 {
 esJM <- extremeStatLmom(JM, gfProp=gfProp, plot=FALSE)
@@ -126,6 +170,7 @@ lines(Proportion, GoF[1,], col=3)
 
 
 
+# 3. Parameters ##############################################################
 # correlate parameters to other distribution functions:
 p <- extremeStatLmom(JM, returnParam=TRUE)
 p # p = Parameters for distributions of extreme values of discharge in small river

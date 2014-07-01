@@ -35,7 +35,7 @@ linReg(a, b, pos1=15, pos2=0) # topleft corner of legend box (not drawn)
 
 # For more flexibility with the datapoints, plot first, then use linReg with add=TRUE:
 plot(a,b, xlim=c(-5,45))
-linReg(a, b, pos1="bottomright", add=TRUE, inset=.1) # inset for distance from plot border
+linReg(a, b, pos1="bottomright", add=TRUE, inset=.1) # inset: distance from plot border
 linReg(a, b, digits=c(7,4,3), add=TRUE, col=3, lty=2, lwd=4)
 linReg(a, b, digits=3, pos1="topleft", inset=c(-0.1, 0.3), xpd=TRUE, add=TRUE)
 

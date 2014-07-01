@@ -39,7 +39,7 @@ colPoints(x,y,z, add=FALSE, legend=FALSE)  # takes matrix for z
 contour(x,y,t(z), add=TRUE)
 
 image(x,y,t(z), col=rev(rainbow(100, start=0, end=.7)))
-# image only takes a regular matrix, but not scatterpoints from a table of coordinates and values.
+# image only takes a regular matrix, but not scatterpoints...
 
 # add single newly measured points to image (fictional data):
 i <- c( 22,  40,  80,  45,  60,  63,  30,  70)

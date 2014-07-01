@@ -29,11 +29,13 @@ as.Date("2013-09-25")
 \dontrun{
 Date <- sort(as.Date("2013-09-25")+sample(0:150, 30))
 plot(Date, cumsum(rnorm(30)), type="o", xaxt="n", ann=FALSE)
-axis(1, monthLabs(npm=1), format(monthLabs(npm=1), "%d.%m.\n%Y"), mgp=c(3,2,0), cex.axis=0.7 )
+axis(1, monthLabs(npm=1), format(monthLabs(npm=1), "\%d.\%m.\n \%Y"), 
+     mgp=c(3,2,0), cex.axis=0.7 )
 
 Date <- sort(as.Date("2011-07-13")+sample(0:400, 50))
 plot(Date, cumsum(rnorm(50)), type="o", xaxt="n", ann=FALSE)
-axis(1, monthLabs(npy=6), format(monthLabs(npy=6), "%d.%m.\n%Y"), mgp=c(3,2,0), cex.axis=0.7 )
+axis(1, monthLabs(npy=6), format(monthLabs(npy=6), "\%d.\%m.\n\%Y"),
+     mgp=c(3,2,0), cex.axis=0.7 )
 }
 }
 \keyword{chron}

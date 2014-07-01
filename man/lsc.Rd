@@ -3,7 +3,8 @@
 \title{linear storage cascade, unit hydrograph}
 \description{Optimize the parameters for unit hydrograph as in the framework of the linear storage cascade. Plot observed & simulated data}
 \usage{lsc(P, Q, area=50, Qbase=Q[1], n=2, k=3, x=1:length(P), fit=1:length(Q),
-plot=TRUE, plotsim=TRUE, returnsim=FALSE, type=c("o","l"), legx="center", legy=NULL,...)}
+plot=TRUE, plotsim=TRUE, returnsim=FALSE,
+type=c("o","l"), legx="center", legy=NULL, ...)}
 \arguments{
   \item{P}{Vector with precipitation values \bold{in mm in hourly spacing}}
   \item{Q}{Vector with observed discharge (runoff) \bold{in m^3/s} with the same length as precipitation.}
@@ -29,20 +30,22 @@ plot=TRUE, plotsim=TRUE, returnsim=FALSE, type=c("o","l"), legx="center", legy=N
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, July 2013}
 \seealso{\code{\link{unitHydrograph}}, \code{\link{superPos}}, \code{\link{nse}}, \code{\link{rmse}}. \code{deconvolution.uh} in the package hydromad, \url{http://hydromad.catchment.org}}
 \examples{
-# Two events:
-calib_link <- url("http://dl.dropbox.com/u/4836866/Sonstiges/Q_P_calibration.txt")
-valid_link <- url("http://dl.dropbox.com/u/4836866/Sonstiges/Q_P_validation.txt")
-calib <- read.table(calib_link, dec=",", header=TRUE, sep="\t")
-valid <- read.table(valid_link,  dec=",", header=TRUE, sep="\t")
+qpfile <- system.file("extdata/Q_P.txt", package="berryFunctions")
+qp <- read.table(qpfile, sep="\t", dec=",", header=TRUE)
+calib <- qp[1:90,]
+valid <- qp[-(1:90),]   
 
 # Area can be estimated from runoff coefficient (proportion of N becoming Q):
 #    k*P * A = Q * t      A = Qt / kP
-# Q=0.25 m^3/s  * t=89 h   *  3600 s/h   k=psi* P =34mm = 0.034m = m^3/m^2  / 1e6 m^2/km^2   = km^2
-mean(calib$Q) * length(calib$Q) *3600  / ( 0.7 * sum(calib$P)/1000  )       / 1e6  # 3.368 km^2
+# Q=0.25 m^3/s  * t=89 h   *  3600 s/h   k=psi* P =34mm = 0.034m = m^3/m^2
+#                                                      / 1e6 m^2/km^2   = km^2
+mean(calib$Q) * length(calib$Q) *3600  / ( 0.7 * sum(calib$P)/1000) / 1e6 
+# 3.368 km^2
 
 
 # calibrate Unit Hydrograph:
-UHcalib <- lsc(calib$P, calib$Q, area=3.4); UHcalib # n 0.41  k 244.9  NSE 0.74  psi 0.45
+UHcalib <- lsc(calib$P, calib$Q, area=3.4)
+UHcalib # n 0.41  k 244.9  NSE 0.74  psi 0.45
 # Psi is lower than 0.7, as it is calculated on direct runoff only
 
 # calibrate Unit Hydrograph on peak only:
@@ -63,7 +66,8 @@ dummy <- lsc(valid$P, valid$Q, area=3.4, plotsim=FALSE, type="l")
 Qsim <- superPos(valid$P, UH)
 Qsim <- Qsim + valid$Q[1] # add baseflow
 lines(Qsim, lwd=2)
-legend("center", legend=c("Observed","Simulated from calibration"), lwd=c(1,2), col=c(2,1) )
+legend("center", legend=c("Observed","Simulated from calibration"), 
+       lwd=c(1,2), col=c(2,1) )
 nse(valid$Q, Qsim[1:nrow(valid)]) # 0.47, which is not really good.
 # performs OK for the first event, but misses the peak from the second.
 # this particular UH is apparently not suitable for high pre-event soil moisture.
@@ -72,7 +76,7 @@ dummy # in-sample NSE 0.75 is a lot better
 
 # Now for the second peak in the validation dataset:
 lsc(valid$P, valid$Q, type="l", area=3.4, fit=60:90) # overestimates first peak
-# Area cannot be right - must be smaller in reality. (I forgot where the data came from)
+# Area cannot be right - is supposedly 17 km^2. 
 
 
 # Different starting points for optim:

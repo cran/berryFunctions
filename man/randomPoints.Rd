@@ -18,10 +18,10 @@
 
 \seealso{\code{\link{distance}}}
 \examples{
-Punkte <- randomPoints(xmin=200,xmax=700, ymin=300,ymax=680, number=60, mindist=10, asp=1)
+P <- randomPoints(xmin=200,xmax=700, ymin=300,ymax=680, number=60,mindist=10, asp=1)
 rect(xleft=200, ybottom=300, xright=700, ytop=680, col=NA, border=1)
 
-format( round(Punkte,4), trim=FALSE)
+format( round(P,4), trim=FALSE)
 
 \dontrun{windows(record=TRUE)}
 for(i in 1:10)

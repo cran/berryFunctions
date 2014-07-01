@@ -4,7 +4,8 @@
 \description{write text to plot. A field the size of each label is drawn beneath it, so the text can be read easily even if there are many points in the plot. Fields can be rectangular, elliptic or rectangular with roundeed edges.}
 \usage{textField(x, y, labels=seq_along(x), fill="white", border=NA, margin=0.3,
 field="rect", nv=1000, rounding=0.4, lty=par("lty"), lwd=par("lwd"),
-cex=par("cex"), xpd=par("xpd"), adj=par("adj"), pos=NULL, offset=0.5, quiet=FALSE, ...) }
+cex=par("cex"), xpd=par("xpd"), adj=par("adj"), pos=NULL, offset=0.5, 
+quiet=FALSE, ...) }
 \arguments{
   \item{x}{X coordinates, if necessary, they are recycled}
   \item{y}{Y coordinates}

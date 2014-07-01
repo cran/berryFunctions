@@ -4,8 +4,8 @@
 \description{Table with numbers and corresponding color in the background of each cell. (heatmap)}
 \usage{tableColVal(mat, pdffile="table_col_val.pdf", pdf=FALSE, nameswidth=0.3,
 namesheight=0.1, palette=rainbow(nrow(mat)*ncol(mat), start=0, end=0.7),
-Range=range(mat,finite=TRUE), cex.titles=1, col.titles=1, cex.text=1, col.text=1,
-main="code by\\nberry-b@gmx.de", cex.main=1, col.main=1, ...)}
+Range=range(mat,finite=TRUE), cex.titles=1, col.titles=1, cex.text=1, 
+col.text=1, main="code by\\nberry-b@gmx.de", cex.main=1, col.main=1, ...)}
 \arguments{
   \item{mat}{Matrix with values}
   \item{pdffile}{Name of File to write to. DEFAULT: "table_col_val.pdf"}

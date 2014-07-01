@@ -1,6 +1,45 @@
 
-berryFunctions - development over time.
+This Log of changes in my package berryFunctions contains two sections:
+1. possible future development - a list of things I want to change
+2. development over time - a log of the changes I already made
 
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+1. berryFunctions - possible future development
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+- Find all toDos in code + Doc and add to list here
+- include require2(maptools), require2(spatstat) in examples of showAttribute, changeAttribute, shapeZoom
+- set steps in shapeZoom higher and Time lower
+- linear zooming properties for shapeZoom
+- extend showAttribute to other shapefiles
+- enhance showAttribute with interface, see http://www.sciviews.org/_rgui/tcltk/
+- climateGraph: argument lists for each polygon with owa
+- catch warning message in as.psp.SpatialLinesDataFrame
+- line breaks in monthLabs (cut off in Doc)
+- seqR example with length=
+- mReg R2 am Ende ausrechnen (nicht auf dem linearisierten)
+- extremeStatLmom: Return ks.test result for distributions
+- reading shapefiles not with maptools functions, but with package rgdal
+- createDoc: warn and wait for user input if file already exists. Find out why it didn't work correctly for linLogTrans.
+- logVals: Range doesn't work with vector of length>2
+- lsc: Find data source back in Hydro folder AB
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+2. berryFunctions - development over time
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
+Version 1.4 (2014-07-01)
+Added To-Do list with my personal wishes (and some comments from other people) at the top of this ChangeLog. Examples in several functions received line breaks / shortening
+extremeStatLmom: p.value by ks.test as measure for goodness of fit addded. Output is now data.frame instead of matrix. Value field in Doc is complemented. Examples are updated.
+lsc: example QP-Data is now a file in the package folder extdata, not a dropbox link anymore (files were accidentally deleted and it was too slow anyways). P and Q labels are now placed in the outer margin.
+mReg: ditto for temp data
+Function added: linLogTrans
 
 
 ----------------------------------------------------------------------

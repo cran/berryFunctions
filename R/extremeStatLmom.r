@@ -6,9 +6,7 @@
 # Ausgabe: Abfluesse fuer vorgegebene Jaehrlichkeiten und/oder die Parameter der Verteilungen. Ausserdem wird eine Graphik erstellt.
 
 # Siehe RclickHandbuch.wordpress.com Kapitel 15 fuer mehr Informationen zu den Rechenschritten.
-
 # Das benoetigte Paket lmom (linear moments) wird bei Nichtvorhandensein installiert
-
 # LiteraturStichwort: Wahrscheinlichkeitsfunktionen fuer die Extremwertstatistik
 
 
@@ -145,8 +143,14 @@ RMSE.g <- sapply(di, function(d) rmse(get(paste0("qua",d))(f=1-1/gfdat$RP.g,
                                      para=get(paste0("pel",d))(momente)),gfdat$HQ1))
 # More complex estimates of quality of fits:
 # browseURL("http://chjs.soche.cl/papers/vol4n1_2013/ChJS-04-01-04.pdf")
+# Kolmogorov-Smirnov test p-value:
+## ks.test(dat, "pnorm", mean(dat), sd(dat))$p.value
+## ks.test(dat, "cdfnor", parameter[["nor"]])$p.value # slightly different!
+## ks.test(dat, "cdfgum", parameter[["gum"]])$p.value
+kstp <- sapply(di, function(d)
+        ks.test(dat, paste0("cdf",d), parameter[[d]])$p.value )
 # Add to output:
-discharge <- cbind(discharge, RMSE.w, RMSE.g)
+discharge <- data.frame(discharge, RMSE.w, RMSE.g, kstp) # cbind
 # finish the function
 return(discharge)
 } # end if not returnParam then discharge

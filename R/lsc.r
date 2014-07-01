@@ -54,8 +54,8 @@ if(plot)
   par(new=TRUE); plot(x, Q, type=type[1], col=2, las=1, ylim=range(Q)*c(1,2), ann=FALSE, axes=FALSE)
   axis(4, pretty(Q), col=2, las=1, col.axis=2)
   #
-  mtext("P [mm]", line=1, col=4, adj=0)
-  mtext("Q [m^3/s]", line=1, col=2, adj=1)
+  mtext("P [mm]", line=-2, col=4, adj=0.02, outer=TRUE)
+  mtext("Q [m^3/s]", line=-2, col=2, adj=0.98, outer=TRUE)
   #
   if(plotsim)
      {

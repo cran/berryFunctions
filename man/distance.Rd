@@ -13,6 +13,7 @@
 \code{sqrt((xref - xpt)^2 + (yref - ypt)^2)}}
 \value{vector with the distances}
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, 2012}
+\seealso{\code{\link[spatstat]{nndist}} in the package \code{spatstat} for distance to nearest neighbour}
 \examples{
 A <- c(3,  9,-1)
 B <- c(7, -2, 4)

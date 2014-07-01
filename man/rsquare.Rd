@@ -11,9 +11,9 @@
 \value{Numeric.}
 \references{\url{http://en.wikipedia.org/wiki/R-squared}}
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, 2014}
-\note{Using cor is much faster than using
-\code{  aa <-  a-mean(a)
-  bb <-  b-mean(b)
+\note{Using cor is much faster than using\cr
+\code{  aa <-  a-mean(a);
+  bb <-  b-mean(b);
   sum(aa*bb)^2/sum(aa^2)/sum(bb^2)}}
 \seealso{\code{\link{rmse}}, \code{\link{cor}}, \code{\link{lm}}}
 \examples{

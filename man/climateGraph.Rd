@@ -6,8 +6,8 @@
 main="BerryStation\\n52\U00B0 24' N / 12\U00B0 58' E\\n42 m aSL",
 units=c("\U00B0 C", "mm"),
 labs=c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"),
-textprop=0.2, ylim=range(temp, rain/2), compress=FALSE, lwd=2, ticks=-5:20 * 10,
-graylines=TRUE, lty=1, colhumid=rgb(0, 0, 1, alpha=0.3),
+textprop=0.2, ylim=range(temp, rain/2), compress=FALSE, lwd=2, 
+ticks=-5:20 * 10, graylines=TRUE, lty=1, colhumid=rgb(0, 0, 1, alpha=0.3),
 colarid=rgb(1, 0.84, 0, alpha=0.3), colcomp=rgb(1, 0, 1, alpha=0.3),
 density=NULL, mar=c(1.5, 2.3, 4.5, 2.3), box=TRUE, keeplayout=FALSE, ...) }
 \arguments{
@@ -57,7 +57,7 @@ climateGraph(temp, rain, units=c("\U00B0 F","in")) # for the Americans ;-)
 
 rain <- c(23, 11, 4, 2, 10, 53, 40, 15, 21, 25, 29, 22)
 # fix ylim if you want to compare diagrams of different stations:
-climateGraph(temp, rain, ylim=c(-15, 50)) # works with two peaks with arid phases as well
+climateGraph(temp, rain, ylim=c(-15, 50)) # works with two arid phases as well
 
 rain <- c(54, 23, 5, 2, 5, 70, 181, 345, 265, 145, 105, 80) # with extrema
 climateGraph(temp, rain) # August can be visually compared to June
@@ -83,7 +83,7 @@ browseURL(NOOAlink)
 # Find your Station here:
 browseURL(paste0(NOOAlink,"/station-inventories/allstations.txt")
 
-# Data from Roseburg, Oregon, where I spent an exciting year as an exchange student:
+# Data from Roseburg, Oregon, where I once lived:
 download.file(destfile="Roseburg.txt", url=paste0("http://www1.ncdc.noaa.gov/",
           "pub/data/normals/1981-2010/products/station/USC00357331.normals.txt")
 RT <- read.table(file="Roseburg.txt", skip=11, nrows=1, as.is=TRUE)[1,-1]
@@ -110,19 +110,19 @@ download.file(destfile="Potsdam.zip", url= paste(
 unzip("Potsdam.zip", exdir="PotsdamKlima")
 pk <- read.table(dir("PotsdamKlima", pattern="^[p]", full.names=TRUE), sep=";",
                  header=TRUE, na="-999")
-dates <- strptime(pk$Mess_Datum, "%Y%m%d")
-temp <- tapply(pk$LUFTTEMPERATUR, INDEX=format(dates, "%m"), FUN=mean, na.rm=FALSE)
-precsums <- tapply(pk$NIEDERSCHLAGSHOEHE, INDEX=format(dates, "%Y-%m"), FUN=sum)
-eachmonth <- format(strptime(paste(names(precsums),"01"), "%Y-%m %d"),"%m")
+dates <- strptime(pk$Mess_Datum, "\%Y\%m\%d")
+temp <- tapply(pk$LUFTTEMPERATUR, INDEX=format(dates, "\%m"), FUN=mean, na.rm=FALSE)
+precsums <- tapply(pk$NIEDERSCHLAGSHOEHE, INDEX=format(dates, "\%Y-\%m"), FUN=sum)
+eachmonth <- format(strptime(paste(names(precsums),"01"), "\%Y-\%m \%d"),"\%m")
 prec <- tapply(precsums, eachmonth, FUN=mean)
 meta <- paste("Potsdam\n", paste(range(dates), collapse=" to "), "\n", sep="")
 
 # If you want to add things later, use keeplayout and graphics.off() to reset par
 climateGraph(temp, prec, main=meta, ylim=c(-2, 45), keeplayout=TRUE)
-# Add Quartiles (as in boxplots): numerically sorted, 50% of the data lie inbetween
-T25 <- tapply(pk$LUFTTEMPERATUR, INDEX=format(dates, "%m"),
+# Add Quartiles (as in boxplots): numerically sorted, 50\% of the data lie inbetween
+T25 <- tapply(pk$LUFTTEMPERATUR, INDEX=format(dates, "\%m"),
               FUN=quantile, na.rm=FALSE, probs=0.25)
-T75 <- tapply(pk$LUFTTEMPERATUR, INDEX=format(dates, "%m"),
+T75 <- tapply(pk$LUFTTEMPERATUR, INDEX=format(dates, "\%m"),
               FUN=quantile, na.rm=FALSE, probs=0.75)
 arrows(x0=1:12, y0=T25, y1=T75, angle=90, code=3, col=2, len=0.1)
 #

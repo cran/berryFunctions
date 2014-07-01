@@ -1,0 +1,4 @@
+Das ist nur eine kleine Testdatei.
+Mit einer Leerzeile folgend:
+
+Und der Versuch, keinen letzten Zeilenumbruch zu haben.

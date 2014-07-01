@@ -23,6 +23,7 @@ xlab=substitute(x), ylab=substitute(y), notify=TRUE, ...)}
 
 \seealso{\code{\link{shapeZoom}}, \code{\link{colPoints}}, \code{\link{locator}} }
 \examples{
+## Examples rely on locator, so can't be checked in non-interactive R use.
 \dontrun{
 a <- rnorm(90); b <- rexp(90)
 windows(record=TRUE) # turn recording on
@@ -33,7 +34,7 @@ pointZoom(a,b)
 d <- data.frame(a,b)
 class(d)
 plot(d)
-# pointZoom(d) # may not pass build check because of use of locator. Please remove the first "#"
+pointZoom(d)
 }
 }
 \keyword{aplot}

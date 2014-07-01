@@ -18,7 +18,7 @@ My colleague argues that arcGIS is better than R, because you can click on a lin
 I took on the challenge to prove that R can do this just as well...}
 \note{I have never used Line-Shapefiles in R before, so I doubt this is highly transferable.
 Any Feedback is welcome!\cr
-The blue "selection" is overdrawn in white when par("bg") == "transparent" (the default)\cr
+The blue "selection" is overdrawn in \emph{white} when par("bg") == "transparent" (the default)\cr
 I have some vague ideas about adding some kind of TCL-TK GU-Interface and allowing to click on another segment, and the info in the interface is updated automatically.
 But I don't really know yet how to get that done...
 }
