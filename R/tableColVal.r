@@ -7,9 +7,6 @@
 # Writing this function took me about 1 hour and 30 minutes and was a nice brain excercise.
 # Feedback welcome at berry-b@gmx.de!
 
-# ToDo: make las argument for rotated column labelling
-# change cex.titles to cex.labels  or make argument lists for each group (title, labels, text) altogether
-
 tableColVal <- function(
    mat,
    pdffile="table_col_val.pdf",
@@ -18,16 +15,13 @@ tableColVal <- function(
    namesheight=0.1,
    palette=rainbow(nrow(mat)*ncol(mat), start=0, end=0.7),
    Range=range(mat,finite=TRUE),
-   cex.titles=1,
-   col.titles=1,
-   cex.text=1,
-   col.text=1,
-   main="code by\nberry-b@gmx.de",
-   cex.main=1,
-   col.main=1,
+   argrow=NULL,
+   argcol=NULL,
+   argcell=NULL,
+   argmain=NULL,
    ...)
 {
-# expand pdf-path to working directory if only file name without path is given:
+# expand pdf-path to working directory if only file name (without path) is given:
 if(pdf){   if(!grepl("/", pdffile) | grepl("\\", pdffile, fixed=TRUE) )
                pdffile <- paste(getwd(), pdffile, sep="/")  #"
         pdf(pdffile, ...) }# open pdf device
@@ -49,12 +43,12 @@ rect(xleft=rep(lefts[-1], each=nr), xright=rep(rights[-1], each=nr),
 abline(v=rights, h=1:nr)
 # add "titles"
 ytitles <- 1-(namesheight*nr/2)
-text(x=middles, y=ytitles, labels=colnames(mat), cex=cex.titles, col=col.titles)
-text(x=nameswidth/2, y=ytitles, labels=main, cex=cex.main, col=col.main)
-#
-text(x=nameswidth/2, y=1:nr+0.5, labels=rownames(mat), cex=cex.titles, col=col.titles)
+do.call(text, args=owa(d=list(x=middles,      y=ytitles,  labels=colnames(mat)), argcol,  u=c("x","y")))
+do.call(text, args=owa(d=list(x=nameswidth/2, y=ytitles,  labels="tableColVal"), argmain, u=c("x","y")))
+do.call(text, args=owa(d=list(x=nameswidth/2, y=1:nr+0.5, labels=rownames(mat)), argrow,  u=c("x","y")))
 # add text to each cell
-text(x=rep(middles, each=nr), y=rep(1:nr, nc)+0.5, labels=as.vector(mat), cex=cex.text, col=col.text)
+do.call(text, args=owa(d=list(x=rep(middles, each=nr), y=rep(1:nr, nc)+0.5, 
+                              labels=as.vector(mat)), argcell,  u=c("x","y", "labels")))
 # Set old paramaters again:
 par(op)
 if(pdf) { dev.off() ; cat("PDF-File is located here:", pdffile, "\n") }# close pdf device

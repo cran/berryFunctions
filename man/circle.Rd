@@ -2,7 +2,7 @@
 \alias{circle}
 \title{draw circles with a given radius}
 \description{draws filled circles with a certain radius using \code{\link{polygon}} and \code{\link{sin}}}
-\usage{circle(x, y, r, locnum, ...)}
+\usage{circle(x, y, r, locnum=100, ...)}
 \arguments{
   \item{x}{x coordinate}
   \item{y}{y coordinate}

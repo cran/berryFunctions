@@ -8,7 +8,7 @@ showAttribute <- function(
   notify=TRUE) # logical. Are you to be told what to do in the console?
 
 {
-require(spatstat)
+###require(spatstat) # since spatstat is now in Imports and not Suggests anymore
 # Some basic "idiot-proofing":
 if(class(object)!="SpatialLinesDataFrame") warning(paste("Not yet tested for objects",
    "that are not of class SpatialLinesDataFrame created with readShapeSpatial in maptools!"))

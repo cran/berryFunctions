@@ -28,12 +28,15 @@ minfun <- function(param)
    { # discrete values of UH:
    UH_val <- unitHydrograph(n=param["n"], k=param["k"], t=1:length(P))
    qsim <- superPos(P/10^3, UH_val) * area*10^6 /3600 + Qbase
-   rmse( Q[fit], qsim[fit])
+   berryFunctions::rmse( Q[fit], qsim[fit])
    }
 # do the hard work:
 optimized <- optim(par=param, fn=minfun, ...)$par
+# calculate optimized UH:
+finalUH <- unitHydrograph(optimized["n"], optimized["k"], t=1:length(P))
+if(round(sum(finalUH), 1) !=1) warning("sum of UH is not 1, probably the time should be longer")
 # simulate runoff:
-Qsim <- superPos(P/10^3, unitHydrograph(optimized["n"], optimized["k"], t=1:length(P)) ) * area*10^6 /3600 + Qbase
+Qsim <- superPos(P/10^3,  finalUH) * area*10^6 /3600 + Qbase
 Qsim <- Qsim[1:length(Q)]
 #
 # runoff coefficient Psi:
@@ -67,8 +70,7 @@ if(plot)
   } # end if plot
 #
 if(returnsim) return(Qsim)
-else return(c(n=as.vector(optimized["n"]), k=as.vector(optimized["k"]), NSE=nse(Q, Qsim), psi=psi))
-# maybe invisible is better?
+else return(c(n=as.vector(optimized["n"]), k=as.vector(optimized["k"]), NSE=berryFunctions::nse(Q, Qsim), psi=psi))
 } # end of funtion
 
 

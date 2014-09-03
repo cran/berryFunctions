@@ -2,7 +2,7 @@
 \alias{berryFunctions-package}
 \alias{berryFunctions}
 \docType{package}
-\title{Berry's helper functions}
+\title{Berry's functions}
 \description{Collection of functions, mainly connected with graphics.\cr
 - zoom in X11 graphics and ESRI shapefile plots\cr
 - plot rainfall-runoff data and optimize parameters for the unit hydrograph in the linear storage cascade\cr
@@ -18,8 +18,8 @@
 \tabular{ll}{
 Package: \tab berryFunctions\cr
 Type: \tab Package\cr
-Version: \tab 1.4\cr
-Date: \tab 2014-07-01\cr
+Version: \tab 1.5\cr
+Date: \tab 2014-09-02\cr
 License: \tab GPL-2\cr
 }
 At some places you'll find \code{## not run} in the examples.
@@ -151,8 +151,8 @@ tableColVal(Bsp, pdf=FALSE)
 # Scatterpoints colored by 3rd dimension: colPoints
 i <- c(22, 40, 80, 45, 60, 63, 30, 70) ;  j <- c(5, 33, 12, 56, 20, 40, 45, 45)
 k <- c(135, 155, 120, 105, 140, 130, 190, 110)
-colPoints(i,j,k, cex=2, pch="+", add=FALSE, legend=FALSE)
-colPointsLegend(z=k)
+colPoints(i,j,k, cex=2, pch="+", add=FALSE)
+colPointsHist(z=k)
 
 # Histogramm with bars drawn horizontally: horizHist
 ExampleData <- rnorm(50,8,5)+5

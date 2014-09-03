@@ -29,12 +29,12 @@ cex=1,
 las=1,
 lend=1,
 pch=c(16,3),         # point characters for different plotting position methods
-legarg=list(bty="o"),# list of arguments passed to legend except for legend, col, pch, lwd
+legargs=NULL,# list of arguments passed to legend except for legend, col, pch, lwd
 ... )                # further graphic parameter passed to plot, points and lines
 {
 # preparation ------------------------------------------------------------------
-# load (and install, if necessary) package lmom:
-if(!require(lmom)){install.packages("lmom"); require(lmom)}
+# load package lmom:  ###(and install, if necessary)
+###require("lmom")  # since lmom is now in Imports and not Suggests anymore
 # remove NAs:
 dat <- dat[!is.na(dat)]
 # Calculate Y-limits if not given
@@ -106,19 +106,13 @@ points(j$RP.g,  j$HQ1, pch=pch[2], cex=cex, ...)
 box()
 # legend -----------------------------------------------------------------------
 # write the names of distributions. - legargs: legend arguments
-fixlegargs <- list(
+legdef <- list(
   legend=c("Weibull plotting positions","Gringorten plotting positions",distn),
   pch=c( pch, rep(NA, length(distn))),
   lwd=c(NA,NA,rep(lwd,length(distn))),
-  col=c(1,1,col),
-  x="bottomright",
-  cex=0.7)
-# remove unchangable args specified by user (without warning):
-userlegargs <- legarg[! names(legarg) %in% c("legend","pch","lwd","col") ]
-# overwrite defaults and merge in user-supplied arguments:
-fixlegargs[names(userlegargs)] <- userlegargs
+  col=c(1,1,col), x="bottomright", cex=0.7, bty="o")
 # actually plot legend:
-do.call(legend, args=fixlegargs)
+do.call(legend, args=owa(legdef, legargs, c("legend","pch","lwd","col") ))
 } # end if plot
 # output -----------------------------------------------------------------------
 if(returnParam)  return(parameter)   else
@@ -168,6 +162,4 @@ return(discharge)
 #RMSE.g <- sapply(1:ncol(gfdist), function(i) rmse(gfdist[,i], gfdat$RP.g) )
 ## Add to output:
 #discharge <- cbind(discharge, RMSE.w, RMSE.g)
-
-# ToDo: Include Bootstrapping with user-specified proportion left out
 

@@ -7,7 +7,7 @@ Fits 13 distributions based on linear moments.}
  selection=1:13, plot=TRUE, xlim=range(j[, 2:3]), ylim=NULL, col=rainbow(13),
  main="Discharge Extrema  /  Return Period", xlab="Return Period RP  [a]",
  ylab="Discharge HQ  [m^3/s]", lwd=2, cex=1, las=1, lend=1, pch=c(16, 3),
- legarg=list(bty="o"), ...) }
+ legargs=NULL, ...) }
 \arguments{
   \item{dat}{Vector with discharge maxima}
   \item{RPs}{ReturnPeriods for which discharge is calculated. DEFAULT: c(5,10,20,50)}
@@ -26,14 +26,14 @@ Fits 13 distributions based on linear moments.}
   \item{las}{Label Axis Style. DEFAULT: 1}
   \item{lend}{Line END type. DEFAULT: 1}
   \item{pch}{point characters for different plotting position methods. DEFAULT: c(16,3)}
-  \item{legarg}{list of arguments passed to legend (except for legend, col, pch, lwd). DEFAULT: list(bty="o")}
+  \item{legargs}{list of arguments passed to legend (except for legend, col, pch, lwd). DEFAULT: NULL}
   \item{\dots}{further graphic parameter passed to plot, points and lines}
 }
 \value{\emph{either} distribution parameters \emph{or} discharge for given return periods. The latter is a data.frame with the given RPs, the root mean square error (RMSE) for the top \code{gfProp} weibull and gringorton plotting positions as well as the p.values from a simple ks.test for each distribution function.}
 \references{\url{http://RclickHandbuch.wordpress.com} Chapter 15 (German)\cr
 Christoph Mudersbach: Untersuchungen zur Ermittlung von hydrologischen Bemessungsgroessen mit Verfahren der instationaeren Extremwertstatistik }
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, 2014}
-\seealso{the predecessor \code{\link{extremeStat}}, the package lmom}
+\seealso{the package lmom}
 \examples{
 
 # 0. Data from river in Austria
@@ -54,6 +54,7 @@ JM <- c(61.5, 77.0, 37.0, 69.3, 75.6, 74.9, 43.7, 50.8, 55.6, 84.1, 43.6, 81.9,
 
 # 1. Basic Examples ########################################################
 
+require2("lmom")
 extremeStatLmom(JM)
 
 # Estimate discharge that empirically could occur every 50 years:
@@ -175,6 +176,8 @@ lines(Proportion, GoF[1,], col=3)
 p <- extremeStatLmom(JM, returnParam=TRUE)
 p # p = Parameters for distributions of extreme values of discharge in small river
 RPs <- c(5,10,20,50) # RPs = Return Periods that we want discharge estimated for
+
+# Thanks to JMR Hosking for kindly helping me with these!
 
 quagam(1-1/RPs, p$gam)
 qgamma(1-1/RPs, shape=p$gam["alpha"], scale=p$gam["beta"])

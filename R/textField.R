@@ -9,8 +9,6 @@
 # with inspiration taken from vegan:::ordilabel() and thanks to Jari Oksanen for his comments
 # see also ade4:::s.label, which is simpler and doesn't work with logarithmic axes
 
-# Todo: Bounding boxes are too high
-
 textField <- function(
          x, # X coordinates, if necessary, they are recycled
          y, # Y coordinates
@@ -89,7 +87,6 @@ if(is.na(adj[2]))
   adjy <- adj[2]
 # Adjust adj parameter based on pos and offset:
 # if(!is.null(pos))
-# STILL NEED TO SEE HOW THIS CAN BE DONE!! ############################################## To do #########################
 #
 # Drawing ----------------------------------------------------------------------
 if(field=="rectangle")

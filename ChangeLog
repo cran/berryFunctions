@@ -1,30 +1,50 @@
 
 This Log of changes in my package berryFunctions contains two sections:
-1. possible future development - a list of things I want to change
+1. future development - a list of things I want to change
 2. development over time - a log of the changes I already made
 
 
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
-1. berryFunctions - possible future development
+1. berryFunctions - future development
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
-- Find all toDos in code + Doc and add to list here
-- include require2(maptools), require2(spatstat) in examples of showAttribute, changeAttribute, shapeZoom
-- set steps in shapeZoom higher and Time lower
-- linear zooming properties for shapeZoom
-- extend showAttribute to other shapefiles
-- enhance showAttribute with interface, see http://www.sciviews.org/_rgui/tcltk/
-- climateGraph: argument lists for each polygon with owa
-- catch warning message in as.psp.SpatialLinesDataFrame
-- line breaks in monthLabs (cut off in Doc)
-- seqR example with length=
-- mReg R2 am Ende ausrechnen (nicht auf dem linearisierten)
-- extremeStatLmom: Return ks.test result for distributions
-- reading shapefiles not with maptools functions, but with package rgdal
-- createDoc: warn and wait for user input if file already exists. Find out why it didn't work correctly for linLogTrans.
-- logVals: Range doesn't work with vector of length>2
-- lsc: Find data source back in Hydro folder AB
+
+- changeAttribute, showAttribute, partly also shapeZoom:
+# include require2(maptools), require2(spatstat) in examples 
+# read shapefiles not with maptools functions, but with package rgdal
+# enable all shapefile types
+# understand id_col
+# coltochange with number
+# CL-TK GU-Interface allowing to click on another segment, and the info in the interface is updated automatically. http://www.sciviews.org/_rgui/tcltk/
+# catch warning message in as.psp.SpatialLinesDataFrame
+
+- createDoc: no . DEFAULT for ones ending with . or ? or !
+
+- exp4p:
+# try to improve with  nls(y~expfun(p,x=x), start=as.list(param) )  
+# allow specification of initial values for optim
+
+- extremeStatLmom: Include Bootstrapping with user-specified proportion left out
+
+- lsc: # Still need to find out what to do with optim
+
+- mReg: 
+# add hyperbolic functions
+# quantify / test influence of replacing zeros with near-zero values
+
+- pointZoom: rename Argument colp, as col cannot be given currently.
+
+- shapeZoom: 
+# set steps higher and Time lower 
+# linear zooming properties
+
+- textField: 
+# Bounding boxes are too high
+# # Adjust adj parameter based on pos and offset: if(!is.null(pos))# i want the field to still be drawn with adj, but have it based on pos
+# check out "Rounded not yet possible with log axes"
+# support srt
+
 
 
 ----------------------------------------------------------------------
@@ -34,12 +54,36 @@ This Log of changes in my package berryFunctions contains two sections:
 ----------------------------------------------------------------------
 
 
+Version 1.5 (2014-09-03)
+To-Do-list centralized and sorted here, no to-Dos left in source code.
+- climateGraph: argument lists for each polygon with owa. sum and avg now at figure margins via mtext.
+- createDoc: extreme simplification of creation of usage section. Now creates new .Rd file if one already exists. Backslash handling optimized, but not perfect yet. Now allows latex in arg explanation, but the function start has to be indicated by a single { in an otherwise empty line. "fun" argument does not have to be in quotation marks anymore. Equal sign in defaults now handled correctly.
+- logVals: Default values for 'from' and 'to' changed
+- seqR: range is now first argument, so it doesn't have to be given each time. min and max argument "finite" changed to "na.rm".
+- tableColVal: argument lists for each text group, allowing srt etc.
+- owa: throws an understandable error when unnamed arguments are in the list
+- lsc: now warns when sum under UH is !=1. Calculation time Rcmd check in examples reduced. nse and rmse explicitly called from this package.
+- mReg: exp_4p outsourced, rsquare and rmse taken from package, R^2 is now calculated on the actual fit, not its linearization
+- require2 received the alias library2
+- colPoints, colPointsLegend: generally rewritten. classification methods, cpHist and smallPlot added.
+- extremeStatLmom: code for legend arguments improved (with owa) 
+- packages lmom and spatstat were moved from "suggests" to "imports", as they are within functions and not just in the examples.
+
+New functions: normPlot, betaPlot, exp4p, compFiles, funTinn, pretty2, colPointsHist, classify, smallPlot
+functions removed: compareDoc (Rcmd check does this better, once a package is set up), extremeStat (replaced with extremeStatLmom)
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
 Version 1.4 (2014-07-01)
 Added To-Do list with my personal wishes (and some comments from other people) at the top of this ChangeLog. Examples in several functions received line breaks / shortening
-extremeStatLmom: p.value by ks.test as measure for goodness of fit addded. Output is now data.frame instead of matrix. Value field in Doc is complemented. Examples are updated.
-lsc: example QP-Data is now a file in the package folder extdata, not a dropbox link anymore (files were accidentally deleted and it was too slow anyways). P and Q labels are now placed in the outer margin.
-mReg: ditto for temp data
-Function added: linLogTrans
+- extremeStatLmom: p.value by ks.test as measure for goodness of fit addded. Output is now data.frame instead of matrix. Value field in Doc is complemented. Examples are updated.
+- lsc: example QP-Data is now a file in the package folder extdata, not a dropbox link anymore (files were accidentally deleted and it was too slow anyways). P and Q labels are now placed in the outer margin.
+- mReg: ditto for temp data
+
+New function: linLogTrans
 
 
 ----------------------------------------------------------------------

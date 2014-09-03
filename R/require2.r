@@ -1,5 +1,5 @@
 # Berry Boessenkool, 2014
-require2 <- function(
+require2 <- library2 <- function(
                       name,
                       ...)
 {

@@ -1,37 +1,48 @@
 \name{colPointsLegend}
 \alias{colPointsLegend}
-\title{legend for colPoints}
+\title{Legend for colPoints}
 \description{Adds legends to plots created or enhanced with \code{\link{colPoints}}}
-\usage{colPointsLegend(xpos=0.5, ypos=1, length=0.5, width=0.05, z,
-Range=range(z, finite=TRUE), numcol=100, alpha=1,
-col=rev(rainbow(numcol, start=0, end=0.7, alpha=alpha)),
-at=Pretty, atminmax=FALSE, labels=at, xpd=TRUE, lines=TRUE, horizontal=TRUE,
-labelpos=1, white=NA, ...)}
+\usage{colPointsLegend(z, Range=range(z, finite=TRUE), nbins=40,
+colors=rev(rainbow(nbins, start=0, end=.7, alpha=1)),
+bb=seqR(Range, length.out=nbins+1), at=pretty2(Range), labels=at, bg="white",
+x1=60, y1=99, x2=x1+38, y2=y1-11, mar, mgp=c(1.8, 0.6, 0), sborder=NA,
+resetfocus=TRUE, density=NULL, lines=TRUE, atminmax=FALSE, horizontal=TRUE,
+labelpos=1, titlepos=3, title="Legend", las=1, ...)}
 \arguments{
-  \item{xpos}{Position of left end of the legend-color-bar; Relative to plot region, between 0 and 1. DEFAULT: 0.5 (middle of plot)}
-  \item{ypos}{Upper position. If(xpd), you could use 1.1 to set legend into the margin. DEFAULT: 1 (top)}
-  \item{length}{Length of legend bar, relative between 0 and 1. DEFAULT: 0.5 (half the plot)}
-  \item{width}{Width of legend, also relative. DEFAULT: 0.05}
-  \item{z}{Values used for the default of Range. Matrix oder Vektor}
-  \item{Range}{2 values for the ends of the color spectrum. DEFAULT: range(z)}
-  \item{numcol}{Number of color nuances in the default color palette. DEFAULT: 100}
-  \item{alpha}{Transparency for default palette. 0 is transp, 0.5 semitransp. DEFAULT: 1 (intransparent)}
-  \item{col}{Colors to be used. DEFAULT: from blue to red}
-  \item{at}{values at which labels are positioned. DEFAULT: Pretty, calculated inside the function, an altered result from \code{\link{pretty}}.}
-  \item{atminmax}{Logical. Should the extreme ends of Range be labeled additionally? DEFAULT: FALSE}
-  \item{labels}{The labels that are written at the position of "at". DEFAULT: at}
-  \item{xpd}{Should the legend expand outside of the plot region into the margins? DEFAULT: TRUE}
-  \item{lines}{Logical. Should black lines over the color bar mark the exact position of "at"? DEFAULT: TRUE}
-  \item{horizontal}{Logical. Should the legend be drawn horizontally? If FALSE, a vertical legend is drawn, with length and width exchanged. DEFAULT: TRUE}
+  \item{z}{Values of third dimension used in \code{\link{colPoints}}, can be matrix, vector, etc, but must be numeric}
+  \item{Range}{Ends of color bar. DEFAULT: range(z, finite=TRUE)}
+  \item{nbins}{Number of classes (thus, colors). DEFAULT: 40}
+  \item{colors}{Color vector. DEFAULT: \code{\link{rainbow}} from blue (lowest) to red (highest value in Range)}
+  \item{bb}{Borders of bins for the legend (key). DEFAULT: seqR(Range, length.out=nbins+1)}
+  \item{at}{Positions of legend labels. DEFAULT: pretty2(Range)}
+  \item{labels}{Labels that are written at the positions of \code{at}. DEFAULT: at}
+  \item{bg}{Background behind key, labels and title. DEFAULT: "white"}
+  \item{x1,y1}{Topleft relative coordinates (0:100) of inset plot, see \code{\link{smallPlot}}. DEFAULT: 60,99}
+  \item{x2,y2}{Bottomright -"-. DEFAULT: 98,88}
+  \item{mar}{Margins for \code{\link{smallPlot}} in relative values (0:100). DEFAULT: internal calculations based on title, labelpos and titlepos.}
+  \item{mgp}{MarGinPlacement: distance of xlab/ylab, numbers and line from plot margin, as in \code{\link{par}}, but with different defaults. DEFAULT: c(1.8, 0.6, 0)}
+  \item{sborder}{Border around inset subplot. DEFAULT: NA}
+  \item{resetfocus}{Reset focus to original plot? Specifies where further low level plot commands are directed to. DEFAULT: TRUE}
+  \item{density}{Plot kernel density line? arguments passed to \code{\link{density}}. DEFAULT: NULL}
+  \item{lines}{Plot black lines in the color bar at \code{at}? DEFAULT: TRUE}
+  \item{atminmax}{Should the extrema of the legend be added to \code{at}? DEFAULT: FALSE}
+  \item{horizontal}{Horizontal bar? if FALSE, a vertical bar is drawn. DEFAULT: TRUE}
   \item{labelpos}{Position of labels relative to the bar. Possible: 1 (below), 2 (left), 3 (above), 4 (right), 5(on top of bar). DEFAULT: 1}
-  \item{white}{Coordinates for white \code{\link{polygon}} drawn underneath legend, making labels readable. DEFAULT: NA}
-  \item{\dots}{Further arguments passed to \code{\link{text}}, e.g. cex, font, col. But NOT adj! }
+  \item{titlepos}{Position of title -"-. DEFAULT: 3}
+  \item{title}{Legend title. DEFAULT: "Legend"}
+  \item{las}{LabelAxisStyle. DEFAULT: 1}
+  \item{\dots}{Further arguments passed to \code{\link{text}} and \code{\link{strwidth}}, e.g. cex, srt, font, col. But NOT adj!}
 }
-\value{none, adds legend bar to current plot}
-\author{Berry Boessenkool, \email{berry-b@gmx.de}, 2012}
-\seealso{\code{\link{colPoints}} for examples!}
+\details{\code{x1,x2,y1,y2,labelpos,titlepos,title} have different defaults when \code{horizontal=FALSE}.}
+\value{invisible list of par of smallPlot, adds legend bar to current plot}
+\author{Berry Boessenkool, \email{berry-b@gmx.de}, 2012-2014}
+\seealso{\code{\link{colPoints}} (section examples) for real life example}
 \examples{
-# See colpoints
+z <- rnorm(50)
+plot(1:10)
+colPointsLegend(z=z)
+colPointsLegend(z=z, titlepos=2)
+colPointsLegend(z=z, horiz=FALSE) # note the different defaults
 }
 \keyword{aplot}
 \keyword{color}

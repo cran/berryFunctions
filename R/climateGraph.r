@@ -7,26 +7,29 @@ climateGraph <- function(
      main="BerryStation\n52\U00B0 24' N / 12\U00B0 58' E\n42 m aSL", # location info as character string. can have \n
      units=c("\U00B0 C", "mm"), # units used for labelling
      labs=c("J","F","M","A","M","J","J","A","S","O","N","D"), # labels for x axis
-     textprop=0.2, # proportion of graphic that is used for writing the values to the right
+     textprop=0.2, # proportion of graphic that is used for writing the values in a table to the right
      ylim=range(temp, rain/2), # limit for y axis in temp units
      compress=FALSE, # should rain>100 mm be compressed with adjusted labelling? (not recommended for casual visualization!)
-     lwd=2, # line width of actual temp and rain graphs
      ticks=-5:20*10,# positions for vertical labelling and line drawing
-     graylines=TRUE, # plot horizontal gray lines at every 10 degrees and vertically for each month?
-     lty=1, # line type of gray lines, see ?par
-     colhumid=rgb(0, 0  ,1, alpha=0.3), # color for humid areas with alpha for transparency
-      colarid=rgb(1,0.84,0, alpha=0.3), # color for arid times, see col2rgb("gold")/255
-      colcomp=rgb(1, 0  ,1, alpha=0.3), # color for compressed rainfall polygon
-     density=NULL, # number of shading lines per inch, see ?polygon. Only passed to humid polygon!
      mar=c(1.5,2.3,4.5,2.3), # plot margins
      box=TRUE, # draw box along outer margins of graph?
      keeplayout=FALSE, # Keep the layout and parameters changed with par?
-     ... # further arguments passed to plot
+     graylines=TRUE, # plot horizontal gray lines at every 10 degrees and vertically for each month?
+     lty=1, # line type of gray lines, see ?par
+     colrain="blue", # Color for rain line and axis labels
+     coltemp="red", # color for temperature line and axis labels
+     lwd=2, # line width of actual temp and rain lines
+     #colcomp="purple", # color for compressed polygon ##### or in argcomp?
+     arghumi=NULL, # Arguments for humid polygon
+     argarid=NULL, # Arguments for arid area
+     argcomp=NULL, # Arguments for compressed rainfall polygon
+     ... # further arguments passed to plot, like col.main
      )
-{ # function start
+{
+# function start ---------------------------------------------
 # input checking:
 if(length(temp)!=12 | length(rain)!=12) stop("temp and rain each need to have 12 elements.")
-# prepare plot:
+# prepare plot, write table of values at the right:
 if(textprop > 0)
   {
   layout(matrix(2:1, ncol=2), widths=c(1-textprop, textprop))
@@ -45,15 +48,15 @@ if(compress)
   # new ylim
   if(missing(ylim)) ylim <- range(temp, rain/2)
   }
-op <- par(mar=mar, mgp=c(3,0.8,0), xaxs="i") # set margins around plot, avoid empty space along x-axis
+# set margins around plot, avoid empty space along x-axis
+op <- par(mar=mar, mgp=c(3,0.8,0), xaxs="i") 
+# Empty plot:
 plot(1, type="n", xlim=c(0.6, 12.4), ylim=ylim, main=main, xaxt="n", yaxt="n", ylab="", xlab="", ...)
-if(graylines)
-  {
-  abline(h=ticks, col=8, lty=lty) # h=pretty(ylim)
-  abline(v=1:11+0.5, col=8, lty=lty)
-  }
+# background lines:
+if(graylines)  abline(h=ticks, v=1:11+0.5, col=8, lty=lty) # h=pretty(ylim)
 abline(h=0)
-# fill arid and humid times: ---------------------------------------------------
+
+# determine arid and humid times: ---------------------------------------------------
 # determine interception months: (each before the actual interception):
 intm <- which(diff(rain/2>temp) != 0 )
 if(length(intm) >0 )
@@ -79,23 +82,29 @@ if(length(intm) >0 )
   tpy <- temp  # temp polygon y coordinates
   rpy <- rain/2  # all in temp units
   }
-# polygon drawing:
+
+# polygon drawing - ARID ------------------------------------------------------------
 arid <- which(rpy<=tpy)
-polygon(x=px[c(arid, rev(arid))], y=c(rpy[arid],rev(tpy[arid])), col=colarid, border=NA)
-# humid polygons:
+argarid_def <- list(x=px[c(arid, rev(arid))], y=c(rpy[arid],rev(tpy[arid])), 
+                    col=rgb(1,0.84,0, alpha=0.3), border=NA) # col from col2rgb("gold")/255
+do.call(polygon, args=owa(d=argarid_def, a=argarid, u=c("x","y"))  )
+
+# polygon drawing - HUMID ------------------------------------------------------------
 # interception coordinates of temp with 0-axis (baseline of humid polygon):
 intc_t <- sapply(  which(diff(temp>0) != 0)  , function(i) {
     Ct <- coef(lm(temp[i+0:1]   ~ c(i+0:1) )) # temp = a + b*x crosses zero at a + b*x = 0 -> x=-a/b
     as.vector( c(-Ct[1]/Ct[2], 0) ) }) # return of each sapply run: x coordinates
 tpy[tpy<0] <- 0
 isneg <- length(intc_t) > 0 # is there any negative temperature
-humid <- which(rpy>=tpy)
+###humid <- which(rpy>=tpy)
 hpx <- c( px, if(isneg) intc_t[1,] ) # backwards polygon border
 hpy <- c(tpy, if(isneg)intc_t[2,] )[order(hpx, decreasing=TRUE)]
 hpx <- sort(hpx, decreasing=TRUE)
 rpy[rpy<tpy] <- tpy[rpy<tpy] # have the polygon go along templine, so density starting lines are overplotted later
-polygon(x=c(px, hpx), y=c(rpy, hpy), col=colhumid, border=NA, density=density, angle=90)
-# compressed area:
+arghumi_def <- list(x=c(px, hpx), y=c(rpy, hpy), col=rgb(0,0,1, alpha=0.3), border=NA)
+do.call(polygon, args=owa(d=arghumi_def, a=arghumi, u=c("x","y"))  )
+
+# polygon drawing - compressed area -----------------------------------------------------
 if(compress & sum(diff(rain>100) !=0) >0 )
 {
 # interception coordinates of rain with 1000-axis (baseline of compressed polygon):
@@ -105,20 +114,22 @@ intc_c <- sapply(  which(diff(rain>100) != 0)  , function(i) {
 cpx <- c( px, intc_c[1,] ) # backwards polygon border
 cpy <- c(rpy, intc_c[2,] )[order(cpx, decreasing=FALSE)]
 cpx <- sort(cpx, decreasing=FALSE)
-polygon(x=c(cpx, rev(cpx)), y=c(cpy,pmin(rev(cpy),50)), col=colcomp, border=NA)
+argcomp_def <- list(x=c(cpx, rev(cpx)), y=c(cpy,pmin(rev(cpy),50)), col=rgb(1,0,1, alpha=0.3), border=NA)
+do.call(polygon, args=owa(d=argcomp_def, a=argcomp, u=c("x","y"))  )
 }
-# ------------------------------------------------------------------------------
-# plot temp:
-lines(temp, col=2, type="l", lwd=lwd)
-# plot rain:
-lines(rain/2, col=4, type="l", lwd=lwd)
+
+# lines and labels ----------------------------------------------------------------
+# plot temp line:
+lines(temp, col=coltemp, type="l", lwd=lwd)
+# plot rain line:
+lines(rain/2, col=colrain, type="l", lwd=lwd)
 # labelling:
-mtext(paste("\U00D8", round(mean(temp),1), units[1]),           side=3, col=2, line=1, adj=0)
-mtext(bquote(sum()* " "*.(round(sum(rain),1))*" "*.(units[2])), side=3, col=4, line=0.8, adj=1)
+mtext(paste("\U00D8", round(mean(temp),1), units[1]),           side=3, col=coltemp, line=-2.0, adj=0.02, outer=T)
+mtext(bquote(sum()* " "*.(round(sum(rain),1))*" "*.(units[2])), side=3, col=colrain, line=-2.2, adj=1.08, outer=T, at=par("fig")[2])
 if(compress) ticks <- ticks[ticks<=50]
-axis(side=2, at=ticks, col.axis=2, las=1)
-axis(side=4, at=ticks[ticks>=0], ticks[ticks>=0]*2, col.axis=4, las=1)
-if(compress) axis(4, 6:9*10, 6:9*100-400, col.axis=6, las=1)
+axis(side=2, at=ticks, col.axis=coltemp, las=1)
+axis(side=4, at=ticks[ticks>=0], ticks[ticks>=0]*2, col.axis=colrain, las=1)
+if(compress) axis(4, 6:9*10, 6:9*100-400, col.axis=owa(argcomp_def, argcomp)$col, las=1)
 axis(1, 1:12, labs, mgp=c(3,0.3,0), tick=FALSE)
 box() # cover up gray lines on top of original box
 if(box) box("outer") # draw box along outer margins of graph

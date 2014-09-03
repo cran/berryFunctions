@@ -22,10 +22,10 @@ y <- 2*x + rnorm(20)
 plot(x,y)
 rsquare(x,y)
 
-r2 <- sapply(1:50000, function(i){
+r2 <- sapply(1:10000, function(i){
    x <- rnorm(20);  y <- 2*x + rnorm(20);  rsquare(x,y) })
 hist(r2, breaks=70, col=5,
-main= "50'000 times   x <- rnorm(20);  y <- 2*x + rnorm(20);  rsquare(x,y)")
+main= "10'000 times   x <- rnorm(20);  y <- 2*x + rnorm(20);  rsquare(x,y)")
 
 }
 \keyword{univar}

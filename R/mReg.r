@@ -14,15 +14,7 @@
 # 10 rational               1 / (a*x + b)
 # 11 exponential 4 Param    a*e^(b*(x+c)) + d
 # Yet to add: 12 hyperbolic             sinh(), cosh(), tanh()
-# a^x + b
-
-# ToDo's:
-# - allow specification of initial values for optim
-# - try exp_4 with nls
-# - add hyperbolic functions
-# - quantify / test influence of replacing zeros with near-zero values
-# - bug hunt
-
+#             13 powerplus a^x + b
 
 mReg <- function(
     x,
@@ -71,26 +63,8 @@ ab1 <- function(input) signif(input,digits)
 ab <- function(input) paste0(ifelse(input>0, " + ", " - "),
                              abs(signif(input,digits)))
 # Prepare Output Table
-output <- as.data.frame(matrix(NA, ncol=if(Poly45) 9 else 7, nrow=10 ))
+output <- as.data.frame(matrix(NA, ncol=if(Poly45) 9 else 7, nrow=11 ))
 colnames(output) <- c("R2","Formulas","R2full", letters[1:(ncol(output)-3)] )
-#
-#
-# To be removed if package is finished:
-rsquare <- function(a,b) {
-  if(any(is.na(a)|is.na(b)))
-     {  Na <- which(is.na(a)|is.na(b)) ; a <- a[-Na] ; b <- b[-Na] }
-  cor(a,b)^2
-  }
-rmse <- function(a,b) {  # Root Mean Square Error
-  if(any(is.na(a)|is.na(b)))
-     {  Na <- which(is.na(a)|is.na(b)) ; a <- a[-Na] ; b <- b[-Na] }
-  sqrt( sum((a-b)^2)/length(b) )
-  }
-# Check whether always the functions from this package will be used...
-# potentially replace this with
-# rsquare <- berryFunctions:::rsquare
-# rmse <- berryFunctions:::rmse
-#
 #
 #  1 linear --------------- a*x + b --------------------------------------------
 mod1 <- lm( y ~ x )
@@ -99,102 +73,61 @@ output$a [1] <- coef(mod1)[2]
 output$b [1] <- coef(mod1)[1]
 #  2 quadratic (parabola) - a*x^2 + b*x + c ------------------------------------
 mod2 <- lm(y ~ I(x^2) + x)
-output$R2[2] <- summary(mod2)$r.squared
 output$a [2] <- coef(mod2)[2]
 output$b [2] <- coef(mod2)[3]
 output$c [2] <- coef(mod2)[1]
+output$R2[2] <- rsquare(y, output$a[2]*x^2 + output$b[2]*x + output$c[2])
 #  3 cubic ---------------- a*x^3 + b*x^2 + c*x + d ----------------------------
 mod3 <- lm(y ~  poly(x,3, raw=TRUE))
-output$R2[3] <- summary(mod3)$r.squared
 output[3,4:7] <- rev(coef(mod3))
+output$R2[3] <- rsquare(y, output$a[3]*x^3 + output$b[3]*x^2 + output$c[3]*x + output$d[3])
 if(Poly45){
   #  4 Polynom4 ----------- a*x^4 + b*x^3 + c*x^2 + d*x + e --------------------
   mod4 <- lm(y ~  poly(x,4, raw=TRUE))
-  output$R2[4] <- summary(mod4)$r.squared
   output[4, 4:8] <- rev(coef(mod4))
+  output$R2[4] <- rsquare(y, output$a[4]*x^4 + output$b[4]*x^3 + output$c[4]*x^2 + output$d[4]*x + output$e[4])
   #  5 Polynom5 ----------- a*x^5 + b*x^4 + c*x^3 + d*x^2 + e*x + f ------------
   mod5 <- lm(y ~  poly(x,5, raw=TRUE))
-  output$R2[5] <- summary(mod5)$r.squared
   output[5,4:9] <- rev(coef(mod5))
+  output$R2[5] <- rsquare(y, output$a[5]*x^5 + output$b[5]*x^4 + output$c[5]*x^3 + output$d[5]*x^2 + output$e[5]*x + output$f[5])
   } # if Poly45 end
 #  6 logarithmic ---------- a*log(x) + b ---------------------------------------
 mod6 <- lm( y ~ log10(replace(x, x==0, 1e-10)) ) # influence needs yet to be checked! ###
-output$R2[6] <- summary(mod6)$r.squared
 output$a [6] <- coef(mod6)[2]
 output$b [6] <- coef(mod6)[1]
+output$R2[6] <- rsquare(y, output$a[6]*log10(replace(x, x==0, 1e-10)) + output$b[6])
 #  7 exponential ---------- a*e^(b*x) ------------------------------------------
 log_y <- log(replace(y, y==0, 1e-10))
-mod7 <- lm( log_y ~ x )                       # y = a*e^(b*x)
-output$R2[7] <- summary(mod7)$r.squared       # ln(y) = ln(a) + ln( e^(b*x) )
-output$a [7] <- exp(coef(mod7)[1])            # ln(y) = ln(a) + b*x
-output$b [7] <- coef(mod7)[2]
+mod7 <- lm( log_y ~ x )                    # y = a*e^(b*x)
+output$a [7] <- exp(coef(mod7)[1])         # ln(y) = ln(a) + ln( e^(b*x) )
+output$b [7] <- coef(mod7)[2]              # ln(y) = ln(a) + b*x
+output$R2[7] <- rsquare(y, output$a[7]*exp(output$b[7]*x))
 #  8 power/root ----------- a*x^b ----------------------------------------------
 mod8 <- lm( log_y ~ log(replace(x, x==0, 1e-10)) ) # y = a*x^b
-output$R2[8] <- summary(mod8)$r.squared            # ln(y) = ln(a) + ln(x^b)
-output$a [8] <- exp(coef(mod8)[1])                 # ln(y) = ln(a) + b*ln(x)
-output$b [8] <- coef(mod8)[2]
+output$a [8] <- exp(coef(mod8)[1])                 # ln(y) = ln(a) + ln(x^b)
+output$b [8] <- coef(mod8)[2]                      # ln(y) = ln(a) + b*ln(x)
+output$R2[8] <- rsquare(y, output$a[8]*replace(x, x==0, 1e-10)^output$b[8])
 #  9 reciprocal ----------- a/x + b --------------------------------------------
 mod9 <- lm( y ~ I(1/replace(x, x==0, 1e-10)) )
-output$R2[9] <- summary(mod9)$r.squared
 output$a [9] <- coef(mod9)[2]
 output$b [9] <- coef(mod9)[1]
+output$R2[9] <- rsquare(y, output$a[9]/replace(x, x==0, 1e-10) + output$b[9])
 # 10 rational ------------- 1 / (a*x + b) --------------------------------------
 mod10 <- lm( I(1/y) ~ x)
-output$R2[10] <- summary(mod10)$r.squared
 output$a [10] <- coef(mod10)[2]
 output$b [10] <- coef(mod10)[1]
+output$R2[10] <- rsquare(y, 1 / (output$a[10]*x + output$b[10]))
+# 11 exp_4 ---------------- a*e^(b*(x+c))+d ------------------------------------
+# 4-parametric exponential distibutions
+if(exp_4) output_exp4p <- exp4p(x,y, digits=digits)
+if(exp_4) output[11,] <- output_exp4p[1,] # only include best fit for plotting
+#
 # 12 hyperbolic ----------- sinh(a*x+b)+c, cosh(), tanh() ----------------------
 # yet to add
 #
 # name output rows -------------------------------------------------------------
 rownames(output) <- c("linear", "square", "cubic", "poly4", "poly5",
-     "logarithmic", "exponential", "power", "reciprocal", "rational" )#, "hyperbolic")
-#
-# 11 exp_4 ---------------- a*e^(b*(x+c))+d ------------------------------------
-         # check this with nls: nls(y~expfun(p,x=x), start=param)    or  start=as.list(param)  ###
-if(exp_4){  # 4-parametric exponential distibutions
-  # initial parameters via lm of values relocated to first quadrant
-  init_c <- -min(x, na.rm=TRUE)
-  init_d <- min(y, na.rm=TRUE)
-  y_11 <-  y - init_d  + 0.05*abs(init_d)   #; y_11[y_11==0] <- 0.001
-  x_11 <-  x + init_c
-  mod11 <- lm( log(y_11) ~ x_11 )
-  init_a <- exp(coef(mod11)[1])
-  init_b <- coef(mod11)[2]
-  param <- c(a=init_a, b=init_b, c=init_c, d=init_d) ; names(param) <- letters[1:4]
-  #
-  # Exponential function to be fitted via optim
-  expfun <- function(p, x) p["a"]*exp(p["b"]*(x+p["c"]))+p["d"]
-  # function returning one value to be minimized via optim
-  minfun <- function(p) rmse(y, expfun(p, x=x)) # Root Mean Square Error  (Function in the package BerryFunctions)
-  # Fitting of parameters with different methods
-  opt1 <-     optim(par=param, fn=minfun, method="Nelder-Mead")
-  opt2 <-     optim(par=param, fn=minfun, method="BFGS")
-  opt3 <-     optim(par=param, fn=minfun, method="CG")
-  opt4 <- try(optim(par=param, fn=minfun, method="L-BFGS-B") , silent=TRUE)
-  if(class(opt4)=="try-error") {opt4 <- try(optim(par=opt1$par, fn=minfun, method="L-BFGS-B") , silent=TRUE)
-  if(class(opt4)=="try-error") {opt4 <- try(optim(par=opt2$par, fn=minfun, method="L-BFGS-B") , silent=TRUE)
-  if(class(opt4)=="try-error") {opt4 <- try(optim(par=opt3$par, fn=minfun, method="L-BFGS-B") , silent=TRUE)
-  if(class(opt4)=="try-error") {opt4 <- list(par=c(a=NA,b=NA,c=NA,d=NA))}}}}
-  opt5 <-     optim(par=param, fn=minfun, method="SANN")
-  optFits <- rbind(param, opt1$par, opt2$par, opt3$par, opt4$par, opt5$par)
-  optR2 <- c(rsquare(y, expfun(param, x=x)),
-          rsquare(y, expfun(opt1$par, x=x)),
-          rsquare(y, expfun(opt2$par, x=x)),
-          rsquare(y, expfun(opt3$par, x=x)),
-          rsquare(y, expfun(opt4$par, x=x)),
-          rsquare(y, expfun(opt5$par, x=x))    )
-  optFits <- cbind(R2=optR2, Formulas=NA, R2full=NA, optFits)
-  rownames(optFits) <- paste("exp_4par", c("ini", "N-M", "BFGS", "CG", "L--B", "SANN"), sep="_")
-  if(Poly45) optFits <- cbind(optFits, data.frame(e=NA, f=NA))
-    else optFits <- as.data.frame(optFits)
-  optFits$Formulas <- paste0(yf," = ", ab1(optFits[,4]),"*e^(",
-     ab1(optFits[,5]), "*(", xf, ab(optFits[,6]), "))", ab(optFits[,7]) )
-  optFits <- optFits[ order(optFits[,1], decreasing=TRUE) , ]
-  optFits$R2full <- optFits$R2
-  optFits$R2 <- round(optFits$R2, digits)
-  output <- rbind(output, optFits[1,]) # in output, for now only include best fit for plotting
-  } # if exp_4 end
+     "logarithmic", "exponential", "power", "reciprocal", "rational", "exp_4p" )#, "hyperbolic")
 #
 # Formulas of fitted functions -------------------------------------------------
 output$Formulas[1] <- paste0(yf," = ", ab1(output$a[1]),"*",xf,      ab(output$b[1]) )
@@ -209,12 +142,13 @@ output$Formulas[7] <- paste0(yf," = ", ab1(output$a[7]),"*e^(",           ab1(ou
 output$Formulas[8] <- paste0(yf," = ", ab1(output$a[8]),"*", xf, "^",     ab1(output$b[8]) )
 output$Formulas[9] <- paste0(yf," = ", ab1(output$a[9]),"/",xf,            ab(output$b[9]) )
 output$Formulas[10]<- paste0(yf," = 1/( ", ab1(output$a[10]),              ab(output$b[10]), "*", xf, " )" )
+if(exp_4)
+output$Formulas[11]<- paste0(yf, " = ", ab1(output$a[11]), "*e^(", ab1(output$b[11]), "*(", xf, ab(output$c[11]), "))", ab(output$d[11]))
 #
-# edit Rsquared columns in ouput table -----------------------------------------
+# edit Rsquared columns in output table ----------------------------------------
 output$R2full <- output$R2
 output$R2 <- round(output$R2, digits)
 ord <- order(output$R2full, decreasing=TRUE) # descending order of goodness of fit, for legend
-#browser()
 #
 # plot data and functions ------------------------------------------------------
 if(plot & nbest!=0) {
@@ -225,7 +159,7 @@ if(plot & nbest!=0) {
   if(!is.null(selection)) todraw[selection] <- TRUE
   if(!missing(R2min)) todraw[output$R2full>=R2min] <- TRUE
   #
-  xdraw <- seq(xlim[1], xlim[2], len=1000)
+  xdraw <- seqR(par("usr")[1:2], len=200)
   xdrawtab <- data.frame(x=xdraw) # colnames(xdrawtab) <- as.character(xf) # not necessary, as poly uses "x" (the one in the function environment)
   if(is.null(col)) col <- c("black", "red", "green3", "chartreuse", "forestgreen", "blue", "cyan", "magenta", "yellow", "gray", "orange", "deeppink")
   #
@@ -243,6 +177,7 @@ if(plot & nbest!=0) {
   if(todraw[8]) lines(xdraw, output$a[8]*xdraw^output$b[8],       col=col[8], lwd=lwd[8], lty=lty[8]) # 8 power (Potenz)
   if(todraw[9]) lines(xdraw, output$a[9]/xdraw+output$b[9],       col=col[9], lwd=lwd[9], lty=lty[9]) # 9 reciprocal
   if(todraw[10])lines(xdraw, 1/(output$a[10]*xdraw+output$b[10]), col=col[10],lwd=lwd[10],lty=lty[10])# 10 rational
+  if(exp_4)
   if(todraw[11])lines(xdraw, output$a[11]*exp(output$b[11]*(xdraw+output$c[11]))+output$d[11], col=col[11],lwd=lwd[11], lty=lty[11]) # 11 exp_4par
   # if(todraw[12])lines(xdraw, output$a[12]*cosh(x)+output$b[12], col=col[12],lwd=lwd[12], lty=lty[12]) # 12 hyperbolic
 # prepare and write legend -----------------------------------------------------
@@ -256,7 +191,10 @@ if(legend) {
                  if(legendform=="nameform") paste(rownames(output), "  ", fForms) else
                  if(legendform=="name") rownames(output) else
                  stop("wrong legendform. Use 'full', 'form', 'nameform', or 'name'.")
+  # remove entries for Poly45 and exp_4 if necessary:
+  ###ord <- ord[ !is.na(output$a)]
   if(!Poly45) ord <- ord[-(length(ord)-0:1)] # remove last two (Poly4 and 5) from legend
+  if(!exp_4)  ord <- ord[-length(ord)] # remove last one (exp_4) from legend
   ord <- ord[ord %in% which(todraw) ] # keep only the ones that are to be plotted
   #
   legargdefaults <- list(x="top", bty="n", cex=0.8, text.col=col[ord],
@@ -266,7 +204,8 @@ if(legend) {
   } # if plot end
 #
 # final output -----------------------------------------------------------------
-if(exp_4) output <- rbind(output, optFits[-1,]) # best fit is already included
+if(exp_4) output <- rbind(output, output_exp4p[-1,]) # best fit is already included
+if(!exp_4)  output <- output[-11,   ] # remove excess rows
 if(!Poly45) output <- output[-(4:5),] # remove excess rows
 #
 output <- output[order(output$R2full, decreasing=TRUE),]
@@ -278,5 +217,3 @@ if(ncolumns >7 & !Poly45) ncolumns <- 7
 if(ncolumns !=0) return(output[,1:ncolumns])
 #
 } # Function end ---------------------------------------------------------------
-
-

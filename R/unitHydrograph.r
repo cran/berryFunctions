@@ -1,7 +1,6 @@
 # Unit Hydrograph
 # Berry Boessenkool   July 2013    berry-b@gmx.de
 
-# toDo: test whether sum under UH is 1
 
 # continuous UH:
 unitHydrograph <- function(

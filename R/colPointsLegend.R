@@ -1,98 +1,134 @@
+# Berry Boessenkool,
+
+# legend for colPoints
+# Adds legends to plots created or enhanced with \code{\link{colPoints}}
+# invisible list of par of smallPlot, adds legend bar to current plot
+# \code{\link{colPoints}} for examples!
+
 colPointsLegend <- function(
-   xpos=0.5,       # position of topleft corner of legend. relative to plot region (0:1)
-   ypos=1,
-   length=0.5,     # size of color bar, relative, 0 to 1
-   width=0.05,
-   z,              # Values used for the default of Range. Matrix oder Vektor
-   Range=range(z, finite=TRUE), # 2 values for the ends of the color spectrum
-   numcol=100,     # if default palette is used: number of color shades
-   alpha=1,        # Transparency for default palette. 0 is transp, 0.5 semitransp.
-   col=rev(rainbow(numcol, start=0, end=.7, alpha=alpha)), # colors that are used
-   at=Pretty,      # values at which labels are positioned. Default uses internal calculation
-   atminmax=FALSE, # Should the extrema of the legend be added to "at"?
-   labels=at,      # labels that are written at the position of "at".
-   xpd=TRUE,       # Should the legend expand outside of the plot region into the margins?
-   lines=TRUE,     # plot black lines in the color bar at "at"?
-   horizontal=TRUE,# horizontal bar? else vertical bar is drawn, with length and width exchanged
-   labelpos=1,     # position of labels relative to the bar: below, left, above, right
-   white=NA,       # coordinates for white polygon drawn underneath the legend
-   ...)            # further arguments passed to text, e.g. cex, font, col. But NOT adj!
+z, # Values of third dimension used in \code{\link{colPoints}}, can be matrix, vector, etc, but must be numeric
+Range=range(z, finite=TRUE), # Ends of color bar for method=equalinterval
+nbins=40, # Number of classes (thus, colors)
+colors=rev(rainbow(nbins, start=0, end=.7, alpha=1)), # Color vector
+bb=seqR(Range, length.out=nbins+1), # Borders of bins for the legend (key)
+at=pretty2(Range), # Positions of legend labels
+labels=at, # Labels that are written at the positions of \code{at}
+
+bg="white", # Background behind key, labels and title
+x1=60, y1=99, # Topleft relative coordinates (0:100) of inset plot, see \code{\link{smallPlot}}
+x2=x1+38, y2=y1-11, # Bottomright -"-
+mar, # Margins for \code{\link{smallPlot}} in relative values (0:100). DEFAULT: internal calculations based on title, labelpos and titlepos.
+mgp=c(1.8, 0.6, 0), # MarGinPlacement: distance of xlab/ylab, numbers and line from plot margin, as in \code{\link{par}}, but with different defaults
+sborder=NA, # Border around inset subplot
+resetfocus=TRUE, # Reset focus to original plot? Specifies where further low level plot commands are directed to.
+
+density=NULL, # Plot kernel density line? arguments passed to \code{\link{density}}
+lines=TRUE, # Plot black lines in the color bar at \code{at}?
+atminmax=FALSE, # Should the extrema of the legend be added to \code{at}?
+horizontal=TRUE, # Horizontal bar? if FALSE, a vertical bar is drawn, ###with length and width exchanged
+labelpos=1, # Position of labels relative to the bar. Possible: 1 (below), 2 (left), 3 (above), 4 (right), 5(on top of bar)
+titlepos=3, # Position of title -"-
+title="Legend", # Legend title
+las=1, # LabelAxisStyle
+...) # Further arguments passed to \code{\link{text}} and \code{\link{strwidth}}, e.g. cex, srt, font, col. But NOT adj!
+
 {
-# Labelzahlen auswaehlen (nicht groesser oder kleiner als die Farbskala):
-if(xpd) op <- par(xpd=TRUE)
-p <- pretty(Range); Pretty <- if(Range[1]<Range[2])
-                              { p[p>=Range[1] & p<=Range[2]]
-                              } else  p[p<=Range[1] & p>=Range[2]] 
-if(atminmax) Pretty <- c(Range[1], Pretty, Range[2])
-rm(p)
-# Aktuelle Graphikgrenzen fuer die Legendenposition ermitteln:
-u <- par()$usr
-# Legendenposition in Absolutwerten:
-xpos <- u[1] + xpos * (u[2]-u[1])
-ypos <- u[3] + ypos * (u[4]-u[3])
-#                                       
-# Falls weiss in Polygonkoordinaten des Ursprungsplots (absolutwerte)  gegeben, 
-# weisse Flaeche unter Legende und Beschriftung setzen.
-polygon(white, col="white", border=NA)
-# ToDo: make it relative and automatic (dependent on cex, legend position, horizontal, labelpos) 
-# dazu cex=1 als Argument hinzufuegen und white=F als default, handling auf T/F bezogen
-#
-# a) fuer waagerechte Legende: --------------------------------------------------
-if(horizontal)
-{
-# Legendenausdehnung in Absolutwerten:  
-      length <- length*(u[2]-u[1])
-      width <- width*(u[4]-u[3])
-# Einzelne Positionen (fuer jedes einzelene der length(col) Polygone / Farbfelder)
-      n_col <- length(col) 
-      Eposx <- xpos + 0:n_col*length/n_col
-# Farbreihe zeichnen, bei falschem labelpos Abbruch:
-      if(labelpos %in% c(1,3,5)) {
-      for(i in 1:n_col) { polygon(  c(Eposx[i], rep(Eposx[i+1],2), Eposx[i]) ,
-            rep(c(ypos, ypos-width), each=2)  , border=NA, col=col[i])  }
-      } else stop("Wrong labelpos. In a horizontal legend, only 1 (below legend bar), 3 (above), and 5(on top of bar) are possible.")
-# Labels vorbereiten (Positionen ermitteln):
-      mod <- lm( c(xpos, xpos+length) ~ Range )[[1]]
-      Epostext <- at*mod[2] + mod[1]
-# ggf. Linien zeichnen:
-      if(lines) segments(x0=Epostext, y0=ypos, y1=ypos-width)
-# Label vorbereiten:
-      if(labelpos==1) { YposT <- ypos-1.1*width;  adjT <- 1
-      } else if(labelpos==3) { YposT <- ypos+0.1*width; adjT <- 0
-      } else if(labelpos==5){ YposT <- ypos-0.5*width; adjT <- 0.5 }
-# Label schreiben:
-      text(Epostext, YposT, labels, adj=c(0.5, adjT), ...)
-#
-# b) fuer senkrechte Legende (key): --------------------------------------------- 
-} else {
-# Legendenausdehnung in Absolutwerten:  
-      length <- length*(u[4]-u[3])
-      width <- width*(u[2]-u[1])
-# Einzelne Positionen (fuer jedes einzelene der length(col) Polygone / Farbfelder)
-      n_col <- length(col) 
-      Eposy <- ypos - length + 0:n_col*length/n_col
-# Farbreihe zeichnen, bei falschem labelpos Abbruch:
-      if(labelpos %in% c(2,4,5)) {
-      for(i in 1:n_col) { polygon(  rep(c(xpos, xpos+width), each=2),
-             c(Eposy[i], rep(Eposy[i+1],2), Eposy[i]), border=NA, col=col[i])  }
-      }else stop("Wrong labelpos. In a vertical legend, only 2 (left of legend bar), 4 (right of), and 5(on top of) are possible..") 
-# Labels vorbereiten (Positionen ermitteln):
-      mod <- lm( c(ypos-length, ypos) ~ Range )[[1]]
-      Epostext <- at*mod[2] + mod[1]
-# ggf. Linien zeichnen:
-      if(lines) segments(x0=xpos, y0=Epostext, x1=xpos+width)
-# Label vorbereiten:
-      if(labelpos==2) { XposT <- xpos-0.1*width;  adjT <- 1
-      }else if(labelpos==5) { XposT <- xpos+0.5*width; adjT <- 0.5
-      }else if(labelpos==4){ XposT <- xpos+1.1*width; adjT <- 0 }
-# Label schreiben:
-      text(XposT, Epostext, labels, adj=c(adjT, 0.5), ...)
-} 
-if(xpd) par(op) else box() # Fuer den Fall, dass Legenden den Rand ueberplotten:
+# ------------------------------------------------------------------------------
+z <- as.numeric(z)
+# input checks:
+if(any(diff(bb)<0)) stop("Breaks 'bb' (bin borders) have to be in ascending order.")
+if(length(colors) != nbins) stop("Number of colors is not equal to number of classes.")
+# extend labels and at:
+if(atminmax) labels <- c( signif(head(bb,1),2), labels, signif(tail(bb,1),2) ) ### & length(labels)!=length(at)
+if(atminmax) at <- c( head(bb,1), at, tail(bb,1) )
+if(length(labels)!=length(at)) stop("labels and at do not have the same length")
+# vertical default placement:
+if(!horizontal){
+if(missing(x1)) x1 <- 88
+if(missing(y1)) y1 <- 70
+if(missing(x2)) x2 <- x1+11
+if(missing(y2)) y2 <- y1-40
+if(missing(labelpos)) labelpos <- 2
+if(missing(titlepos)) titlepos <- 3
+if(missing(title)) title <- "Key"
 }
-# ToDo: add inset argument as in legend
-# maybe add "title" Argument with good placement default
-# get coordinates for polygon from text size as in textField
-# vielleicht: Argument horizontal=T oder F ersetzen mit dir = "h" oder "v"
-# Change colPoints so that it do.call colPointsLegend with a list of arguments
-#
+# margin preparation:
+if(missing(mar))
+{
+mar <- c(0,0,0,0)
+wt <- 1.4*100*max( strwidth(c(labels, title), units="figure", ...))
+ht <- 1.5*100*max(strheight(c(labels, title), units="figure", ...))
+if(labelpos==2 | titlepos==2) mar[2] <- wt
+if(labelpos==4 | titlepos==4) mar[4] <- wt
+if(labelpos==1 | titlepos==1) mar[1] <- ht
+if(labelpos==3 | titlepos==3) mar[3] <- ht
+} # if mar is specified, it is used, of course.
+# subplot setup:
+smallPlot(x1=x1, y1=y1, x2=x2, y2=y2, mar=mar, mgp=mgp, bg=bg,
+  border=sborder, las=las, resetfocus=resetfocus, expr={
+if(horizontal) # ---------------------------------------------------------------
+  {
+  plot.window(xlim=c(bb[1], tail(bb,1)), ylim=c(0,1), xaxs="i", yaxs="i")
+  # actually plot legend color fields:
+  for(i in 1:length(colors))
+    rect(xleft=bb[i], xright=bb[i+1], ybottom=0, ytop=1, col=colors[i], border=NA)
+  # lines
+  if(lines) segments(x0=at, y0=0, y1=1)
+  # prepare label adjustment:
+  if(labelpos==1) { y <- -0.1 ; vadj <- 1   } else
+  if(labelpos==3) { y <-  1.1 ; vadj <- 0   } else
+  if(labelpos==5) { y <-  0.5 ; vadj <- 0.5 } else
+  stop("Wrong labelpos. Possible in horizontal legend: 1 (below legend bar), 3 (above), and 5 (on top).")
+  # actually write labels:
+  text(x=at, y=y, labels=labels, adj=c(0.5, vadj), xpd=TRUE, ...)
+  # prepare title adjustment:
+  pu <- par("usr")[1:2]
+  if(titlepos==1) {x <- mean(pu); y <- -0.2; hadj <- 0.5; vadj <- 1   } else
+  if(titlepos==2) {x <-    pu[1]; y <-  0.5; hadj <- 1  ; vadj <- 0.5 } else
+  if(titlepos==3) {x <- mean(pu); y <-  1.2; hadj <- 0.5; vadj <- 0   } else
+  if(titlepos==4) {x <-    pu[2]; y <-  0.5; hadj <- 0  ; vadj <- 0.5 } else
+  if(titlepos==5) {x <- mean(pu); y <-  0.5; hadj <- 0.5; vadj <- 0.5 } else
+  stop("Wrong titlepos. Must be integer between 1 and 5.")
+  # actually write title:
+  text(x=x, y=y, labels=title, adj=c(hadj, vadj), xpd=TRUE, ...)
+  # kernel density:
+  if(is.list(density) | is.null(density) | isTRUE(density) )
+    {
+    dp <- do.call(stats::density, args=owa(list(x=z), density))
+    lines(dp$x, dp$y/max(dp$y))
+    }
+  }
+else # if not horizontal, thus if vertical -------------------------------------
+  {
+  plot.window(ylim=c(bb[1], tail(bb,1)), xlim=c(0,1), xaxs="i", yaxs="i")
+  # actually plot legend color fields:
+  for(i in 1:length(colors))
+    rect(ybottom=bb[i], ytop=bb[i+1], xleft=0, xright=1, col=colors[i], border=NA)
+  # lines
+  if(lines) segments(y0=at, x0=0, x1=1)
+  # prepare label adjustment:
+  if(labelpos==2) { x <- -0.1 ; hadj <- 1   } else
+  if(labelpos==4) { x <-  1.1 ; hadj <- 0   } else
+  if(labelpos==5) { x <-  0.5 ; hadj <- 0.5 } else
+  stop("Wrong labelpos. Possible in vertical legend: 2 (left of legend bar), 4 (right), and 5 (on top).")
+  # actually write labels:
+  text(x=x, y=at, labels=labels, adj=c(hadj, 0.5), xpd=TRUE, ...)
+  # prepare title adjustment:
+  pu <- par("usr")[3:4]
+  if(titlepos==1) {y <-    pu[1]; x <-  0.5; hadj <- 0.5; vadj <- 1  } else
+  if(titlepos==2) {y <- mean(pu); x <- -0.2; hadj <- 1  ; vadj <- 0.5} else
+  if(titlepos==3) {y <-    pu[2]; x <-  0.5; hadj <- 0.5; vadj <- -0.2} else
+  if(titlepos==4) {y <- mean(pu); x <-  1.2; hadj <- 0  ; vadj <- 0.5} else
+  if(titlepos==5) {y <- mean(pu); x <-  0.5; hadj <- 0.5; vadj <- 0.5} else
+  stop("Wrong titlepos. Must be integer between 1 and 5.")
+  # actually write title:
+  text(x=x, y=y, labels=title, adj=c(hadj, vadj), xpd=TRUE, ...)
+    # kernel density:
+  if(is.list(density) | is.null(density) | isTRUE(density) )
+    {
+    dp <- do.call(stats::density, args=owa(list(x=z), density))
+    lines(y=dp$x, x=dp$y/max(dp$y))
+    }
+  } # end vertical -------------------------------------------------------------
+  })
+}

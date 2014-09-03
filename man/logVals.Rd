@@ -2,10 +2,10 @@
 \alias{logVals}
 \title{Create log-axis values and labels}
 \description{create nice values and labels to write at logartihmic axes}
-\usage{logVals(from=-3, to=4, Range=range(from, to), base=1,
+\usage{logVals(from=-7, to=7, Range=range(from, to), base=1,
 big.mark="'", decimal.mark=".", scientific=FALSE)}
 \arguments{
-  \item{from}{lower exponent OR vector with data}
+  \item{from}{lower exponent \emph{OR} vector with data}
   \item{to}{high end}
   \item{Range}{or give from and to as range}
   \item{base}{bases to be used, eg. c(1,2,5)}

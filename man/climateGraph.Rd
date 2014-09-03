@@ -3,34 +3,35 @@
 \title{climate graph after Walter and Lieth}
 \description{Draw a climate diagramm by the standards of Walter and Lieth.}
 \usage{climateGraph(temp, rain,
-main="BerryStation\\n52\U00B0 24' N / 12\U00B0 58' E\\n42 m aSL",
-units=c("\U00B0 C", "mm"),
-labs=c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"),
-textprop=0.2, ylim=range(temp, rain/2), compress=FALSE, lwd=2, 
-ticks=-5:20 * 10, graylines=TRUE, lty=1, colhumid=rgb(0, 0, 1, alpha=0.3),
-colarid=rgb(1, 0.84, 0, alpha=0.3), colcomp=rgb(1, 0, 1, alpha=0.3),
-density=NULL, mar=c(1.5, 2.3, 4.5, 2.3), box=TRUE, keeplayout=FALSE, ...) }
+  main="BerryStation\\n52\U00B0 24' N / 12\U00B0 58' E\\n42 m aSL",
+  units=c("\U00B0 C", "mm"), labs=c("J","F","M","A","M","J","J","A","S","O","N","D"), 
+  textprop=0.2, ylim=range(temp, rain/2), compress=FALSE, 
+  ticks=-5:20*10, mar=c(1.5,2.3,4.5,2.3), box=TRUE, keeplayout=FALSE, 
+  graylines=TRUE, lty=1, colrain="blue", coltemp="red", lwd=2, 
+  arghumi=NULL, argarid=NULL, argcomp=NULL, ... )}
 \arguments{
-  \item{temp}{monthly temperature mean in \\U00B0 C}
+  \item{temp}{monthly temperature mean in degrees C}
   \item{rain}{monthly rain sum in mm (12 values)}
   \item{main}{location info as character string. can have \\n. DEFAULT: "BerryStation\\n52\\U00B0 24' N / 12\\U00B0 58' E\\n42 m aSL"}
   \item{units}{units used for labelling. DEFAULT: c("\\U00B0 C", "mm")}
   \item{labs}{labels for x axis. DEFAULT: c("J","F","M","A","M","J","J","A","S","O","N","D")}
-  \item{textprop}{proportion of graphic that is used for writing the values to the right. DEFAULT: 0.2}
+  \item{textprop}{proportion of graphic that is used for writing the values in a table to the right. DEFAULT: 0.2}
   \item{ylim}{limit for y axis in temp units. DEFAULT: range(temp, rain/2)}
   \item{compress}{should rain>100 mm be compressed with adjusted labelling? (not recommended for casual visualization!). DEFAULT: FALSE}
-  \item{lwd}{line width of actual temp and rain graphs. DEFAULT: 2}
   \item{ticks}{positions for vertical labelling and line drawing. DEFAULT: -5:20*10}
+  \item{mar}{plot margins. DEFAULT: c(1.5,2.3,4.5,2.3)}
+  \item{box}{draw box along outer margins of graph?. DEFAULT: TRUE}
+  \item{keeplayout}{Keep the layout and parameters changed with par?. DEFAULT: FALSE}
+  \item{}{NA}
   \item{graylines}{plot horizontal gray lines at every 10 degrees and vertically for each month?. DEFAULT: TRUE}
   \item{lty}{line type of gray lines, see \code{\link{par}}. DEFAULT: 1}
-  \item{colhumid}{color for humid areas with alpha for transparency. DEFAULT: rgb(0,0,1, alpha)}
-  \item{colarid}{color for arid times, see \code{\link{col2rgb}("gold")/255}. DEFAULT: rgb(1,0.84,0, alpha)}
-  \item{colcomp}{color for compressed rainfall polygon. DEFAULT: rgb(1,0,1, alpha)}
-  \item{density}{number of shading lines per inch, see \code{\link{polygon}}. Only passed to humid polygon! DEFAULT: NULL}
-  \item{mar}{plot margins. DEFAULT: c(1.5,2.3,4.5,2.3)}
-  \item{box}{draw box along outer margins of graph? DEFAULT: TRUE}
-  \item{keeplayout}{Keep the layout and parameters changed with par? DEFAULT:FALSE}
-  \item{\dots}{further arguments passed to plot}
+  \item{colrain}{Color for rain line and axis labels. DEFAULT: "blue"}
+  \item{coltemp}{color for temperature line and axis labels. DEFAULT: "red"}
+  \item{lwd}{line width of actual temp and rain lines. DEFAULT: 2}
+  \item{arghumi}{Arguments for humid \code{\link{polygon}}, like density, angle. DEFAULT: NULL (internal x,y, col, border)}
+  \item{argarid}{Arguments for arid area. DEFAULT: NULL}
+  \item{argcomp}{Arguments for compressed rainfall polygon. DEFAULT: NULL}
+  \item{\dots}{further arguments passed to plot, like col.main}
 }
 \value{None. Plots data and table.}
 \references{Heinrich Walter, Helmut Lieth: Klimadiagramm-Weltatlas. Gustav Fischer Verlag, Jena 1967\cr
@@ -48,12 +49,14 @@ temp <- c(-9.3,-8.2,-2.8,6.3,13.4,16.8,18.4,17,11.7,5.6,-1,-5.9)#
 rain <- c(46,46,36,30,31,21,26,57,76,85,59,46)
 
 climateGraph(temp, rain) # default settings
-climateGraph(temp, rain, textprop=0) # no values written to the right
+climateGraph(temp, rain, textprop=0) # no table written to the right
 climateGraph(temp, rain, lty=3) # dotted background lines
-climateGraph(temp, rain, density=15) # for vertical lines instead of filled polygon
-climateGraph(temp, rain, colarid="gold") # fill color for arid without transparency
-climateGraph(temp, rain, units=c("\U00B0 F","in")) # for the Americans ;-)
-
+# vertical lines instead of filled polygon:
+climateGraph(temp, rain, arghumi=list(density=15, angle=90)) 
+# fill color for arid without transparency:
+climateGraph(temp, rain, argarid=list(col="gold")) 
+# for the Americans ;-) (axes should be different, though!):
+climateGraph(temp, rain, units=c("\U00B0 F","in")) 
 
 rain <- c(23, 11, 4, 2, 10, 53, 40, 15, 21, 25, 29, 22)
 # fix ylim if you want to compare diagrams of different stations:
@@ -65,7 +68,7 @@ climateGraph(temp, rain, compress=TRUE) # compressing extrema enables a better
 # view of the temperature, but heigths of rain cannot be visually compared anymore
 climateGraph(temp, rain, compress=TRUE, ylim=c(-10, 90))
 # needs ylim in linearly continued temp units
-climateGraph(temp, rain, compress=TRUE, density=30, colcomp=6)
+climateGraph(temp, rain, compress=TRUE, argcomp=list(density=30, col=6))
 
 \dontrun{
 setwd("C:/Users/berry/Desktop")

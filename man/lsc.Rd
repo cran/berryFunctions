@@ -46,7 +46,12 @@ mean(calib$Q) * length(calib$Q) *3600  / ( 0.7 * sum(calib$P)/1000) / 1e6
 # calibrate Unit Hydrograph:
 UHcalib <- lsc(calib$P, calib$Q, area=3.4)
 UHcalib # n 0.41  k 244.9  NSE 0.74  psi 0.45
-# Psi is lower than 0.7, as it is calculated on direct runoff only
+# Psi is lower than 0.7, as it is now calculated on direct runoff only
+
+# Corresponding Unit Hydrograph:
+UH <- unitHydrograph(n=UHcalib["n"], k=UHcalib["k"], t=1:length(calib$P))
+plot(UH, type="l") # That's weird anyways...
+sum(UH) # 0.58 - we need to look at a longer time frame
 
 # calibrate Unit Hydrograph on peak only:
 lsc(calib$P, calib$Q, area=3.4, fit=17:40) # n 0.63  k  95.7  NSE 0.67
@@ -54,11 +59,6 @@ lsc(calib$P, calib$Q, area=3.4, fit=17:40) # n 0.63  k  95.7  NSE 0.67
 
 # Simulated discharge instead of parameters:
 lsc(calib$P, calib$Q, area=3.4, returnsim=TRUE, plot=FALSE)
-
-# Corresponding Unit Hydrograph:
-UH <- unitHydrograph(n=UHcalib["n"], k=UHcalib["k"], t=1:length(calib$P))
-plot(UH, type="l") # That's weird anyways...
-sum(UH) # 0.58 - we need to look at a longer time frame
 
 
 # Apply this to the validation event
@@ -78,6 +78,8 @@ dummy # in-sample NSE 0.75 is a lot better
 lsc(valid$P, valid$Q, type="l", area=3.4, fit=60:90) # overestimates first peak
 # Area cannot be right - is supposedly 17 km^2. 
 
+## Not run in Rcmd check after Version 1.5 because it takes so much time
+\dontrun{
 
 # Different starting points for optim:
 lsc(calib$P, calib$Q, area=3.4, n= 2  , k=  3, plot=FALSE) # Default
@@ -109,7 +111,7 @@ points(3.4, 3, col=4)
 
 lsc(calib$P, calib$Q, area=1.6) # not bad indeed
 
-
+}
 }
 \keyword{hplot}
 \keyword{ts}

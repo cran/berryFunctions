@@ -2,8 +2,8 @@
 # berry-b@gmx.de, Feb 2014, idea 2013
 
 logVals <- function(
-  from=-3,               # lower exponent OR vector with data
-  to=4,                  # high end
+  from=-7,               # lower exponent OR vector with data
+  to=7,                  # high end
   Range=range(from, to), # or give from and to as range
   base=1,                # bases to be used, eg. c(1,2,5)
   big.mark="'",          # symbol separating thousands, eg. space, comma, dot, etc. see "format" and "prettyNum"
@@ -11,7 +11,6 @@ logVals <- function(
   scientific=FALSE)      # see "format"
 {
 # Calculate the exponents from vector, if given as first argument:
-#if( missing(to)  &  (if(is.vector(from)) length(from)>1 else nrow(from)>1 ) )
 if( missing(to)  &  NROW(from)>1  )
   {
   rng <- range(log10(from[from>0]), finite=TRUE)

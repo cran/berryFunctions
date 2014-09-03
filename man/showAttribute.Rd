@@ -30,6 +30,8 @@ But I don't really know yet how to get that done...
 # see ?changeAttribute for more information
 # Read Shapefile:
 
+\dontrun{
+
 library(maptools)
 library(spatstat)
 xx <- readShapeLines(system.file("shapes/fylk-val.shp", package="maptools")[1],
@@ -37,7 +39,6 @@ xx <- readShapeLines(system.file("shapes/fylk-val.shp", package="maptools")[1],
 xx_psp <- as.psp(xx) # slow for bigger shapefiles, so take it out of the function
 # if object_psp is not given, it will be calculated each time...
 
-\dontrun{
 plot(xx)
 showAttribute(xx)
 showAttribute(xx, xx_psp)
