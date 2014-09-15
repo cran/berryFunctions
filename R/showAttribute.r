@@ -8,6 +8,7 @@ showAttribute <- function(
   notify=TRUE) # logical. Are you to be told what to do in the console?
 
 {
+warning("showAttribute will soon (Nov 2014) be moved from berryFunctions into a new package, probably on github.")
 ###require(spatstat) # since spatstat is now in Imports and not Suggests anymore
 # Some basic "idiot-proofing":
 if(class(object)!="SpatialLinesDataFrame") warning(paste("Not yet tested for objects",

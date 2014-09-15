@@ -10,34 +10,28 @@ This Log of changes in my package berryFunctions contains two sections:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
-- changeAttribute, showAttribute, partly also shapeZoom:
-# include require2(maptools), require2(spatstat) in examples 
-# read shapefiles not with maptools functions, but with package rgdal
-# enable all shapefile types
-# understand id_col
-# coltochange with number
-# CL-TK GU-Interface allowing to click on another segment, and the info in the interface is updated automatically. http://www.sciviews.org/_rgui/tcltk/
-# catch warning message in as.psp.SpatialLinesDataFrame
+remove extremeStatLmom from this package, then remove lmom and evd from dependencies and update package title and description
+create a file with deprecated functions
 
-- createDoc: no . DEFAULT for ones ending with . or ? or !
+- createDoc: 
+# no . DEFAULT for ones ending with . or ? or ! or containing DEFAULT
+# better handling of rows with 2 arguments
 
 - exp4p:
 # try to improve with  nls(y~expfun(p,x=x), start=as.list(param) )  
 # allow specification of initial values for optim
 
-- extremeStatLmom: Include Bootstrapping with user-specified proportion left out
-
-- lsc: # Still need to find out what to do with optim
+- lsc: # find out what to do with optim
 
 - mReg: 
 # add hyperbolic functions
 # quantify / test influence of replacing zeros with near-zero values
 
+- owa: is change of order of elements avoidable? replace u with ... (in all my functions, too)
+
 - pointZoom: rename Argument colp, as col cannot be given currently.
 
-- shapeZoom: 
-# set steps higher and Time lower 
-# linear zooming properties
+- seqR: add extendrange argument
 
 - textField: 
 # Bounding boxes are too high
@@ -46,10 +40,38 @@ This Log of changes in my package berryFunctions contains two sections:
 # support srt
 
 
+move changeAttribute, showAttribute and shapeZoom to a new package, remove spatstat and maptools from Imports
+then
+- changeAttribute, showAttribute, partly also shapeZoom:
+# include require2(maptools), require2(spatstat) in examples 
+# read shapefiles not with maptools functions, but with package rgdal
+# enable all shapefile types
+# understand id_col
+# coltochange with number
+# CL-TK GU-Interface allowing to click on another segment, and the info in the interface is updated automatically. http://www.sciviews.org/_rgui/tcltk/
+# catch warning message in as.psp.SpatialLinesDataFrame
+- shapeZoom: 
+# set steps higher and Time lower 
+# linear zooming properties
+
+
 
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 2. berryFunctions - development over time
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
+Version 1.5.2 (2014-09-15)
+Functions to be moved to new packages warn about it (extremeStatLmom, changeAttribute, showAttribute and shapeZoom)
+- combineTextfiles gained 'names' argument to include filenames in the output
+- unitHydrograph: View() in examples only when interactive
+- nse, rmse, rqsuare: NA warning now gives numbers
+
+New functions: logAxis
+
+
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 

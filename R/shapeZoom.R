@@ -6,6 +6,7 @@ shapeZoom <- function(
         steps=3,
         ...)
 {
+warning("shapeZoom will soon (Nov 2014) be moved from berryFunctions into a new package, probably on github.")
 legend("top", "first klick topleft, then bottomright\nof area to zoom to",
            bty = "n", text.col = "orange")
 w <- locator(2)

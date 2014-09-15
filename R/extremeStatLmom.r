@@ -35,6 +35,8 @@ legargs=NULL,# list of arguments passed to legend except for legend, col, pch, l
 # preparation ------------------------------------------------------------------
 # load package lmom:  ###(and install, if necessary)
 ###require("lmom")  # since lmom is now in Imports and not Suggests anymore
+# Package change:
+warning("extremeStatLmom will be removed from berryFunctions soon (Oct 2014). Use distLextreme in the new package extremeStat.")
 # remove NAs:
 dat <- dat[!is.na(dat)]
 # Calculate Y-limits if not given

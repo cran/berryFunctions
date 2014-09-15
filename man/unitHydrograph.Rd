@@ -30,7 +30,7 @@ n <- rnorm(5e4, mean=2, sd=0.8); n <- n[n>0]
 k <- rnorm(5e4, mean=8, sd=1.1); k <- k[k>0]
 UH <- sapply(1:5e4, function(i) unitHydrograph(n=n[i], k=k[i], t=Time))
 UHquant <- apply(UH, 1, quantile, probs=0:10/10, na.rm=TRUE)
-View(UHquant)
+if(interactive()) View(UHquant)
 
 plot(Time, unitHydrograph(n=2, k=8, t=Time), type="l", ylim=c(0, 0.06), las=1)
 # uncertainty intervals as semi-transparent bands:

@@ -6,6 +6,7 @@ changeAttribute <- function(
    ID_col=1, # Column to be used for identification. Not fully understood yet...
    notify=TRUE) # logical. Are you to be told what to do in the console?
 {
+warning("changeAttribute will soon (Nov 2014) be moved from berryFunctions into a new package, probably on github.")
 objname <- deparse(substitute(object))
 ###require(spatstat)# for as.psp, ppp, nearestsegment  # since spatstat is now in Imports and not Suggests anymore
 # Some basic "idiot-proofing":

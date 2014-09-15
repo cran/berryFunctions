@@ -44,5 +44,5 @@ logVals(scient=TRUE     )$labs
 logVals(big.mark=" "    )$labs
 logVals(big=".", dec=",")$labs # German style (not recommended)
 }
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }
+\keyword{ aplot }
+\keyword{ dplot }
