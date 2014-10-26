@@ -2,7 +2,7 @@
 # Combine Textfiles regardless of their content.
 # Berry Boessenkool, berry-b@gmx.de, Nov 2012
 
-combineTextfiles <- function(
+combineFiles <- function(
    inFiles = dir(),
    inDir = getwd(), 
    outFile = "combined_Textfiles.txt",
@@ -25,5 +25,5 @@ for(i in 1:length(inFiles))
    write(inFile_i, file=File, append=TRUE)
    write(sep, file=File, append=TRUE)
    } # End of for-Loop
-cat(i, "files combined to", File, "\n")
+message(i, "files combined to", File, "\n")
 } # End of function

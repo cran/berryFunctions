@@ -25,7 +25,7 @@ if(width %% 2 == 0)
    weights <- rep(1,width)
    }
 if(length(weights) >= length(dat))
-   stop("weigth vector too long for this dataset.")
+   stop("weight vector too long for this dataset.")
 
 # Easy output (don't run all the code in this case):
 if(round(width)==1) return(dat)

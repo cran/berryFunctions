@@ -4,24 +4,25 @@ This Log of changes in my package berryFunctions contains two sections:
 2. development over time - a log of the changes I already made
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 1. berryFunctions - future development
-----------------------------------------------------------------------
-----------------------------------------------------------------------
-
-remove extremeStatLmom from this package, then remove lmom and evd from dependencies and update package title and description
-create a file with deprecated functions
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
 - createDoc: 
 # no . DEFAULT for ones ending with . or ? or ! or containing DEFAULT
 # better handling of rows with 2 arguments
+# upper/lowercase checking!!
 
 - exp4p:
-# try to improve with  nls(y~expfun(p,x=x), start=as.list(param) )  
+# try to improve with nls(y~expfun(p,x=x), start=as.list(param) )  
 # allow specification of initial values for optim
 
-- lsc: # find out what to do with optim
+- lsc:
+# find out what to do with optim
+# find better example dataset
+# Why is the sim line not plotted completely?
 
 - mReg: 
 # add hyperbolic functions
@@ -29,9 +30,9 @@ create a file with deprecated functions
 
 - owa: is change of order of elements avoidable? replace u with ... (in all my functions, too)
 
-- pointZoom: rename Argument colp, as col cannot be given currently.
+- pointZoom: rename Argument colp, as col cannot be given currently. Add expr argument
 
-- seqR: add extendrange argument
+- quantileMean: remove sapply loop if probs has length 1 (if this is faster)
 
 - textField: 
 # Bounding boxes are too high
@@ -40,28 +41,33 @@ create a file with deprecated functions
 # support srt
 
 
-move changeAttribute, showAttribute and shapeZoom to a new package, remove spatstat and maptools from Imports
-then
-- changeAttribute, showAttribute, partly also shapeZoom:
-# include require2(maptools), require2(spatstat) in examples 
-# read shapefiles not with maptools functions, but with package rgdal
-# enable all shapefile types
-# understand id_col
-# coltochange with number
-# CL-TK GU-Interface allowing to click on another segment, and the info in the interface is updated automatically. http://www.sciviews.org/_rgui/tcltk/
-# catch warning message in as.psp.SpatialLinesDataFrame
-- shapeZoom: 
-# set steps higher and Time lower 
-# linear zooming properties
-
-
-
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 2. berryFunctions - development over time
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
+
+Version 1.6 (2014-10-14)
+removed extremeStatLmom from this package, updated package title and description
+created a file with deprecated functions
+version table removed from berryFunctions package documentation (redundant and outdated information)
+Development version is now on Github
+"cat" changed to "message" where applicable
+- mReg and exp4p documentation updated (minor changes)
+- logAxis expanded by log argument to draw the lines on log10(data) but without plot(log="x")
+- logAxis argument order improved (side at first place to mimic axis)
+- logAxis argument base has new default (1,2,5)
+- linReg now also writes rmse. The default line width and pch were changed
+- addAlpha now also takes a vector for alpha and yields elementwise alpha-ing
+- compareFiles and combineFiles have been renamed for consistency
+- seqR: added extendrange argument, rewrote part of the function
+
+New functions: rainbow2, quantileMean, quantileBands, (compareFiles and combineFiles)
+removed functions: extremeStatLmom, changeAttribute, showAttribute shapeZoom, (compFiles and combineTextfiles)
+
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
 Version 1.5.2 (2014-09-15)
 Functions to be moved to new packages warn about it (extremeStatLmom, changeAttribute, showAttribute and shapeZoom)
@@ -69,11 +75,11 @@ Functions to be moved to new packages warn about it (extremeStatLmom, changeAttr
 - unitHydrograph: View() in examples only when interactive
 - nse, rmse, rqsuare: NA warning now gives numbers
 
-New functions: logAxis
+New function: logAxis
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
 
 Version 1.5 (2014-09-03)
@@ -95,8 +101,8 @@ New functions: normPlot, betaPlot, exp4p, compFiles, funTinn, pretty2, colPoints
 functions removed: compareDoc (Rcmd check does this better, once a package is set up), extremeStat (replaced with extremeStatLmom)
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
 
 Version 1.4 (2014-07-01)
@@ -108,8 +114,8 @@ Added To-Do list with my personal wishes (and some comments from other people) a
 New function: linLogTrans
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
 
 Version 1.3 (2014-06-08)
@@ -118,8 +124,8 @@ Shapefile (6 MB) removed from data
 examples in changeAttribute, showAttribute, shapeZoom changed accordingly
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
 
 Version 1.2 (2014-06-06)
@@ -138,8 +144,8 @@ combineTextfiles: example added.
 require2: example is set to dontrun
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
 
 Version 1.1 (2014-06-05)
@@ -189,8 +195,8 @@ unitHydrograph
 yearSample
 
 
-----------------------------------------------------------------------
-----------------------------------------------------------------------
+-----------------------------------------------------------------
+-----------------------------------------------------------------
 
 
 Version 1.0 (2012-10-04)

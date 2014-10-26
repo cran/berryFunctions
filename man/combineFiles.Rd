@@ -1,8 +1,8 @@
-\name{combineTextfiles}
-\alias{combineTextfiles}
+\name{combineFiles}
+\alias{combineFiles}
 \title{combine several Textfiles into one}
 \description{Combine several textfiles into one, regardless of their content.}
-\usage{combineTextfiles(inFiles=dir(), inDir=getwd(),
+\usage{combineFiles(inFiles=dir(), inDir=getwd(),
 outFile="combined_Textfiles.txt", outDir=inDir, sep=NULL, names=TRUE)}
 \arguments{
   \item{inFiles}{vector with names of input files, as can be read with \code{\link{scan}}. Is pasted with inDir, so don't use full paths. DEFAULT: dir()}
@@ -20,9 +20,10 @@ outFile="combined_Textfiles.txt", outDir=inDir, sep=NULL, names=TRUE)}
 \dontrun{
 cat("This is Sparta.\\nKicking your face.", file="BujakashaBerry1.txt")
 cat("Chuck Norris will roundhousekick you.", file="BujakashaBerry2.txt")
-combineTextfiles(inFiles=paste0("BujakashaBerry", 1:2, ".txt"), outFile="Ausgabe.txt")
-file.show("Ausgabe.txt")
-unlink(c(paste0("BujakashaBerry", 1:2, ".txt"),"Ausgabe.txt"))
+combineFiles(inFiles=paste0("BujakashaBerry", 1:2, ".txt"), 
+             outFile="BujakashaBerry3.txt")
+file.show("BujakashaBerry3.txt")
+unlink(paste0("BujakashaBerry", 1:3, ".txt"))
 }
 }
 \keyword{IO}

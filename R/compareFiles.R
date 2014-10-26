@@ -1,6 +1,6 @@
 # compare two files. Returns line numbers with differences.
 # Berry Boessenkool, Aug. 2014
-compFiles <- function(
+compareFiles <- function(
 file1, file2, # Filenames to be read by \code{\link{readLines}}
 nr=20, # number of results printed
 startline=1, # start and end lines, e.g. to exclude section that is already compared

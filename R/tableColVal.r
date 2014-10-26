@@ -13,7 +13,7 @@ tableColVal <- function(
    pdf=FALSE,
    nameswidth=0.3,   # percentage of plot
    namesheight=0.1,
-   palette=rainbow(nrow(mat)*ncol(mat), start=0, end=0.7),
+   palette=rainbow2(nrow(mat)*ncol(mat)),
    Range=range(mat,finite=TRUE),
    argrow=NULL,
    argcol=NULL,
@@ -51,6 +51,6 @@ do.call(text, args=owa(d=list(x=rep(middles, each=nr), y=rep(1:nr, nc)+0.5,
                               labels=as.vector(mat)), argcell,  u=c("x","y", "labels")))
 # Set old paramaters again:
 par(op)
-if(pdf) { dev.off() ; cat("PDF-File is located here:", pdffile, "\n") }# close pdf device
+if(pdf) { dev.off() ; message("PDF-File is located here:", pdffile, "\n") }# close pdf device
 } # end of function
 

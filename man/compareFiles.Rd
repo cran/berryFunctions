@@ -1,8 +1,8 @@
-\name{compFiles}
-\alias{compFiles}
+\name{compareFiles}
+\alias{compareFiles}
 \title{compare two textfiles for equality}
 \description{returns the line numbers where two (text)files differ}
-\usage{compFiles(file1, file2, nr=20, startline=1, endline=length(f1), quiet=FALSE, ... )}
+\usage{compareFiles(file1, file2, nr=20, startline=1, endline=length(f1), quiet=FALSE, ... )}
 \arguments{
   \item{file1, file2}{Filenames to be read by \code{\link{readLines}}.}
   \item{nr}{number of results printed. DEFAULT: 20}
@@ -15,7 +15,7 @@
 \seealso{\code{\link{combineTextfiles}} }
 \examples{
 filenames <- system.file(paste0("extdata/Versuch",1:2,".txt"), package="berryFunctions")
-compFiles(filenames[1], filenames[2], warn=FALSE)
+compareFiles(filenames[1], filenames[2], warn=FALSE)
 }
 \keyword{IO}
 \keyword{file}

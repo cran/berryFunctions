@@ -14,14 +14,7 @@
 - fit multiple functions (power, reciprocal, exponential, logarithmic, polynomial, rational) by regression\cr
 - convert lists to data.frames
 }
-\details{
-\tabular{ll}{
-Package: \tab berryFunctions\cr
-Type: \tab Package\cr
-Version: \tab 1.5\cr
-Date: \tab 2014-09-02\cr
-License: \tab GPL-2\cr
-}
+\note{
 At some places you'll find \code{## not run} in the examples.
 These code blocks were excluded from checking while building, mainly because they are interactive and need mouseclicks, or because they open another device/file.
 \cr Normally, you should be able to run them in an interactive session.
@@ -33,7 +26,7 @@ I strongly depend on - and therefore welcome - any feedback!
 \section{suggests}{evd, lmom, maptools, spatstat}
 \examples{
 ### HYDROLOGY
-### SHAPEFILES, SPATIAL
+### SPATIAL
 ### GRAPHICS
 ### MISCELLANEOUS
 
@@ -76,25 +69,10 @@ rmse(QOBS, QSIM)
 rsquare(QOBS, QSIM)
 
 
-### SHAPEFILES, SPATIAL #######################################################
-
-library(maptools, spatstat)
-xx <- readShapeLines(system.file("shapes/fylk-val.shp", package="maptools")[1],
-                     proj4string=CRS("+proj=utm +zone=33 +datum=WGS84"))
-
-# Show attribute of ESRI-Shapefile element by mouseclick: showAttribute
-plot(xx)
-showAttribute(xx)
-
-# change Attribute of ESRI GIS-Shapefile : changeAttribute
-summary(xx["VALINJE_"])
-xx2 <- changeAttribute(xx, coltochange="VALINJE_", changeto=115)
-summary(xx2["VALINJE_"]) # new maximum
-
-# zoom into ESRI shapefiles: shapeZoom
-windows(record=TRUE)
-plot(xx)
-shapeZoom(xx)
+### SPATIAL ####################################################################
+# Here are some functions that were originally in this package:
+browseURL("https://github.com/BerryBoessenkool/shapeInteractive/
+           blob/master/README.md")
 
 # arrange points randomly with minimal distance to each other: randomPoints
 randomPoints(xmin=5,xmax=15, ymin=20,ymax=30, number=25, mindist=1)
@@ -232,7 +210,7 @@ cat("This is Sparta.\nKicking your face.", file="BujakashaBerry1.txt")
 cat("Chuck Norris will roundhousekick you.", file="BujakashaBerry2.txt")
 combineTextfiles(inFiles=paste0("BujakashaBerry", 1:2, ".txt"), 
                  outFile="BujakashaBerry3.txt")
-readLines("Ausgabe.txt")
+readLines("BujakashaBerry3.txt")
 unlink(paste0("BujakashaBerry", 1:3, ".txt"))
 
 # create .Rd documentation from source code in Berry's format: createDoc

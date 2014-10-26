@@ -16,7 +16,7 @@ If there are NAs in the window, the corresponding weight is distributed evenly t
 \note{You can specify just one of weights or width.}
 \value{Vector of the same length as the original input. padded with NAs at width/2 margin elements}
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, ca 2012}
-\seealso{ \code{\link{decompose}}, \code{\link[zoo]{rollapply}} (no overlapping!)}
+\seealso{ \code{\link{decompose}}, \code{\link{smooth}}, \code{\link{loess}}, \code{\link[zoo]{rollapply}} (no overlapping!)}
 \examples{
 
 set.seed(29); a <- runif(60, 5,50)

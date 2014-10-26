@@ -3,20 +3,20 @@
 \title{linear regression with plotting}
 \description{uses \code{\link{lm}}; plots data if add=FALSE, draws the regression line with \code{\link{abline}} and writes the formula with \code{\link{legend}}}
 \usage{linReg(x, y, digits=2, inset=0, xpd=par("xpd"), pos1="top", pos2=NULL,
-add=FALSE, pch=20, col=2, lwd=3, xlab=deparse(substitute(x)),
+add=FALSE, pch=16, col=2, lwd=1, xlab=deparse(substitute(x)),
 ylab=deparse(substitute(y)), ...)}
 \arguments{
   \item{x}{Numeric. Vector with values of explanatory variable}
   \item{y}{Numeric. Vector with values of dependent variable}
-  \item{digits}{Numeric vector of length \eqn{\ge 1}. Specifies number of digits a,b,r are rounded to in the formula "y=a*x+b \\n R^2=r", respectively. If second and/or third value are not specified, they are set equal to the first. DEFAULT: 2}
+  \item{digits}{Numeric vector of length \eqn{\ge 1}. Specifies number of digits a,b,r,e are rounded to in the formula "y=a*x+b \\n R^2=r \\n RMSE=e", respectively. If values are not specified, they are set equal to the first. DEFAULT: 2}
   \item{inset}{Numeric vector of length \eqn{\le 2}. inset distance(s) from the margins as a fraction of the plot region when formula is placed by keyword. DEFAULT: 0}
   \item{xpd}{Logical, specifying wheter formula can be written only inside the plot region (when FALSE) or inside the figure region including mar (when TRUE) or in the entire device region including oma (when NA). DEFAULT: par("xpd")}
   \item{pos1}{\code{\link{xy.coords}}-acceptable position of the formula. DEFAULT: "top"}
   \item{pos2}{For numerical coordinates, this is the y-position. DEFAULT: NULL, as in \code{\link{legend}}}
   \item{add}{Logical. If TRUE, line and text are added to the existing graphic. DEFAULT: FALSE (plots datapoints first and then the line.)}
-  \item{pch}{Point Character, see \code{\link{par}}. DEFAULT: 20}
+  \item{pch}{Point Character, see \code{\link{par}}. DEFAULT: 16}
   \item{col}{Color, see \code{\link{par}}. DEFAULT: 2}
-  \item{lwd}{Numeric. Linewidth, see \code{\link{par}}. DEFAULT: 3}
+  \item{lwd}{Numeric. Linewidth, see \code{\link{par}}. DEFAULT: 1}
   \item{xlab}{Character / Expression. X-axis label if add=FAlSE. DEFAULT: deparse(substitute(x))}
   \item{ylab}{Ditto for Y-Axis.}
   \item{\dots}{Further arguments passed to plot and abline.}

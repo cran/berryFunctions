@@ -25,7 +25,7 @@ pcol=par("col"), pch=16, legend=TRUE, legargs=NULL, legendform="nameform", ...)}
   \item{add}{Logical. add lines to existing plot? DEFAULT: FALSE}
   \item{nbest}{Integer. Number of best fitting functions to be plotted (console output table always has all). DEFAULT: 12}
   \item{R2min}{Numerical. Minimum Rsquared value for function type to be plotted. Suggestion: 0.6 (2/3 of variation of y is explained by function of x). DEFAULT: empty}
-  \item{selection}{Integers of functions to be plotted, assigned as in list above. DEFAULT: NULL, meaning all}
+  \item{selection}{Integers of functions to be plotted, assigned as in list in section "note". DEFAULT: NULL, meaning all}
   \item{digits}{Integer. number of significant digits used for rounding formula parameters and R^2 displayed. DEFAULT: 2}
   \item{extend}{Numerical. Extention of axis ranges (proportion of range). DEFAULT: 0.4}
   \item{xlim}{Numerical vector with two values, defining the x-range of the lines to be plotted.  DEFAULT: extended range(x)}
@@ -76,23 +76,12 @@ If you're adjusting the appearance (lwd, lty, col) of single lines, set paramete
 #  9 reciprocal             a/x + b \cr
 # 10 rational               1 / (a*x + b) \cr
 # 11 exponential 4 Param    a*e^(b*(x+c)) + d  \cr
-I recently noted that with creating variables inside the function, R may sometimes use local and sometimes global variables.
-\url{http://andrewgelman.com/2014/01/29/stupid-r-tricks-random-scope/}\cr
-As far as I can determine, this function should be fine, but be warned.\cr
 Replaces zeros with 0.00000000000001 for logarithms. Which may put too much weight on these data points - further testing needed!\cr
 Negative values are not used for regressions containing logarithms; with warning.\cr
-Uses 1000 values in the range of xlim (via seq) for x values for adding lines.\cr
-hyperbolical functions may yet be added.\cr
-Some options are planned, like the possibility to select the fits drawn or to exclude types, to only draw fits better than specified R^2, default maybe 0.8, or the possibility to specify initial values for optim.
-Any idea or feedback is welcome!\cr
-optim refers to the functions rmse and rsquare, also in this package. 
-I'm not sure yet whether it will always use the one within the package, in case someone has his own rsquared-function...\cr
-L-BFGS-B needs finite values. In case it doesn't get any with the initial parameters (as in the first example Dataset), it trys again with the parameters optimized via Nelder Mead.\cr
-exp_4par was originally developed for exponential temperature decline in a cup of hot water. 
+exp_4par was originally developed for exponential temperature decline in a cup of hot water.
 }
 \author{Berry Boessenkool, \email{berry-b@gmx.de}, December 2012}
 \references{Listed here: \url{http://rclickhandbuch.wordpress.com/berryfunctions/#mReg}}
-
 \seealso{\code{\link{glm}}, \code{\link{lm}}, \code{\link{optim}}}
 
 \examples{
@@ -189,6 +178,10 @@ mReg(x, y, posx="right")
 sfile <- system.file("extdata/solitaire.txt", package="berryFunctions")
 solitaire <- read.table(sfile, header=TRUE)
 mReg(solitaire$Time, solitaire$Points) # and yes, reciprocal ranks highest! Play Fast!
+
+# multivariate regression should be added, too:
+sfile <- system.file("extdata/gelman_equation_search.txt", package="berryFunctions")
+mv <- read.table(sfile, header=TRUE)
 }
 \keyword{aplot}
 \keyword{hplot}
