@@ -10,40 +10,48 @@ This Log of changes in my package berryFunctions contains two sections:
 -----------------------------------------------------------------
 -----------------------------------------------------------------
 
-- createDoc: 
-# no . DEFAULT for ones ending with . or ? or ! or containing DEFAULT
-# better handling of rows with 2 arguments
-# upper/lowercase checking!!
+- exp4p: allow initial values for optim, try to improve with nls(y~expfun(p,x=x), start=as.list(param) ) 
 
-- exp4p:
-# try to improve with nls(y~expfun(p,x=x), start=as.list(param) )  
-# allow specification of initial values for optim
+- lsc: better example dataset, optim problems, sim line not plotted completely
 
-- lsc:
-# find out what to do with optim
-# find better example dataset
-# Why is the sim line not plotted completely?
+- linReg: grouped density or boxplot(y~group, add=T, at=unique(bpoints), yaxt="n", xlab="", range=0)
 
-- mReg: 
-# add hyperbolic functions
-# quantify / test influence of replacing zeros with near-zero values
-
-- owa: is change of order of elements avoidable? replace u with ... (in all my functions, too)
+- mReg: remove zeros instead of replacing zeros with near-zero values. add hyperbolic functions
 
 - pointZoom: rename Argument colp, as col cannot be given currently. Add expr argument
 
 - quantileMean: remove sapply loop if probs has length 1 (if this is faster)
 
-- textField: 
-# Bounding boxes are too high
-# # Adjust adj parameter based on pos and offset: if(!is.null(pos))# i want the field to still be drawn with adj, but have it based on pos
-# check out "Rounded not yet possible with log axes"
-# support srt
+- require2: change to requireNamespace http://r-pkgs.had.co.nz/namespace.html#namespace
+
+- textField: support srt, Adjust adj parameter based on pos and offset: if(!is.null(pos)), I want the field to still be drawn with adj, but have it based on pos
+ 
 
 
 -----------------------------------------------------------------
 -----------------------------------------------------------------
 2. berryFunctions - development over time
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+
+
+Version 1.7.1 (2014-12-20)
+various small changes and bug fixes. See the commits on github
+- rmse and rsquare NA-removal warnings can now be silenced with quiet=TRUE
+- linReg: formula specification is now enabled: linReg(obj1~obj2) or linReg(col_a~col_b, data=df)
+- colPoints can now draw lines (with interpolation amd with NA management) and triangles at legend ends for values outside Range
+- classify has new method logscaled and an index for values outside Range
+- textField: vertical extend of bounding boxes is now correct through use of expression
+- tableColVal: text can be changed (eg logarithmized, see examples)
+- createDoc: case now checked. Fixed handling when several args per line or explanations contain 'DEFAULT:'
+- logAxis: good internal range and base defaults. exponents. side can be a vector. 
+- owa: replaced u with ellipsis. order of arguments is not changed anymore.
+- nameSample has been enhanced a lot.
+- tableColVal now uses classify
+- combineFiles now allows selection of lines
+New functions: logSpaced, removeSpace, expReg, dupes
+
+
 -----------------------------------------------------------------
 -----------------------------------------------------------------
 
