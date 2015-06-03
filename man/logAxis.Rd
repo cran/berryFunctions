@@ -2,14 +2,17 @@
 \alias{logAxis}
 \title{label logarithmic axes}
 \description{shortcut to calling \code{\link{logVals}}, \code{\link{axis}} and \code{\link{abline}}}
-\usage{logAxis(side=1, log=NULL, lcol="grey", lty=1, lwd=1, expr, las=1,
+\usage{logAxis(side=1, log=NULL, lcol="grey", lty=1, lwd=1,
+allticks=FALSE, allargs=NULL, expr, las=1,
 from, to, Range, base, big.mark="'", decimal.mark=".", scientific=FALSE,
-exponent=5, expobase1=FALSE, allbase=1:9, ...)}
+exponent=5, expobase1=FALSE, allbase=1:9, box=TRUE, ...)}
 \arguments{
   \item{side}{Which \code{\link{axis}} are to be labeled? Can be a vector within \code{1:4}. DEFAULT: 1}
   \item{log}{Is the axis logarithmic by plot(log="x")? internal DEFAULT: \code{\link{par}("xlog")} or "ylog". DEFAULT: NULL}
   \item{lcol}{Color of gridlines drawn in the graph with \code{\link{abline}}, NA to suppress. DEFAULT: "grey"}
   \item{lty, lwd}{Type of gridlines. DEFAULT: 1}
+  \item{allticks}{Place all intermediate ticklines at the axis (without labelling). DEFAULT: FALSE}
+  \item{allargs}{List of arguments passed to axis for allticks=TRUE. DEFAULT: NULL}
   \item{expr}{Expression drawing over the ablines, like (points(x,y). Can be code within {braces}.}
   \item{las}{LabelAxisStyle for the orientation of the labels. DEFAULT: 1}
   \item{from}{Lower exponent OR vector with data, as in \code{\link{logVals}}. DEFAULT based on \code{\link{par}("usr")}}
@@ -22,6 +25,7 @@ exponent=5, expobase1=FALSE, allbase=1:9, ...)}
   \item{exponent}{Starting at which exponent should \code{\link{logVals}} return an expression with exponents? DEFAULT: 5}
   \item{expobase1}{Should "n * " be appended before 10^exp if n=1? DEFAULT: FALSE}
   \item{allbase}{base for \code{$all} (for horizontal lines). DEFAULT: 1:9}
+  \item{box}{Draw box at the end to overplot \code{\link{abline}s} crossing the box? DEFAULT: TRUE}
   \item{\dots}{further arguments passed to axis, like \code{lwd, col.ticks, hadj, lty}, ...}
 }
 \value{An invisible list with
@@ -47,6 +51,9 @@ plot(1:3, axes=FALSE)
 logAxis(1:2) # side can be a vector - nice, huh?
 plot(-1:4, axes=FALSE)
 logAxis(1:2) # treshold for base 1 instead of c(1,2,5) at 4 exponents exceeded.
+
+plot(1:3, axes=FALSE)
+logAxis(1:2, allticks=TRUE, lcol=NA)
 
 par(mar=c(3,3,1,4))
 plot(8:15) ;  logAxis(4) # with exponents if they are above 5

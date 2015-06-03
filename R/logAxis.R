@@ -6,6 +6,8 @@ logAxis <- function(
   log=NULL,    # Is the axis logarithmic by plot(log="x")? internal DEFAULT: par("xlog") or "ylog"
   lcol="grey", # Color of gridlines drawn in the graph with \code{\link{abline}}, NA to suppress.
   lty=1, lwd=1,# Type of gridlines
+  allticks=FALSE, # Place all intermediate ticklines at the axis (without labelling)
+  allargs=NULL,# List of arguments passed to axis for allticks=TRUE
   expr,        # Expression drawing over the ablines, like (points(x,y). Can be code within {braces}.
   las=1,       # LabelAxisStyle for the orientation of the labels
   from,             # Lower exponent OR vector with data, as in \code{\link{logVals}}
@@ -17,8 +19,9 @@ logAxis <- function(
   scientific=FALSE, # See \code{\link{format}}
   exponent=5,       # Starting at which exponent should \code{\link{logVals}} return an expression with exponents? DEFAULT: 5
   expobase1=FALSE,  # Should "n * " be appended before 10^exp if n=1?
-  allbase=1:9,      # base for \code{$all} (for horizontal lines)
-    ...)            # further arguments passed to axis, like \code{lwd, col.ticks, hadj, lty}, ...
+  allbase=1:9,      # Base for \code{$all} (for horizontal lines)
+  box=TRUE,         # Draw box at the end to overplot \code{\link{abline}s} crossing the box?
+    ...)            # Further arguments passed to axis, like \code{lwd, col.ticks, hadj, lty}, ...
 {
 for(side_i in side)
 { # loop around each side
@@ -57,9 +60,15 @@ else # horizontal lines, labels at y-axis:
 # axis labels:
 if(log) axis(side=side_i, at=lv$vals,        labels=lv$labs, las=las, ...)
 else    axis(side=side_i, at=log10(lv$vals), labels=lv$labs, las=las, ...)
+if(allticks)
+  {
+  lv$add <- lv$all[!lv$all %in% lv$vals]
+  if(!log) lv$add <- log10(lv$add)
+  do.call(axis, args=owa(list(side=side_i, at=lv$add, labels=FALSE, col="grey", ...), allargs))
+  }
 } # End of loop
 # Box to cover up the lines plotted over the existing box:
-box("plot")
+if(box) graphics::box("plot")
 # overplot ablines with expr:
 if(!missing(expr)) expr
 # output:

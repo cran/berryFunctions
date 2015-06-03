@@ -6,17 +6,14 @@ movAv <- function(
                   width=7,
                   weights=rep(1,width) )
 {
-# input-checking (added May 2014 with extension weights) :
-if(!is.vector(dat))
-   stop("Dat has to be a vector.")
-if(missing(width))
-   width <- length(weights)
-if(width != length(weights))
-   stop("Width and length of weights are not equal!")
-if(ceiling(width) != floor(width))
-   stop("Width has to be an (odd) integer.")
-if(!missing(weights) & length(weights) %% 2 == 0)
-   stop("Length of weights must be an odd number!")
+# input-checking (added May 2014 along with new option weights) :
+dat <- as.vector(dat)
+if(!is.vector(dat))   stop("Dat has to be a vector.")
+if(missing(weights))  weights <- rep(1,width)
+if(missing(width))    width <- length(weights)
+if(width != length(weights))  stop("Width and length of weights are not equal!")
+if(ceiling(width) != floor(width))  stop("Width has to be an (odd) integer.")
+##if(length(weights) %% 2 == 0) stop("Length of weights must be an odd number!")
 if(width %% 2 == 0)
    {
    warning("even width (", width, ") is changed to odd width (", width+1, ").",
@@ -58,7 +55,7 @@ v <- c(rep(NA, s), v, rep(NA, s) )
 
 # Error checking:
 if(length(v) != length(dat)) stop("Window size was computed wrongly.
-Tell Berry that his function sucks: berry-b@gmx.de")
+Please report conditions: berry-b@gmx.de")
 # Output
 return(v)
 }
