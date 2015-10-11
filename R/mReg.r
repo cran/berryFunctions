@@ -17,8 +17,9 @@
 #             13 powerplus a^x + b
 
 mReg <- function(
-    x,
-    y, # x and y Data
+    x, # Vector with x coordinates or formula (like y~x), the latter is passed to \code{\link{model.frame}}
+    y=NULL, # Vector with y values
+    data=NULL, # data.frame in which formula is applied
     Poly45=FALSE, # Also fit polynomials of 4th and 5th degree?
     exp_4=FALSE, # return exp_4 fits in table? (only best fit is plotted) DEFAULT: FALSE
     xf=deparse(substitute(x)), yf=deparse(substitute(y)), # x and y names for Formula
@@ -54,8 +55,37 @@ if( xf=="e" | yf=="e" )
 if(any(4:5 %in% selection)) Poly45 <- TRUE
 if(11 %in% selection) exp_4 <- TRUE
 if( ! round(nbest,1) %in% 0:12) stop("nbest has to be an integer between 0 and 12")
-if(length(lwd)==1) lwd <- rep(lwd, 12)
-if(length(lty)==1) lty <- rep(lty, 12)
+lwd <- rep(lwd, length=12)
+lty <- rep(lty, length=12)
+if(class(x)=="formula")
+{
+  mf <- model.frame(x, data=data)
+  x <- mf[,2]
+  y <- mf[,1]
+  if(missing(xlab)) xf <- colnames(mf)[2]
+  if(missing(ylab)) yf <- colnames(mf)[1]
+  #if(!missing(data) & missing(main)) main <- paste("multiple regression of",deparse(substitute(data)))
+}
+# NA removal
+if(any(is.na(x)|is.na(y)))
+  {
+  Na <- which(is.na(x)|is.na(y))
+  warning(length(Na), " NAs were omitted from ", length(x), " data points (",
+          round(length(Na)/length(x)*100,1),"%).")
+  x <- x[-Na] ; y <- y[-Na]
+  } # end if NA
+# vector length check:
+if(length(x)!=length(y)) stop("x (",length(x), " elements) and y (",length(y),") must be of the same length.")
+# log regression vectors without zeros and negative values:
+neg <- which(x<=0|y<=0)
+if(length(neg)!=0) 
+  {
+  warning("For log/exp/power regressions, ",length(neg),
+    " nonpositive values were removed from x and y (",round(length(neg)/length(x)*100,1),"%).")
+  xg0 <- x[-neg] # xg0: x greater zero
+  yg0 <- y[-neg]
+  } else
+  {xg0 <- x; yg0 <- y}
 #
 # Functions needed for function descriptions
 # abbreviate parameters of fitted functions:
@@ -64,8 +94,8 @@ ab1 <- function(input) signif(input,digits)
 ab <- function(input) paste0(ifelse(input>0, " + ", " - "),
                              abs(signif(input,digits)))
 # Prepare Output Table
-output <- as.data.frame(matrix(NA, ncol=if(Poly45) 9 else 7, nrow=11 ))
-colnames(output) <- c("R2","Formulas","R2full", letters[1:(ncol(output)-3)] )
+output <- as.data.frame(matrix(NA, ncol=if(Poly45) 10 else 8, nrow=11 ))
+colnames(output) <- c("nr","R2","Formulas","R2full", letters[1:(ncol(output)-4)] )
 #
 #  1 linear --------------- a*x + b --------------------------------------------
 mod1 <- lm( y ~ x )
@@ -80,39 +110,40 @@ output$c [2] <- coef(mod2)[1]
 output$R2[2] <- rsquare(y, output$a[2]*x^2 + output$b[2]*x + output$c[2])
 #  3 cubic ---------------- a*x^3 + b*x^2 + c*x + d ----------------------------
 mod3 <- lm(y ~  poly(x,3, raw=TRUE))
-output[3,4:7] <- rev(coef(mod3))
+output[3,5:8] <- rev(coef(mod3))
 output$R2[3] <- rsquare(y, output$a[3]*x^3 + output$b[3]*x^2 + output$c[3]*x + output$d[3])
 if(Poly45){
   #  4 Polynom4 ----------- a*x^4 + b*x^3 + c*x^2 + d*x + e --------------------
   mod4 <- lm(y ~  poly(x,4, raw=TRUE))
-  output[4, 4:8] <- rev(coef(mod4))
+  output[4, 5:9] <- rev(coef(mod4))
   output$R2[4] <- rsquare(y, output$a[4]*x^4 + output$b[4]*x^3 + output$c[4]*x^2 + output$d[4]*x + output$e[4])
   #  5 Polynom5 ----------- a*x^5 + b*x^4 + c*x^3 + d*x^2 + e*x + f ------------
   mod5 <- lm(y ~  poly(x,5, raw=TRUE))
-  output[5,4:9] <- rev(coef(mod5))
+  output[5,5:10] <- rev(coef(mod5))
   output$R2[5] <- rsquare(y, output$a[5]*x^5 + output$b[5]*x^4 + output$c[5]*x^3 + output$d[5]*x^2 + output$e[5]*x + output$f[5])
   } # if Poly45 end
 #  6 logarithmic ---------- a*log(x) + b ---------------------------------------
-mod6 <- lm( y ~ log10(replace(x, x==0, 1e-10)) ) # influence needs yet to be checked! ###
+mod6 <- lm( yg0 ~ log10(xg0) )
 output$a [6] <- coef(mod6)[2]
 output$b [6] <- coef(mod6)[1]
-output$R2[6] <- rsquare(y, output$a[6]*log10(replace(x, x==0, 1e-10)) + output$b[6])
+output$R2[6] <- rsquare(yg0, output$a[6]*log10(xg0) + output$b[6])
 #  7 exponential ---------- a*e^(b*x) ------------------------------------------
-log_y <- log(replace(y, y==0, 1e-10))
-mod7 <- lm( log_y ~ x )                    # y = a*e^(b*x)
+mod7 <- lm( log(yg0) ~ xg0 )               # y = a*e^(b*x)
 output$a [7] <- exp(coef(mod7)[1])         # ln(y) = ln(a) + ln( e^(b*x) )
 output$b [7] <- coef(mod7)[2]              # ln(y) = ln(a) + b*x
-output$R2[7] <- rsquare(y, output$a[7]*exp(output$b[7]*x))
+output$R2[7] <- rsquare(yg0, output$a[7]*exp(output$b[7]*xg0))
 #  8 power/root ----------- a*x^b ----------------------------------------------
-mod8 <- lm( log_y ~ log(replace(x, x==0, 1e-10)) ) # y = a*x^b
+mod8 <- lm( log(yg0) ~ log(xg0) )                  # y = a*x^b
 output$a [8] <- exp(coef(mod8)[1])                 # ln(y) = ln(a) + ln(x^b)
 output$b [8] <- coef(mod8)[2]                      # ln(y) = ln(a) + b*ln(x)
-output$R2[8] <- rsquare(y, output$a[8]*replace(x, x==0, 1e-10)^output$b[8])
+output$R2[8] <- rsquare(yg0, output$a[8]*xg0^output$b[8])
 #  9 reciprocal ----------- a/x + b --------------------------------------------
-mod9 <- lm( y ~ I(1/replace(x, x==0, 1e-10)) )
+xn0 <- x[x!=0 & y!=0] # xn0: x not zero
+yn0 <- y[x!=0 & y!=0]
+mod9 <- lm( yn0 ~ I(1/xn0) )
 output$a [9] <- coef(mod9)[2]
 output$b [9] <- coef(mod9)[1]
-output$R2[9] <- rsquare(y, output$a[9]/replace(x, x==0, 1e-10) + output$b[9])
+output$R2[9] <- rsquare(yn0, output$a[9]/xn0 + output$b[9])
 # 10 rational ------------- 1 / (a*x + b) --------------------------------------
 mod10 <- lm( I(1/y) ~ x)
 output$a [10] <- coef(mod10)[2]
@@ -129,6 +160,7 @@ if(exp_4) output[11,] <- output_exp4p[1,] # only include best fit for plotting
 # name output rows -------------------------------------------------------------
 rownames(output) <- c("linear", "square", "cubic", "poly4", "poly5",
      "logarithmic", "exponential", "power", "reciprocal", "rational", "exp_4p" )#, "hyperbolic")
+output$nr <- 1:11
 #
 # Formulas of fitted functions -------------------------------------------------
 output$Formulas[1] <- paste0(yf," = ", ab1(output$a[1]),"*",xf,      ab(output$b[1]) )
@@ -163,6 +195,7 @@ if(plot & nbest!=0) {
   xdraw <- seqR(par("usr")[1:2], len=200)
   xdrawtab <- data.frame(x=xdraw) # colnames(xdrawtab) <- as.character(xf) # not necessary, as poly uses "x" (the one in the function environment)
   if(is.null(col)) col <- c("black", "red", "green3", "chartreuse", "forestgreen", "blue", "cyan", "magenta", "yellow", "gray", "orange", "deeppink")
+  col <- rep(col, length=12)
   #
   if(todraw[1]) lines(xdraw, predict( mod1 , xdrawtab ),          col=col[1], lwd=lwd[1], lty=lty[1]) # 1 linear
   if(todraw[2]) lines(xdraw, predict( mod2 , xdrawtab ),          col=col[2], lwd=lwd[2], lty=lty[2]) # 2 square
@@ -211,9 +244,9 @@ if(!Poly45) output <- output[-(4:5),] # remove excess rows
 #
 output <- output[order(output$R2full, decreasing=TRUE),]
 #
-if(ncolumns >9) ncolumns <- 9
+if(ncolumns >10) ncolumns <- 10
 if(ncolumns <0) ncolumns <- 0
-if(ncolumns >7 & !Poly45) ncolumns <- 7
+if(ncolumns >8 & !Poly45) ncolumns <- 8
 #
 if(ncolumns !=0) return(output[,1:ncolumns])
 #

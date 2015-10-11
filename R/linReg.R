@@ -10,6 +10,7 @@ linReg <- function(
    add=FALSE,
    pch=16,
    col=2,
+   colband=addAlpha(col), # Color of the confidence region band. DEFAULT: addAlpha(col)
    lwd=1,
    xlab=deparse(substitute(x)),
    ylab=deparse(substitute(y)),
@@ -18,25 +19,22 @@ linReg <- function(
 {
 if(class(x)=="formula")
   {
-  if(!missing(data))
-    {                   # get x and y from data.frame
-    name <- as.character(x)[-1]
-    x <- data[ , name[2] ]  ;  if(missing(xlab)) xlab <- name[2]
-    y <- data[ , name[1] ]  ;  if(missing(ylab)) ylab <- name[1]
-    if(missing(main)) main <- paste("linear regression of",
-                                    deparse(substitute(data)))
-    } else
-    {                   # get x and y from formula directly
-    name <- as.character(x)[-1]
-    x <- get(name[2]) ;  if(missing(xlab)) xlab <- name[2]
-    y <- get(name[1]) ;  if(missing(ylab)) ylab <- name[1]
-    }
+  mf <- model.frame(x, data=data)
+  x <- mf[,2]
+  y <- mf[,1]
+  if(missing(xlab)) xlab <- colnames(mf)[2]
+  if(missing(ylab)) ylab <- colnames(mf)[1]
+  if(!missing(data) & missing(main)) main <- paste("linear regression of",
+                                                    deparse(substitute(data)))
   }
 # make new plot if add is FALSE (the default):
 if (!add) plot(x, y, las=1, pch=pch, xlab=xlab, ylab=ylab, main=main, ...)
 # do linear regression and plotting
 mod <- lm( y ~ x )
 abline(mod, col=col, lwd=lwd, ...)
+x2 <- seqR(par("usr")[1:2], len=100)
+pred <- predict(mod, newdata=data.frame(x=x2), interval="confidence" )
+ciBand(yu=pred[,3], yl=pred[,2], x=x2, colb=colband, add=TRUE)
 # expand digits vector, if necessary
 digits <- rep(digits, length.out=4)
 # Prepare formula writing
