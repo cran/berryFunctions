@@ -1,8 +1,8 @@
-
-Before the actual NEWS, here is some future development planned in berryFunctions.
+package berryFunctions: my collection of miscellaneous helper functions
 Feedback, ideas, code suggestions welcome at berry-b@gmx.de or via github.com/brry/berryFunctions
+Before the actual NEWS, here are some things planned for future development:
 -----------------------------
-- createDoc: add field opportunities for description, note, etc (see Roxygen)
+- finish funSource and rcor
 - exp4p: allow initial values for optim, try to improve with nls(y~expfun(p,x=x), start=as.list(param) ) 
 - lsc: better example dataset, optim problems, sim line not plotted completely
 - require2: change to requireNamespace http://r-pkgs.had.co.nz/namespace.html#namespace
@@ -14,9 +14,27 @@ Feedback, ideas, code suggestions welcome at berry-b@gmx.de or via github.com/br
 -----------------------------
 
 
+Version 1.10.0 (2016-04-29)
+- numerous small code and documentation improvements, see
+https://github.com/brry/berryFunctions/compare/master@{2015-10-10}...master@{2016-04-29}
+- the package is now Roxygenized, the source code structure is much more standardized
+- There now is a vignette
+- normPlot: colors drawn in quantiles
+- monthAxis: gained labels and midyear argument
+- linReg: legargs can now be specified, as well as confint.
+- mReg: input checks + NA and 0 now handled well (thanks to Mathias Hollaender)
+- Color palette default unified throughout the package
+
+New functions: insertRows, dataStr, betaCompPlot, rescale, divPal, seqPal, na9, addFade, logHist, locLine, createFun, headtail, TFtest, showPal, instGit
+
+
+-----------------------------
+-----------------------------
+
+
 Version 1.9.0 (2015-10-10)
 To see all changes in detail, go to:
-https://github.com/brry/berryFunctions/compare/master@{2015-06-02}...master
+https://github.com/brry/berryFunctions/compare/master@{2015-06-02}...master@{2015-10-10}
 The general overview:
 Package imports 'base' packages: graphics (22 functions used), stats (18), utils (6), grDevices (5)
 Documentation updated in several places, notably in package info
@@ -39,7 +57,6 @@ Version 1.8.1 (2015-06-02)
 For all changes see the commits on github with these links:
 https://github.com/brry/berryFunctions/compare/master@{2014-12-22}...master
 https://github.com/brry/berryFunctions/compare/master@{2014-12-22}...master@{2015-06-02}
-
 The most important stuff:
 - documentation improved and examples expanded in many places
 - where graphical parameters are changed, options are added to reset them (betaPlot, linLogTrans, normPLot, smallPlot, and in some example sections)
@@ -81,7 +98,7 @@ New functions: logSpaced, removeSpace, expReg, dupes
 
 
 Version 1.6 (2014-10-14)
-removed extremeStatLmom from this package, updated package title and description
+removed extremeStatLmom from this package (now in separate package extremeStat), updated package title and description
 created a file with deprecated functions
 version table removed from berryFunctions package documentation (redundant and outdated information)
 Development version is now on Github

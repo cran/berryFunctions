@@ -1,12 +1,29 @@
-# Helper function paste with collapes=", "
-# Berry Boessenkool, 2015-04-10
+#' Paste with collapse = ", "
+#' 
+#' Helper function \code{\link{paste}} with collapse = ", "
+#' 
+#' @return Single character string
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, April 2015
+#' @seealso \code{\link{paste}}, \code{\link{paste0}}
+#' @keywords character
+#' @export
+#' @examples
+#' 
+#' listoferrors <- c("filetype", "header", "nonemptyline")
+#' message("The following entities were corrupted:\n", pastec(listoferrors))
+#' pastec("Part1", c("Part2", "Part3"), letters[1:3])
+#' 
+#' @param \dots Object(s) to be \code{\link{paste}d} to a character vector
+#' @param sep Character string to separate single strings. DEFAULT: " "
+#' @param collapse Character string between combined strings. DEFAULT: ", "
+#' 
 pastec <- function(
-...,          # Object(s) to be \code{\link{paste}d} to a character vector
-sep=" ",      # Character string to separate single strings
-collapse=", " # Character string between combined strings
+...,
+sep=" ",
+collapse=", "
 )
 {
-paste(..., sep=sep, collapse=collapse)
+paste(c(...), sep=sep, collapse=collapse)
 }
 
 ## Old idea to enable newline insertion every n elements, apparently not necessary.

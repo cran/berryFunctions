@@ -1,41 +1,87 @@
-# Berry Boessenkool,
-
-# legend for colPoints
-# Adds legends to plots created or enhanced with \code{\link{colPoints}}
-# invisible list of par of smallPlot, adds legend bar to current plot
-# \code{\link{colPoints}} for examples!
-
+#' Legend for colPoints
+#' 
+#' Adds legends to plots created or enhanced with \code{\link{colPoints}}
+#' 
+#' @note \code{x1,x2,y1,y2,labelpos,titlepos,title} have different defaults when \code{horizontal=FALSE}
+#' @return invisible list of par of \code{\link{smallPlot}}, adds legend bar to current plot
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, 2012-2014
+#' @seealso \code{\link{colPoints}} (section examples) for real life example
+#' @keywords aplot color
+#' @export
+#' @examples
+#' 
+#' z <- rnorm(50)
+#' plot(1:10)
+#' colPointsLegend(z=z)
+#' colPointsLegend(z=z, titlepos=2)
+#' colPointsLegend(z=z, horiz=FALSE) # note the different defaults
+#' # positioning relative to plot:
+#' colPointsLegend(z=z, x1=5, x2=30, y1=90, y2=70, title="Booh!", density=FALSE)
+#' # Denote values outside of Range wit a triangle:
+#' colPointsLegend(z=z, Range=c(-1,3), x1=20, y1=60, y2=40, triangle=c(0,0.5))
+#' colPointsLegend(z=z, horiz=FALSE, x1=70, y1=60, plottriangle=TRUE, density=FALSE)
+#' ?colPoints # example section for actual usage
+#' 
+#' @param z Values of third dimension used in \code{\link{colPoints}}, can be matrix, vector, etc, but must be numeric
+#' @param Range Ends of color bar for method=equalinterval. DEFAULT: range(z, finite=TRUE)
+#' @param nbins Number of classes (thus, colors). DEFAULT: 40
+#' @param colors Color vector. DEFAULT: \code{\link{rainbow}} from blue (lowest) to red (highest value in Range)
+#' @param bb Borders of bins for the legend (key). DEFAULT: seqR(Range, length.out=nbins+1)
+#' @param at Positions of legend labels. DEFAULT: pretty2(Range)
+#' @param labels Labels that are written at the positions of \code{at}. DEFAULT: at
+#' @param adj label adjustment parallel to legend bar (only one number!). DEFAULT: 0.5
+#' @param bg Background behind key, labels and title. DEFAULT: "white"
+#' @param x1,y1 Topleft relative coordinates (0:100) of inset plot, see \code{\link{smallPlot}}. DEFAULT: 60,99
+#' @param x2,y2 Bottomright -"-. DEFAULT: 98,88
+#' @param mar Margins for \code{\link{smallPlot}} in relative values (0:100). DEFAULT: internal calculations based on title, labelpos and titlepos.
+#' @param mgp MarGinPlacement: distance of xlab/ylab, numbers and line from plot margin, as in \code{\link{par}}, but with different defaults. DEFAULT: c(1.8, 0.6, 0)
+#' @param sborder Border around inset subplot. DEFAULT: NA
+#' @param resetfocus Reset focus to original plot? Specifies where further low level plot commands are directed to. DEFAULT: TRUE
+#' @param plottriangle Should triangles be plotted at the end of the legend for values outside Range? TRUE if missing but triangle is given. DEFAULT: FALSE
+#' @param triangle Percentage of bar length at lower and upper end for triangles (can be a vector with two different values). DEFAULT: 0.14
+#' @param tricol Triangle colors for lower and upper end. DEFAULT: c(1,8)
+#' @param density Plot kernel density line? arguments passed to \code{\link{density}}. DEFAULT: NULL
+#' @param lines Plot black lines in the color bar at \code{at}? DEFAULT: TRUE
+#' @param atminmax Should the extrema of the legend be added to \code{at}? DEFAULT: FALSE
+#' @param horizontal Horizontal bar? if FALSE, a vertical bar is drawn. DEFAULT: TRUE
+#' @param labelpos Position of labels relative to the bar. Possible: 1 (below), 2 (left), 3 (above), 4 (right), 5(on top of bar). DEFAULT: 1
+#' @param titlepos Position of title -"-. DEFAULT: 3
+#' @param title Legend title. DEFAULT: "Legend"
+#' @param las LabelAxisStyle. DEFAULT: 1
+#' @param \dots Further arguments passed to \code{\link{text}} and \code{\link{strwidth}}, e.g. cex, srt, font, col. But NOT adj!
+#' 
 colPointsLegend <- function(
-z, # Values of third dimension used in \code{\link{colPoints}}, can be matrix, vector, etc, but must be numeric
-Range=range(z, finite=TRUE), # Ends of color bar for method=equalinterval
-nbins=40, # Number of classes (thus, colors)
-colors=rainbow2(nbins), # Color vector
-bb=seqR(Range, length.out=nbins+1), # Borders of bins for the legend (key)
-at=pretty2(Range), # Positions of legend labels
-labels=at, # Labels that are written at the positions of \code{at}
-adj=0.5, # label adjustment parallel to legend bar (only one number!)
+z,
+Range=range(z, finite=TRUE),
+nbins=40,
+colors=seqPal(nbins),
+bb=seqR(Range, length.out=nbins+1),
+at=pretty2(Range),
+labels=at,
+adj=0.5,
 
-bg="white", # Background behind key, labels and title
-x1=60, y1=99, # Topleft relative coordinates (0:100) of inset plot, see \code{\link{smallPlot}}
-x2=x1+38, y2=y1-11, # Bottomright -"-
-mar, # Margins for \code{\link{smallPlot}} in relative values (0:100). DEFAULT: internal calculations based on title, labelpos and titlepos.
-mgp=c(1.8, 0.6, 0), # MarGinPlacement: distance of xlab/ylab, numbers and line from plot margin, as in \code{\link{par}}, but with different defaults
-sborder=NA, # Border around inset subplot
-resetfocus=TRUE, # Reset focus to original plot? Specifies where further low level plot commands are directed to.
+bg="white",
+x1=60,
+y1=99,
+x2=x1+38,
+y2=y1-11,
+mar,
+mgp=c(1.8, 0.6, 0),
+sborder=NA,
+resetfocus=TRUE,
 
-plottriangle=FALSE, # Should triangles be plotted at the end of the legend for values outside Range? TRUE if missing but triangle is given
-triangle=0.14, # Percentage of bar length at lower and upper end for triangles (can be a vector with two different values)
-tricol=c(1,8), # Triangle colors for lower and upper end
-density=NULL, # Plot kernel density line? arguments passed to \code{\link{density}}
-lines=TRUE, # Plot black lines in the color bar at \code{at}?
-atminmax=FALSE, # Should the extrema of the legend be added to \code{at}?
-horizontal=TRUE, # Horizontal bar? if FALSE, a vertical bar is drawn, ###with length and width exchanged
-labelpos=1, # Position of labels relative to the bar. Possible: 1 (below), 2 (left), 3 (above), 4 (right), 5(on top of bar)
-titlepos=3, # Position of title -"-
-title="Legend", # Legend title
-las=1, # LabelAxisStyle
-...) # Further arguments passed to \code{\link{text}} and \code{\link{strwidth}}, e.g. cex, srt, font, col. But NOT adj!
-
+plottriangle=FALSE,
+triangle=0.14,
+tricol=c(1,8),
+density=NULL,
+lines=TRUE,
+atminmax=FALSE,
+horizontal=TRUE,
+labelpos=1,
+titlepos=3,
+title="Legend",
+las=1,
+...)
 {
 # ------------------------------------------------------------------------------
 z <- as.numeric(z)

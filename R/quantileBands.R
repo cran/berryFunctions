@@ -1,21 +1,63 @@
-# plot Quantile Bands
-# Berry Boessenkool, Sept 2014
-
+#' Quantile bands
+#' 
+#' Quantile bands with optional smoothing, e.g. for visualizing simulations
+#' 
+#' @return Quantiles of each column, invisible. Smoothed if \code{smooth} is given!
+#' @note This is the first version and is not tested very well yet.
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Sept 2014
+#' @seealso \code{\link{quantile}}, \code{\link{quantileMean}}, \code{\link{ciBand}}, \code{\link{polygon}}, \url{cran.r-project.org/package=fanplot}
+#' @keywords dplot aplot univar
+#' @export
+#' @examples
+#' 
+#' neff <- t(replicate(n=30, sapply(1:400, function(nn) max(rnorm(nn)))   ))
+#' qB <- quantileBands(neff, x=1:400)
+#' qB[,1:9]
+#' quantileBands(neff, smooth=19, meanargs=list(col=2), txi=NA)
+#' 
+#' library(RColorBrewer)
+#' 
+#' quantileBands(neff, smooth=35, ylab="max of rnorm(n)",
+#'   xlab="sample size (n)", probs=0:10/10, col=brewer.pal(5,"BuGn"),
+#'   medargs=list(lwd=2), meanargs=list(col=2, lty=1), txi=c(40,50,60),
+#'   main="Maximum is an unsaturated statistic:\n it rises with sample size")
+#' 
+#' neff2 <- t(replicate(n=50, sapply(1:400, function(nn) mean(rnorm(nn)))   ))
+#' quantileBands(neff2, x=1:400, smooth=35, ylab="mean of rnorm(n)",
+#'   xlab="sample size (n)", probs=0:10/10, col=brewer.pal(5,"BuGn"),
+#'   txi=c(40,50,60), textargs=list(col="yellow"), medargs=list(lwd=2),
+#'   meanargs=list(col=2, lty=1), main="Mean converges to true population mean")
+#'    
+#' @param mat Matrix or data.frame with columns of data
+#' @param x X-axis positions for each column. DEFAULT: 1:ncol(mat)
+#' @param col Vector of colors for each quantile group, recycled reversively if necessary. DEFAULT: rgb(0,0,1, alpha=c(0.5, 0.7))
+#' @param add Add to existing plot? Allows to add to highly customized plot. DEFAULT: FALSE
+#' @param main,xlab,ylab plot labels. DEFAULT: "Quantile Bands", ""
+#' @param probs Probabilities passed to \code{\link{quantile}}. DEFAULT: 0:4/4
+#' @param na.rm Remove NAs before computing \code{\link{quantile}s}, \code{\link{median}} and \code{\link{mean}}? DEFAULT: FALSE
+#' @param type Which of the 9 \code{\link{quantile}} algorithms should be used. DEFAULT: 7
+#' @param smooth If(!is.na), \code{width} passed to \code{\link{movAv}} smoothing quantiles. DEFAULT: NA
+#' @param medargs List of arguments passed to lines drawing \code{\link{median}}. Not drawn if NULL. DEFAULT: NULL
+#' @param meanargs List of arguments passed to lines drawing \code{\link{mean}}. Not drawn if NULL. DEFAULT: NULL
+#' @param txi Text x position index (along columns of mat), recyled if necessary. NA to suppress. INTERNAL DEFAULT: middle of the plot for all.
+#' @param textargs List of arguments passed to \code{\link{text}}, like col, adj, ... DEFAULT: NULL
+#' @param \dots Further arguments passed to \code{\link{polygon}}, like border, lty, ... 
+#' 
 quantileBands <- function(
-mat, # Matrix or data.frame with columns of data
-x=1:ncol(mat), # X-axis positions for each column
-col=rgb(0,0,1, alpha=c(0.5, 0.7)), # Vector of colors for each quantile group, recycled reversively if necessary
-add=FALSE, # Add to existing plot? Allows to add to highly customized plot
-main="Quantile Bands", ylab="", xlab="", # plot labels
-probs=0:4/4, # Probabilities passed to \code{\link{quantile}}
-na.rm=FALSE, # Remove NAs before computing \code{\link{quantile}s}, \code{\link{median}} and \code{\link{mean}}?
-type=7, # Which of the 9 \code{\link{quantile}} algorithms should be used
-smooth=NA, # If(!is.na), \code{width} passed to \code{\link{movAv}} smoothing quantiles
-medargs=NULL, # List of arguments passed to lines drawing \code{\link{median}}. Not drawn if NULL
-meanargs=NULL, # List of arguments passed to lines drawing \code{\link{mean}}. Not drawn if NULL
-txi, # text x position index (along columns of mat), recyled if necessary.
-textargs=NULL, # List of arguments passed to \code{\link{text}}, like col, adj, ...
-...) # Further arguments passed to \code{\link{polygon}}, like border, lty, ...
+mat,
+x=1:ncol(mat),
+col=rgb(0,0,1, alpha=c(0.5, 0.7)),
+add=FALSE,
+main="Quantile Bands", ylab="", xlab="",
+probs=0:4/4,
+na.rm=FALSE,
+type=7,
+smooth=NA,
+medargs=NULL,
+meanargs=NULL,
+txi,
+textargs=NULL,
+...)
 {
 # input check:------------------------------------------------------------------
 if(length(x) != ncol(mat)) stop("length(x) (",length(x),") must equal ncol(mat) (",ncol(mat),").")

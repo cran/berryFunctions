@@ -1,25 +1,80 @@
-# R: Histogram transition from linear to logarithmic axis (animation)
-# Berry Boessenkool, 2015-04-25, berry-b@gmx.de
-
+#' lin-log transition histogram
+#' 
+#' Draw histograms that gradually transform from a linear to a logarithmic axis (animation)
+#' 
+#' @return Returned invisibly: transformation values used. Plotted: \code{steps} number of images.
+#' @note It's best to save the plots into a pdf or wrap it within\cr
+#'       \code{png("Transition\%03d"); linLogHist(x); dev.off()}
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, April 2015
+#' @seealso \code{\link{linLogTrans}}
+#' @keywords dplot hplot dynamic
+#' @export
+#' @examples
+#' 
+#' x <- rlnorm(700, m=3)
+#' hist(x, col=4)
+#' hist(log10(x), xaxt="n"); logAxis(1); hist(log10(x), col=4, add=TRUE)
+#' 
+#' op <- par()
+#' linLogHist(x, steps=8, sleep=0.01) # 0.05 might be smoother
+#' 
+#' linLogHist(x, xlab="ddd", breaks=30, steps=3, write_t=FALSE, yaxt="n", freq=FALSE,
+#'    main="", parexpr='par(mar=c(2,0.5,1.5,0.5), mgp=c(1.8,1,0))',
+#'    endexpr='mtext("Probability Density", line=-1.2, adj=0.03, outer=T)')
+#' par(op)
+#' 
+#' \dontrun{
+#' ## Rcmd check --as-cran doesn't like to open external devices such as pdf,
+#' ## so this example is excluded from running in the checks.
+#' pdf("LinLogTransitionAnimation.pdf")
+#' linLogHist(x, main="Example Transition", steps=20, freq=FALSE)
+#' dev.off()
+#' 
+#' # if you have FFmpeg installed, you can use the animation package like this:
+#' library2(animation)
+#' saveVideo(linLogHist(x, steps=50), video.name="linlog_anim.mp4", interval=0.08,
+#' ffmpeg="C:/ffmpeg-20150424-git-cd69c0e-win64-static/bin/ffmpeg.exe")
+#' }
+#' 
+#' @param x x values to be plotted in animation
+#' @param steps Number of steps in transition. DEFAULT: 100
+#' @param breaks \code{\link{hist}} breaks. DEFAULT: 20
+#' @param col \code{\link{hist}} color. DEFAULT: "blue"
+#' @param las \code{\link{par}} LabelAxisStyle (numbers upright). DEFAULT: 1
+#' @param xlab Label for the x axis. DEFAULT: deparse(substitute(x))
+#' @param xlim xlim range in non-log units. DEFAULT: range(x, finite=TRUE)
+#' @param box Draw box at the end to overplot \code{\link{abline}s} crossing the box? DEFAULT: TRUE
+#' @param parexpr Characterized Expression to set \code{\link{par}}, eg. \code{parexpr='par(mar=c(2,0.5,1.5,0.5), mpg=c(1.8,1,0))'}
+#' @param endexpr Characterized Expression executed at the end of the plot, eg. \code{endexpr='mtext("Probability Density", line=-1, adj=0.03, outer=T)'}
+#' @param axisargs List of arguments passed to \code{\link{logVals}}, like base. DEFAULT: NULL
+#' @param sleep Pause time between frames, in seconds, passed to \code{\link{Sys.sleep}}. DEFAULT: 0
+#' @param axisargs2 List of arguments passed to \code{\link{logAxis}} in the final plot. DEFAULT: NULL
+#' @param firstplot plot on linear scale first? DEFAULT: TRUE
+#' @param lastplot plot on logarithmic scale at the end? DEFAULT: TRUE
+#' @param write_t write transformation value in lower right corner? DEFAULT: TRUE
+#' @param values_t Supply vector with values for transformation (1/t). Overides steps. 
+#'        If you have a better algorithm than I do, please let me know! DEFAULT: NULL
+#' @param \dots further arguments passed to \code{\link{hist}}, like freq, main, xlim, ylab. Excluded: x, xaxt, possibly add
+#' 
 linLogHist <- function(
-x, # x values to be plotted in animation
-steps=100, # Number of steps in transition
-breaks=20, # \code{\link{hist}} breaks
-col="blue", # \code{\link{hist}} color
-las=1, # \code{\link{par}} LabelAxisStyle (numbers upright)
-xlab=deparse(substitute(x)), # Label for the x axis
-xlim=range(x, finite=TRUE), # xlim range in non-log units.
-box=TRUE, # Draw box at the end to overplot \code{\link{abline}s} crossing the box?
-parexpr, # Characterized Expression to set \code{\link{par}}, eg. \code{parexpr='par(mar=c(2,0.5,1.5,0.5), mpg=c(1.8,1,0))'}
-endexpr, # Characterized Expression executed at the end of the plot, eg. \code{endexpr='mtext("Probability Density", line=-1, adj=0.03, outer=T)'}
-sleep=0, # Pause time between frames, in seconds, passed to \code{\link{Sys.sleep}} 
-axisargs=NULL, # List of arguments passed to \code{\link{logVals}}, like base
-axisargs2=NULL, # List of arguments passed to \code{\link{logAxis}} in the final plot
-firstplot=TRUE, # plot on linear scale first?
-lastplot=TRUE, # plot on logarithmic scale at the end?
-write_t=TRUE, # write transformation value in lower right corner?
-values_t=NULL, # Supply vector with values for transformation (1/t). Overides steps. If you have a better algorithm than I do, please let me know!
-...) # further arguments passed to \code{\link{hist}}, like freq, main, xlim, ylab. Excluded: x, xaxt, add
+x,
+steps=100,
+breaks=20,
+col="blue",
+las=1,
+xlab=deparse(substitute(x)),
+xlim=range(x, finite=TRUE),
+box=TRUE,
+parexpr,
+endexpr,
+sleep=0,
+axisargs=NULL,
+axisargs2=NULL,
+firstplot=TRUE,
+lastplot=TRUE,
+write_t=TRUE,
+values_t=NULL,
+...)
 {
 # x must be deparsed before it's evaluated (or something like that)
 xlab <- xlab
