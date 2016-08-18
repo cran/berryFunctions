@@ -53,8 +53,11 @@
 #'         And outside the range of values, they act wildly.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Dec 2012, updated April and Aug 2013, sept 2015
 #' @seealso \code{\link{glm}}, \code{\link{lm}}, \code{\link{optim}}
-#' @references Listed here: \url{http://rclickhandbuch.wordpress.com/berryfunctions/#mReg}
+#' @references Listed here: \url{http://rclickhandbuch.wordpress.com/rpackages}
 #' @keywords aplot hplot regression nonlinear multivariate
+#' @importFrom grDevices extendrange
+#' @importFrom graphics lines par plot
+#' @importFrom stats coef lm model.frame predict
 #' @export
 #' @examples
 #' 
@@ -200,7 +203,7 @@
 #' @param y Vector with y values. DEFAULT: NULL (to enable x to be a formula)
 #' @param data data.frame in which formula is applied. DEFAULT: NULL
 #' @param Poly45 Logical. Should 4th and 5th degree polynomials also be fitted? DEFAULT: FALSE, as the formulas are very long.
-#' @param exp_4 Logical. Return 4-parametric exponential distibution fits (via \code{\link{exp4p}}) in the output table? (only best fit is plotted).
+#' @param exp_4 Logical. Return 4-parametric exponential distribution fits (via \code{\link{exp4p}}) in the output table? (only best fit is plotted).
 #'        exp_4par_ini has the initial values of exponential fitting with the data relocated to first quadrant. 
 #'        The others are optimized with the methods of \code{\link{optim}}. DEFAULT: FALSE
 #' @param xf Character. x name for Formula. DEFAULT: substitute(x) before replacing zeros in x and y
@@ -283,7 +286,7 @@ if(inherits(x,"formula"))
   #if(!missing(data) & missing(main)) main <- paste("multiple regression of",deparse(substitute(data)))
 }
 # NA removal
-if(any(is.na(x)|is.na(y)))
+if( anyNA(x) | anyNA(y) )
   {
   Na <- which(is.na(x)|is.na(y))
   if(!quiet) warning(length(Na), " NAs were omitted from ", length(x), " data points (",

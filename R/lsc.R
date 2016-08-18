@@ -13,6 +13,8 @@
 #'   \url{http://tu-dresden.de/die_tu_dresden/fakultaeten/fakultaet_forst_geo_und_hydrowissenschaften/fachrichtung_wasserwesen/isiw/sww/lehre/dateien/abwasserbehandlung/uebung_ws09_10/uebung_awe_1_abflusskonzentration.pdf}\cr
 #'   \url{http://www.uni-potsdam.de/fs-g3/file.php?fileserver=klausuren&file=\%2FMaster_of_Science\%2FHydroII_Lernzettel.pdf}
 #' @keywords hplot ts optimize
+#' @importFrom graphics axis legend lines mtext par plot text title
+#' @importFrom stats optim
 #' @export
 #' @examples
 #' 
@@ -51,7 +53,7 @@
 #' dummy <- lsc(valid$P, valid$Q, area=3.4, plotsim=FALSE, type="l")
 #' Qsim <- superPos(valid$P, UH)
 #' Qsim <- Qsim + valid$Q[1] # add baseflow
-#' lines(Qsim, lwd=2)
+#' lines(Qsim, lwd=2, xpd=NA)
 #' legend("center", legend=c("Observed","Simulated from calibration"), 
 #'        lwd=c(1,2), col=c(2,1) )
 #' nse(valid$Q, Qsim[1:nrow(valid)]) # 0.47, which is not really good.

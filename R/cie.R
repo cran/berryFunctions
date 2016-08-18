@@ -9,6 +9,7 @@
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, 2010
 #' @seealso \code{\link{ci}}, \code{\link{t.test}}, \code{\link{summary}}
 #' @keywords htest
+#' @importFrom stats median quantile sd t.test
 #' @export
 #' @examples
 #' 
@@ -32,6 +33,7 @@ cie <- function(
   p1=0.05,
   p2=0.95)
 {
+warning("cie will be removed in late 2016.")
 t(round(data.frame(  CI.lower = t.test(dat, conf.level=lev)$conf.int[1] ,
                      CI.upper = t.test(dat, conf.level=lev)$conf.int[2] ,
                      level    = lev ,

@@ -20,6 +20,7 @@
 #'          \code{s.label} in package \code{ade4}, which is not so versatile and doesn't work with logarithmic axes
 #' @references with inspiration taken from \code{ordilabel} in package \code{vegan} and thanks to Jari Oksanen for his comments
 #' @keywords aplot
+#' @importFrom graphics par polygon rect strheight text
 #' @export
 #' @examples
 #' 
@@ -86,7 +87,7 @@
 #'        If NA, it is set to TRUE for labels without line breaks (Newlines, "\\n").
 #'        If FALSE, no conversion happens. DEFAULT: NA
 #' @param margin added field space around words (multiple of em/ex). DEFAULT: 0.3
-#' @param field 'rectangle', 'ellipse', or 'rounded', partial matching is performed. DEFAULT: "rect"
+#' @param field 'rectangle', 'ellipse', or 'rounded', partial matching is performed. DEFAULT: "rounded"
 #' @param nv number of vertices for field = "ellipse" or "rounded". low: fast drawing.
 #'        high: high resolution in vector graphics as pdf possible. DEFAULT: 1000
 #' @param rounding between 0 and 1: portion of height that is cut off rounded at edges when field = "rounded". DEFAULT: 0.75
@@ -97,7 +98,7 @@
 #' @param adj vector of length one or two. DEFAULT: par("adj")
 #' @param pos in 'text', pos overrides adj values. DEFAULT: NULL
 #' @param offset I want the field to still be drawn with adj, but have it based on pos. DEFAULT: 0.5
-#' @param quiet Suppress warning when Arguments are recycled?. DEFAULT: FALSE
+#' @param quiet Suppress warning when Arguments are recycled? DEFAULT: TRUE
 #' @param \dots further arguments passed to strwidth and text, like font, vfont, family
 #' 
 textField <- function(
@@ -108,7 +109,7 @@ fill="white",
 border=NA,
 expression=NA,
 margin=0.3,
-field="rect",
+field="rounded",
 nv=1000,
 rounding=0.75,
 lty=par("lty"),
@@ -118,7 +119,7 @@ xpd=par("xpd"),
 adj=par("adj"),
 pos=NULL,
 offset=0.5,
-quiet=FALSE,
+quiet=TRUE,
 ...)
 {
 # Partial matching field--------------------------------------------------------

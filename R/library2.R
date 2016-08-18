@@ -2,40 +2,41 @@
 #' 
 #' install and load a package. If a package is not available, it is installed before being loaded
 #' 
-#' @aliases require2 library2
-#' @return Cats help instruction.
+#' @aliases library2 require2
+#' @return \code{\link{message}s} help instruction.
 #' @note Passing a vector with packages will work, but give some warnings.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, 2014
-#' @seealso \code{\link{install.packages}}, \code{\link{require}}
+#' @seealso \code{\link{install.packages}}, \code{\link{library}}
 #' @keywords package
+#' @importFrom utils install.packages
 #' @export
 #' @examples
 #' 
 #' \dontrun{
 #' ## Excluded fom CRAN checks. Package installation on server is unnecessary.
 #' require2(ada)
+#' library2("statmod")
 #' }
 #' 
 #' @param name Name of the package(s). Can be qouted, must not.
+#' @param libargs List of arguments passed to \code{\link{library}} like \code{lib.loc}, \code{quietly} etc. DEFAULT: NULL
 #' @param \dots Arguments passed to \code{\link{install.packages}} like \code{lib}, \code{repos} etc.
 #' 
-require2 <- function(
+library2 <- function(
 name,
+libargs=NULL,
 ...)
 {
 name <- as.character(substitute(name))
-for(i in 1:length(name))
+for(n in name)
 {
-if(!requireNamespace(name[i], quietly=TRUE))
-   {
-   install.packages(name, ...)
-   library(name[i], character.only=TRUE)
-   }
+if(!requireNamespace(n, quietly=TRUE))  install.packages(n, ...)
+do.call(library, owa(list(package=n, character.only=TRUE), libargs, "package", "character.only"))
 }
-for(i in 1:length(name))
-  message(paste0('-------------------------\nhelp(package="', name[i],
+for(n in name)
+  message(paste0('-------------------------\nhelp(package="', n,
             '")\n-------------------------\n'))
 }
 
 #' @export
-library2 <- require2
+require2 <- library2

@@ -29,6 +29,7 @@
 #' @references See this page on the effect of classification (binning) methods: \cr 
 #' \url{http://uxblog.idvsolutions.com/2011/10/telling-truth.html}
 #' @keywords classif
+#' @importFrom stats quantile sd
 #' @export
 #' @examples
 #' 
@@ -59,7 +60,11 @@ classify <- function(
 {
 x <- as.numeric(x)
 # error checking:
-if(length(Range) != 2) stop("Range must have two values.")
+if(length(Range) != 2) 
+  {
+  if(!quiet) warning("Range did not have two values.")
+  Range <- range(Range, finite=TRUE)
+  }
 if(diff(Range)==0)
    {
    if(!quiet) warning("The Range values were equal. Range is now extended.")
@@ -137,7 +142,7 @@ ix <- cut(x, breaks=bb, labels=FALSE, include.lowest=TRUE)
 stop("method went wrong internally. Please tell me! (berry-b@gmx.de).")
 # Range Warning:
 ###
-if(any(is.na(ix)))
+if(anyNA(ix))
   {
   ix[ x < min(bb, na.rm=TRUE) ] <- nb+1
   ix[ x > max(bb, na.rm=TRUE) ] <- nb+2

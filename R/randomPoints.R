@@ -4,8 +4,10 @@
 #' 
 #' @return data.frame with x and y coordinates.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, 2011/2012
-#' @seealso \code{\link{distance}}
+#' @seealso \code{\link{distance}}, the package RandomFields ( \url{https://cran.r-project.org/package=RandomFields})
 #' @keywords datagen spatial
+#' @importFrom graphics plot
+#' @importFrom stats runif
 #' @export
 #' @examples
 #' 
@@ -45,6 +47,7 @@ mindist,
 plot=TRUE,
 ...)
 {
+warning("randomPoints has moved to package OSMscale and will be removed here in late 2016.")
 # benotigte Abstandsfunktion definieren:
 distance <- function(xpt,ypt, xref,yref) sqrt((xref-xpt)^2 + (yref-ypt)^2)
 # Zielvektoren fuer zufaellig verteilte Punkte erstellen

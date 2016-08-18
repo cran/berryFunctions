@@ -5,10 +5,10 @@
 \title{Write text to plot with halo underneath}
 \usage{
 textField(x, y, labels = seq_along(x), fill = "white", border = NA,
-  expression = NA, margin = 0.3, field = "rect", nv = 1000,
+  expression = NA, margin = 0.3, field = "rounded", nv = 1000,
   rounding = 0.75, lty = par("lty"), lwd = par("lwd"), cex = par("cex"),
   xpd = par("xpd"), adj = par("adj"), pos = NULL, offset = 0.5,
-  quiet = FALSE, ...)
+  quiet = TRUE, ...)
 }
 \arguments{
 \item{x}{X coordinates, if necessary, they are recycled}
@@ -27,7 +27,7 @@ If FALSE, no conversion happens. DEFAULT: NA}
 
 \item{margin}{added field space around words (multiple of em/ex). DEFAULT: 0.3}
 
-\item{field}{'rectangle', 'ellipse', or 'rounded', partial matching is performed. DEFAULT: "rect"}
+\item{field}{'rectangle', 'ellipse', or 'rounded', partial matching is performed. DEFAULT: "rounded"}
 
 \item{nv}{number of vertices for field = "ellipse" or "rounded". low: fast drawing.
 high: high resolution in vector graphics as pdf possible. DEFAULT: 1000}
@@ -48,7 +48,7 @@ high: high resolution in vector graphics as pdf possible. DEFAULT: 1000}
 
 \item{offset}{I want the field to still be drawn with adj, but have it based on pos. DEFAULT: 0.5}
 
-\item{quiet}{Suppress warning when Arguments are recycled?. DEFAULT: FALSE}
+\item{quiet}{Suppress warning when Arguments are recycled? DEFAULT: TRUE}
 
 \item{\dots}{further arguments passed to strwidth and text, like font, vfont, family}
 }

@@ -7,6 +7,7 @@
 #' @seealso \url{http://text-compare.com/} which I sadly only discovered after writing this function, 
 #'          \code{\link{dupes}} for finding duplicate lines, \code{\link{combineFiles}}
 #' @keywords IO file character
+#' @importFrom utils head
 #' @export
 #' @examples
 #' 
@@ -28,6 +29,7 @@ quiet=FALSE,
 ...
 )
 {
+checkFile(c(file1,file2), call.=FALSE)
 f1 <- readLines(file1, ...)
 f2 <- readLines(file2, ...)
 # truncate:

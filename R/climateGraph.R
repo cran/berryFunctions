@@ -12,6 +12,9 @@
 #' \url{http://www.ipb.uni-tuebingen.de/kurs/comp/1_excel2007/1_pic/2007diagramm_verbund02.jpg}\cr
 #' \url{http://www.zivatar.hu/felhotar/albums/userpics/wldp.png}
 #' @keywords hplot
+#' @importFrom grDevices rgb
+#' @importFrom graphics abline axis box layout lines mtext par plot text
+#' @importFrom stats coef lm
 #' @export
 #' @examples
 #' 
@@ -120,7 +123,7 @@
 #' @param rain monthly rain sum in mm (12 values)
 #' @param main location info as character string. can have \\n. DEFAULT: "StatName\\n52d 24' N / 12d 58' E\\n42 m aSL"
 #' @param units units used for labelling. DEFAULT: c("d C", "mm")
-#' @param labs labels for x axis. DEFAULT: c("J","F","M","A","M","J","J","A","S","O","N","D")
+#' @param labs labels for x axis. DEFAULT: J,F,M,A,M,J,J,A,S,O,N,D
 #' @param textprop proportion of graphic that is used for writing the values in a table to the right. DEFAULT: 0.2
 #' @param ylim limit for y axis in temp units. DEFAULT: range(temp, rain/2)
 #' @param compress should rain>100 mm be compressed with adjusted labelling? (not recommended for casual visualization!). DEFAULT: FALSE
@@ -143,7 +146,7 @@ climateGraph <- function(
      rain, 
      main="StatName\n52\U00B0 24' N / 12\U00B0 58' E\n42 m aSL",
      units=c("\U00B0 C", "mm"), 
-     labs=c("J","F","M","A","M","J","J","A","S","O","N","D"),
+     labs=substr(month.abb,1,1),
      textprop=0.2,
      ylim=range(temp, rain/2), 
      compress=FALSE, 

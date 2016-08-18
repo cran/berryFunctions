@@ -11,6 +11,7 @@
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Feb 2016
 #' @seealso \code{\link{addAlpha}}, \code{\link{colorRamp}}, \code{\link{colors}}
 #' @keywords dplot color
+#' @importFrom grDevices colorRamp rgb
 #' @export
 #' @examples
 #' 
@@ -30,7 +31,7 @@ addFade <- function(
   )
 {
 if(any(fade<0 | fade>1)) stop("fade must be between 0 and 1, not ",
-                                 pastec(fade[fade<0|fade>1]))
+                              toString(fade[fade<0|fade>1]))
 cR <-  function(fade, col, target)
   {
   x <- colorRamp(c(col, target))(1-fade)   # , ...

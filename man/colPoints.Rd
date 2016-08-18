@@ -4,57 +4,74 @@
 \alias{colPoints}
 \title{Points colored relative to third dimension}
 \usage{
-colPoints(x, y, z, data, Range = range(z, finite = TRUE),
-  method = "equalinterval", breaks, sdlab = 1, col = seqPal(cl$nbins),
-  col2 = c(NA, 1, 8), legend = TRUE, legargs = NULL, hist = FALSE,
-  histargs = NULL, add = TRUE, lines = FALSE, nint = 30,
-  xlab = substitute(x), ylab = substitute(y), las = 1, pch = 16,
-  quiet = FALSE, ...)
+colPoints(x, y, z, data, add = TRUE, col = seqPal(cl$nbins), col2 = c(NA,
+  "grey", "black"), Range = range(z, finite = TRUE),
+  method = "equalinterval", breaks, sdlab = 1, legend = TRUE,
+  legargs = NULL, hist = FALSE, histargs = NULL, lines = FALSE,
+  nint = 30, xlab = substitute(x), ylab = substitute(y),
+  zlab = substitute(z), las = 1, pch = 16, quiet = FALSE, ...)
 }
 \arguments{
 \item{x, y}{Vectors with coordinates of the points to be drawn}
 
-\item{z}{z values beloning to coordinates. Vector or matrix}
+\item{z}{z values belonging to coordinates. Vector or matrix with the color-defining height values}
 
 \item{data}{Optional: data.frame with the column names as given by x,y and z.}
 
-\item{Range}{Ends of color bar for method=equalinterval. DEFAULT: range(z, finite=TRUE)}
+\item{add}{Logical. Should the points be added to current (existing!) plot? 
+If FALSE, a new plot is started. DEFAULT: TRUE (It's called col\bold{Points}, after all)}
 
-\item{method}{Classification method (partial matching is performed), see \code{\link{classify}}. DEFAULT: "equalinterval")}
+\item{col}{Vector of colors to be used. DEFAULT: 100 colors from sequential 
+palette \code{\link{seqPal}} (color-blind safe, black/white-print safe)}
 
-\item{breaks}{Specification for method, see \code{\link{classify}}. DEFAULT: different defaults for each method}
+\item{col2}{Color for points where z is NA, or lower / higher than \code{Range}. DEFAULT: c(NA, 1, 8)}
 
-\item{sdlab}{Type of label and breakpoints if \code{method=standarddeviation}, see \code{\link{classify}}. DEFAULT: 1}
+\item{Range}{Ends of color bar. DEFAULT: range(z, finite=TRUE)}
 
-\item{col}{Vector of colors to be used. DEFAULT: \code{\link{rainbow}} from blue (lowest) to red (highest value in Range)}
+\item{method}{Classification method (partial matching is performed), 
+see \code{\link{classify}} (ways to get color breakpoints). DEFAULT: "equalinterval")}
 
-\item{col2}{Color for points where z is NA, lower or higher than Range. DEFAULT: c(NA, 1, 8)}
+\item{breaks}{Specification for method, see \code{\link{classify}}. 
+DEFAULT: different defaults for each method}
+
+\item{sdlab}{Type of label and breakpoints if \code{method=standarddeviation}, 
+see \code{\link{classify}}. DEFAULT: 1}
 
 \item{legend}{Logical. Should a \code{\link{colPointsLegend}} be drawn? DEFAULT: TRUE}
 
-\item{legargs}{List. Arguments passed to \code{\link{colPointsLegend}}. DEFAULT: NULL, with some defaults specified internally}
+\item{legargs}{List. Arguments passed to \code{\link{colPointsLegend}}. 
+DEFAULT: NULL, with some defaults specified internally}
 
-\item{hist}{Logical. Should a \code{\link{colPointsHist}} be drawn? DEFAULT: FALSE (TRUE if histargs are given)}
+\item{hist}{Logical. Should a \code{\link{colPointsHist}} be drawn? 
+DEFAULT: FALSE (TRUE if histargs are given)}
 
 \item{histargs}{List. Arguments passed to \code{\link{colPointsHist}}. DEFAULT: NULL}
 
-\item{add}{Logical. Should the points be added to current (existing!) plot? If FALSE, a new plot is started. DEFAULT: TRUE (It's called col\bold{Points}, after all)}
+\item{lines}{Logical. Should lines be drawn instead of / underneath the points? 
+(color of each \code{\link{segments}} is taken from starting point, last point is endpoint.) 
+If lines=TRUE and pch is not given, pch ist set to NA. DEFAULT: FALSE}
 
-\item{lines}{Logical. Should lines be drawn underneath the points? (color of each \code{\link{segments}} is taken from starting point, last point is endpoint.) DEFAULT: FALSE}
+\item{nint}{Numeric of length 1. Number of interpolation points between each 
+coordinate if \code{lines=TRUE}. nint=1 means no interpolation. 
+Values below 10 will smooth coordinates and might miss the original points. DEFAULT: 30}
 
-\item{nint}{Numeric of length 1. Number of interpolation points between each coordinate if \code{lines=TRUE}. nint=1 means no interpolation. Values below 10 will smooth coordinates and miss the original points!. DEFAULT: 30}
-
-\item{xlab}{x-axis label. DEFAULT: substitute as in plot}
+\item{xlab}{x-axis label. DEFAULT: \code{\link{substitute}(x)}}
 
 \item{ylab}{y-axis label. DEFAULT: ditto}
 
-\item{las}{Label Axis Style. Only used when add=FALSE. See \code{\link{par}}. DEFAULT: 1 (all labels horizontal)}
+\item{zlab}{\code{\link{colPointsLegend} title}. DEFAULT: ditto}
+
+\item{las}{Label Axis Style. Only used when add=FALSE. See \code{\link{par}}. 
+DEFAULT: 1 (all labels horizontal)}
 
 \item{pch}{Point CHaracter. See \code{\link{par}}. DEFAULT: 16}
 
 \item{quiet}{Turn off warnings? DEFAULT: FALSE}
 
-\item{\dots}{Further graphical arguments passed to plot, points and lines, eg cex, xlim (when add=F), mgp, main, sub, asp (when add=F), etc. Note: col does not work, as it is already another argument}
+\item{\dots}{Further graphical arguments passed to \code{\link{plot}}, 
+\code{\link{points}} and \code{\link{lines}}, 
+eg cex, xlim (when add=F), mgp, main, sub, asp (when add=F), etc. 
+Note: col does not work, as it is already another argument}
 }
 \value{
 Invisible list of values that can be passed to colPointsLegend or colPointsHist.
@@ -77,8 +94,8 @@ k <- c(175, 168, 163, 132, 120, 117, 110, 130, 131, 160, 105, 174, 190, 183)
 # basic usage:
 colPoints(i,j,k, cex=1.5, pch="+", add=FALSE)
 
-# with custom Range (only for method equalinterval):
-colPoints(i,j,k, cex=1.5, pch="+", add=FALSE, Range=c(150, 180))
+# with custom Range:
+colPoints(i,j,k, cex=1.5, pch="+", add=FALSE, Range=c(150, 190))
 # can be used to allow comparison between several plots
 # points outside the range are plotted with col2
 
@@ -87,8 +104,8 @@ mycols <- colorRampPalette(c("blue","yellow","red"))(50)
 colPoints(i,j,k, cex=1.5, pch="+", add=FALSE, col=mycols)
 
 # With legend title:
-colPoints(i,j,k, cex=2, pch="+", add=FALSE,
-         legargs=list(density=FALSE, title="Elevation [m above NN.]"))
+colPoints(i,j,k, cex=2, add=FALSE, zlab="Elevation [m above NN.]",
+         legargs=list(density=FALSE))
 ?colPointsLegend # to see which arguments can be set via legargs
 
 # with lines (nint to change number of linear interpolation points):
@@ -97,6 +114,8 @@ colPoints(i,j,k, cex=1.5, add=FALSE, lines=TRUE, nint=10, lwd=2)
 tfile <- system.file("extdata/rivers.txt", package="berryFunctions")
 rivers <- read.table(tfile, header=TRUE, dec=",")
 colPoints(x,y,n, data=rivers, add=FALSE, lines=TRUE)
+colPoints(x,y,n, data=rivers, add=FALSE, lines=TRUE, pch=3)
+colPoints(x,y,n, data=rivers, add=FALSE, lines=TRUE, pch=3, nint=2)
 
 # different classification methods:
 set.seed(007) ;  rx <- rnorm(30) ; ry <- rnorm(30) ; rz <- rnorm(30)*100
@@ -135,11 +154,10 @@ layout(1)
 
 
 # Customizing the legend :
-colPoints(i,j,k, legend=FALSE, add=FALSE)
+cp <- colPoints(i,j,k, legend=FALSE, add=FALSE)
 colPointsLegend(x1=20,y1=50, x2=95,y2=40, z=k, labelpos=5, atminmax=TRUE, bg=7)
 colPointsLegend(x1=50,y1=28, x2=90,y2=18, z=k, Range=c(80, 200), nbins=12, font=3)
 colPointsLegend(x1=10,y1=15, x2=40,y2= 5, z=k, labelpos=5, lines=FALSE, title="")
-
 colPointsLegend(z=k, horizontal=FALSE)
 colPointsLegend(x1=1, y1=90, z=k, horizontal=FALSE, labelpos=4, cex=1.2)
 colPointsLegend(x1=23,y1=95, z=k, horizontal=FALSE, labelpos=5, cex=0.8,
@@ -147,7 +165,8 @@ colPointsLegend(x1=23,y1=95, z=k, horizontal=FALSE, labelpos=5, cex=0.8,
 # For method other than colPoints' default, it is easiest to include these
 # options as a list in legargs, but you can also use the invisible output
 # from colPoints for later calls to colPointsLegend
-
+do.call(colPointsLegend, cp)
+do.call(colPointsLegend, owa(cp, list(colors=rainbow2(100), cex=1.2)))
 
 # colPoints with matrix:
 colPoints(z=volcano, add=FALSE)
@@ -170,6 +189,15 @@ mz <- c(135, 155, 120, 105, 140, 130, 190, 110)
 colPoints(mx,my,mz, cex=5, pch="*", Range=c(94, 195), col2=NA, legend=FALSE)
 points(mx,my, cex=4)
 text(mx,my,mz, adj=-0.5, font=2)
+
+# santiago.begueria.es/2010/10/generating-spatially-correlated-random-fields-with-r
+if(require(gstat)){
+xyz <- gstat(formula=z~1, locations=~x+y, dummy=TRUE, beta=1, 
+             model=vgm(psill=0.025,model="Exp",range=5), nmax=20)
+xyz <- predict(xyz, newdata=data.frame(x=runif(200, 20,40),y=runif(200, 50,70)), nsim=1)
+head(xyz)
+colPoints(x,y,sim1, data=xyz, col=rainbow2(100), add=FALSE)
+}
 
 }
 \author{

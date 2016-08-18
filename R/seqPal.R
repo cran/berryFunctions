@@ -7,6 +7,7 @@
 #' @seealso \code{\link{showPal}}, \code{\link{divPal}}, \code{\link{addAlpha}}, 
 #'          \code{\link{colorRampPalette}}, package \code{RColorBrewer}
 #' @keywords color dplot
+#' @importFrom grDevices colorRampPalette
 #' @export
 #' @examples
 #' 
@@ -21,6 +22,7 @@
 #'       using the result from \code{RColorBrewer::brewer.pal(9, "YlGnBu")}. DEFAULT: FALSE
 #' @param yb Should colors be in yellow-blue instead of the internal (nice) default? DEFAULT: FALSE
 #' @param yr Should colors be in yellow-red instead of the default? DEFAULT: FALSE
+#' @param gb Should colors be in green-blue instead of the default? DEFAULT: FALSE
 #' @param colors If not NULL, a color vector used in \code{\link{colorRampPalette}}. DEFAULT: NULL
 #' @param \dots Further arguments passed to \code{\link{colorRamp}}
 #' 
@@ -31,6 +33,7 @@ alpha=1,
 extr=FALSE,
 yb=FALSE,
 yr=FALSE,
+gb=FALSE,
 colors=NULL,
 ...
 )
@@ -40,6 +43,7 @@ if(extr) cols <- c("#FFFFD9", "#EDF8B1", "#C7E9B4", "#7FCDBB", "#41B6C4",
                     "#1D91C0", "#225EA8", "#253494", "#081D58")
 if(yb) cols <- c("yellow","blue")
 if(yr) cols <- c("yellow","red")
+if(gb) cols <- c("chartreuse","cornflowerblue","darkblue")
 if(!is.null(colors)) cols <- colors
 if(reverse) cols <- rev(cols)
 outcols <- colorRampPalette(cols)(n)

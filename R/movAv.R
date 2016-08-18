@@ -11,6 +11,7 @@
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, ca 2012
 #' @seealso \code{\link{decompose}}, \code{\link{smooth}}, \code{\link{loess}}, \code{\link[zoo]{rollapply}} (no overlapping!)
 #' @keywords ts manip smooth
+#' @importFrom utils head tail
 #' @export
 #' @examples
 #' 
@@ -151,7 +152,7 @@ n <- length(dat)
 v <- sapply( (s+1):(n-s),  function(i)
   {
   subset <- dat[(i-s):(i+s)]
-  if(any(is.na(subset)))
+  if(anyNA(subset))
      {weights[is.na(subset)] <- 0
      weights <- weights/(sum(weights))
   }

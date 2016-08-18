@@ -4,7 +4,7 @@
 \alias{headtail}
 \title{head and tail}
 \usage{
-headtail(x, n = 1, nh = n, nt = n, na = TRUE, ...)
+headtail(x, n = 1, nh = n, nt = n, na = FALSE, ...)
 }
 \arguments{
 \item{x}{Object}
@@ -14,9 +14,9 @@ headtail(x, n = 1, nh = n, nt = n, na = TRUE, ...)
 \item{nh, nt}{Number for \code{\link{head}} and \code{\link{tail}}, respectively. DEFAULT: n}
 
 \item{na}{Add NA values in between to emphasize visibly that there is
-something inbetween the values? DEFAULT: TRUE}
+something inbetween the values? DEFAULT: FALSE}
 
-\item{\dots}{nothing}
+\item{\dots}{Further arguments passed to \code{\link{head}} and \code{\link{tail}}}
 }
 \value{
 \code{\link{head}} result
@@ -30,30 +30,33 @@ Tries to find good methods of combining the two results acccording to {code{clas
 \examples{
 
 head(letters, n=3)
+headtail(letters)
 headtail(letters, n=3)
+headtail(letters, n=3, na=TRUE)
 
 head(letters, n=-10)
-headtail(letters, n=-10) # doesn't make sense for headtail
+headtail(letters, n=-10, na=TRUE) # doesn't make sense for headtail
 
-head(freeny.x, n=3)
-headtail(freeny.x, n=3)
+head(freeny.x, n=3)               # matrix
+headtail(freeny.x, n=3, na=TRUE)  # no names for head-part
+headtail(women, n=3, na=TRUE)     # data.frame works fine
 
 head(freeny.y, n=3)
-headtail(freeny.y, n=3)
+headtail(freeny.y, n=3, na=TRUE)
 
 head(library, n=3)
-headtail(library, n=3)
-headtail(library)
+headtail(library, n=3, na=TRUE)
+headtail(library, na=TRUE)
 
 ftable(Titanic)
 head(stats::ftable(Titanic), n=4)
-headtail(stats::ftable(Titanic), n=4)
+headtail(stats::ftable(Titanic), n=4, na=TRUE)
 
 head(table(sample(1:9, 30, TRUE)), n=3)
-headtail(table(sample(1:9, 30, TRUE)), n=3)
+headtail(table(sample(1:9, 30, TRUE)), n=3, na=TRUE)
 
 head(table(state.division, state.region), n=3)
-headtail(table(state.division, state.region), n=3)
+headtail(table(state.division, state.region), n=3, na=TRUE)
 
 }
 \author{
