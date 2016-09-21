@@ -5,7 +5,7 @@
 \title{Spiral graph of time series}
 \usage{
 spiralDate(dates, values, data, drange = NULL, vrange = NULL,
-  months = substr(month.abb, 1, 1), add = FALSE, prop = NULL,
+  months = substr(month.abb, 1, 1), add = FALSE, shift = 0, prop = NULL,
   zlab = substitute(values), format = "\%Y", nint = 1, ...)
 }
 \arguments{
@@ -25,13 +25,16 @@ as accepted (and coerced) by \code{\link{as.Date}}}
 
 \item{add}{Add to existing plot? DEFAULT: FALSE}
 
+\item{shift}{Number of days to move january 1st clockwise. DEFAULT: 0}
+
 \item{prop}{Proportion of the data to be actually plotted, used in \code{\link{spiralDateAnim}}. DEFAULT: NULL}
 
 \item{zlab}{Title of \code{\link{colPointsLegend}}}
 
 \item{format}{Format of date labels see details in \code{\link{strptime}}. DEFAULT: "\%Y"}
 
-\item{nint}{Number of interpolation segments between points, only used if lines=TRUE. 
+\item{nint}{Number of interpolation segments between points, 
+only used if \code{lines=TRUE} (passed to \code{\link{colPoints}}). 
 DEFAULT: 1 (with long time series, the colPoints default of 30 is too high!)}
 
 \item{\dots}{Further arguments passed to \code{\link{colPoints}}, but not Range (use \code{vrange})}

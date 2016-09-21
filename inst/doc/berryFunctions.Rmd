@@ -122,7 +122,7 @@ headtail(iris, n=3, na=FALSE)
 Color palettes: `seqPal`, `divPal`, `showPal`  
 Plot simulation results as result ranges: `quantileBands`, `ciBand`  
 ```{r showPal, fig.show='hold'}
-showPal(cex=0.55)
+showPal(cex=3)
 
 neff <- t(replicate(n=300, sapply(1:200, function(nn) max(rnorm(nn)))   ))
 qB <- quantileBands(neff, x=1:200, smooth=7)
@@ -204,9 +204,8 @@ plot(exdat, log="y", yaxt="n")
 logAxis(side=2) # invisibly returns values and labels
 points(exdat, pch=16)
 
-plot(as.Date("2013-10-25")+sort(sample(0:100, 30)), 
-     cumsum(rnorm(30)), type="o", xaxt="n", ann=F)
-dummy <- monthAxis(side=1, n=4) # tries to find suitable labeling intervall
+plot(as.Date("2013-04-25")+0:500, cumsum(rnorm(501)), type="l", xaxt="n", ann=FALSE)
+dummy <- monthAxis(side=1, ym=TRUE) # tries to find suitable labeling intervall
 str(dummy)
 ```
 
@@ -228,9 +227,10 @@ superPos(N, UH)
 # calculate continuous UH with given n and k: unitHydrograph
 plot(0:40, unitHydrograph(n=2,  k=3, t=0:40), type="l")
 
-# Nash-Sutcliffe efficiency: nse
+# Nash-Sutcliffe and kling-gupta efficiency: nse + kge
 QSIM <- lsc(PREC, QOBS, area=10, returnsim=TRUE, plot=FALSE)
 nse(QOBS, QSIM)
+kge(QOBS, QSIM)
 
 # Root Mean Squared Error, e.g. to be minimized: rmse
 rmse(QOBS, QSIM)
@@ -242,32 +242,13 @@ rsquare(QOBS, QSIM)
 
 [TOC](#top)
 
-## Spatial
-```{r spatial, echo=-1, fig.height=3.5, fig.width=5.5}
-par(mar=c(3.2,3.2,1.5,0.7), mgp=c(2.1,0.7,0))
-
-# arrange points randomly with minimal distance to each other: randomPoints
-rp <- randomPoints(xmin=5,xmax=15, ymin=20,ymax=30, number=25, mindist=1)
-
+## Miscellaneous
+```{r misc}
 # distance between two points on a plane: distance
 A <- c(3,  9,-1)  ;  B <- c(7, -2, 4)
 plot(A,B); points(3,5, col=2, pch=16); segments(3,5, A,B)
 distance(A,B, 3,5)
 
-# calculate Area of a planar triangle: triangleArea
-a <- c(1,5.387965,9); b <- c(1,1,5)
-plot(a[c(1:3,1)], b[c(1:3,1)], type="l", asp=1)
-abline(v=1:9, h=1:5, col=8,lty=2)
-triangleArea(a,b)
-```
-
-Zooming in Shapefiles in my package https://github.com/brry/shapeInteractive
-
-
-[TOC](#top)
-
-## Miscellaneous
-```{r misc}
 # remove leading and trailing white space: removeSpace
 s <- c("space at end     ", "  white at begin", "  both ", " special ^  ")
 removeSpace(s)

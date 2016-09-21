@@ -5,10 +5,11 @@
 \title{Seasonality analysis}
 \usage{
 seasonality(dates, values, data, drange = NULL, vrange = NULL, shift = 0,
-  janline = TRUE, months = substr(month.abb, 1, 1), xlab = "Year",
-  ylab = "Month", zlab = substitute(values), ylim = c(370, -3),
-  yaxs = "i", main = "Seasonality", mar = c(3, 3, 4, 1), mgp = c(1.9,
-  0.7, 0), keeppar = TRUE, ...)
+  janline = TRUE, nmax = 0, maxargs = NULL, plot = 1,
+  months = substr(month.abb, 1, 1), xlab = "Year", ylab = "Month",
+  zlab = substitute(values), ylim = NA, xaxs = "r", yaxs = "i",
+  main = "Seasonality", adj = 0.2, mar = c(3, 3, 4, 1), mgp = c(1.7,
+  0.7, 0), keeppar = TRUE, legargs = NULL, ...)
 }
 \arguments{
 \item{dates}{Dates in ascending order. 
@@ -29,32 +30,53 @@ can be a vector like \code{values}. DEFAULT: NULL}
 E.g. shift=61 for German hydrological year (Nov to Oct). DEFAULT: 0}
 
 \item{janline}{Logical: Should horizontal line be plotted at 
-               January 1st if \code{shift!=0}? DEFAULT: TRUE
-### @param nmax Number of annual maxima to be marked and returned. DEFAULT: 0}
+January 1st if \code{shift!=0}? DEFAULT: TRUE}
+
+\item{nmax}{Number of annual maxima to be marked, plotted and returned. 
+Currently, only 0 and 1 are implemented. DEFAULT: 0}
+
+\item{maxargs}{List of arguments passed to \code{\link{lines}} for annual maxima,
+e.g. \code{maxargs=list(type="l", col="red", lty=3)}. DEFAULT: NULL}
+
+\item{plot}{Integer specifying the type of plot. Can be a vector to produce several plots. \cr 
+0: none, only data.frame with annual maxima. \cr
+1: color coded doy (day of the year) over year (the default). \cr
+2: Color coded spiral graph with \code{\link{spiralDate}}. \cr
+3: Spaghetti line plot with discharge over doy, one line per year. \cr
+4: plot of annmax over time for crude trend analysis. \cr
+DEFAULT: 1}
 
 \item{months}{Labels for the months. DEFAULT: J,F,M,A,M,J,J,A,S,O,N,D}
 
-\item{xlab, ylab}{Labels for the axes. DEFAULT: Year, Month}
+\item{xlab, ylab, zlab}{Labels for the axes and title of \code{\link{colPointsLegend}}. 
+Note that these are switched in plot 3 and 4.
+DEFAULT: Year, Month, substitute(values)}
 
-\item{zlab}{Title of \code{\link{colPointsLegend}}. DEFAULT: \code{values} name}
+\item{ylim}{Limits of y axis. DEFAULT: NA (specified internally per plot type)}
 
-\item{ylim, yaxs}{Parameters specifying y Axis appearance, see \code{\link{par}}. 
-DEFAULT: c(366,1), "i"}
+\item{xaxs, yaxs}{x and y Axis style, see \code{\link{par}}. 
+DEFAULT: "r" (regular 4\% expansion), "i" (internal range only)}
 
-\item{main}{Graph title, offset to the left. DEFAULT: Seasonality}
+\item{main, adj}{Graph title and offset to the left 
+(\code{adj} passsed to \code{\link{title}}). DEFAULT: "Seasonality", 0.2}
 
 \item{mar, mgp}{Parameters specifying plot margin size and labels placement.
-DEFAULT: c(3,3,4,1), c(2.2,0.7,0)}
+DEFAULT: c(3,3,4,1), c(1.7,0.7,0) (Changed for plot 3:4 if not given)}
 
 \item{keeppar}{Logical: Keep the margin parameters? If FALSE, they are reset
 to the previous values. DEFAULT: TRUE}
 
+\item{legargs}{List of arguments passed as \code{legargs} to \code{\link{colPoints}}.
+DEFAULT: NULL (internally, plots 3:4 have density=F as default)}
+
 \item{\dots}{Further arguments passed to \code{\link{colPoints}} like 
-pch, main, xaxs, but not Range (use \code{vrange})}
+pch, main, xaxs, but not Range (use \code{vrange}).
+Passed to \code{\link{spiralDate}} if \code{plot=2}, like add, format, lines.}
 }
 \value{
-Data.frame with DOYs of annual maxima and number of nonNA values included
-        Please Note that the column year does not note the calendrical year 
+Data.frame with \code{year}, \code{n}umber of nonNA entries, 
+        \code{max} value + \code{doy} of annual maxima.
+        Please note that the column year does not note the calendrical year 
         if \code{shift!=0}.
 }
 \description{
@@ -67,10 +89,26 @@ Q <- read.table(qfile, skip=19, header=TRUE, sep=",", fill=TRUE)[,1:2]
 rm(qfile)
 colnames(Q) <- c("date","discharge")
 Q$date <- as.Date(Q$date)
-Q$discharge[530:540] <- NA
+Q$discharge[450:581] <- NA
 plot(Q, type="l")
-spiralDate(date, discharge, data=Q) # most floods in winter
-seasonality(date, discharge, data=Q, shift=100, main="NRFA: Thames\\nRoyal Windsor Park")
+seas <- seasonality(date, discharge, data=Q, shift=100, main="NRFA: Thames\\nRoyal Windsor Park")
+head(seas)
+# notice how n for nonmissing values is lower in one single hydrological year, 
+# which includes parts of two consecutive calendarical years.
+seas <- seasonality(date, discharge, data=Q, plot=2) # most floods in winter
+seas <- seasonality(date, discharge, data=Q, plot=3)
+seas <- seasonality(date, discharge, data=Q, plot=3, shift=100)
+seasonality(date, discharge, data=Q[200:300,], plot=3, nmax=1)
+seasonality(date, discharge, data=Q[100:200,], plot=3, nmax=1, shift=100)
+
+\dontrun{
+dev.new(noRStudioGD=TRUE, record=TRUE)     # large graph on 2nd monitor
+par(mfrow=c(2,2))
+seas <- seasonality(date, discharge, data=Q, plot=1:4, shift=100)
+seas <- seasonality(date, discharge, data=Q, plot=1:4, lwd=2)
+seas <- seasonality(date, discharge, data=Q, plot=1:4, nmax=1, shift=100)
+seas <- seasonality(date, discharge, data=Q, plot=1:4, col=divPal(100, ryb=TRUE))
+}
 
 }
 \author{

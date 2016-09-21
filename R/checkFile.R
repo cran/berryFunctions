@@ -6,7 +6,6 @@
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, May 2016
 #' @seealso \code{\link{file.exists}}
 #' @keywords file
-#' @importFrom utils capture.output
 #' @export
 #' @examples
 #' is.error( checkFile("FileThatDoesntExist.txt") )
@@ -37,6 +36,8 @@
 #' @param file Filename(s) as character string to be checked for existence.
 #' @param fun One of the functions \code{\link{stop}}, \code{\link{warning}}, or \code{\link{message}}. DEFAULT: stop
 #' @param trace Logical: Add function call stack to the message? DEFAULT: TRUE
+#'              WARNING: in \link{do.call} settings with large objects,
+#'              tracing may take a lot of computing time.
 #' @param \dots Further arguments passed to \code{fun}
 #'
 checkFile <- function(
@@ -48,15 +49,7 @@ trace=TRUE,
 {
 if(is.character(fun)) stop("fun must be unquoted. Use fun=", fun, " instead of fun='", fun,"'.")
 # tracing the calling function(s):
-if(trace)
-  {
-  dummy <- capture.output(tb <- traceback(6) )
-  tb <- lapply(tb, "[", 1) # to shorten do.call (function( LONG ( STUFF)))
-  tb <- lapply(tb, function(x) if(substr(x,1,7)=="do.call")
-               sub(",", "(", sub("(", " - ", x, fixed=TRUE), fixed=TRUE) else x)
-  calltrace <- sapply(strsplit(unlist(tb), "(", fixed=TRUE), "[", 1)
-  calltrace <- paste(rev(calltrace[-1]), collapse=" -> ")
-  }
+if(trace)  calltrace <- traceCall()
 # check actual file existence:
 exi <- file.exists(file)
 # prepare message:
@@ -64,7 +57,7 @@ Text <- if(length(exi)>1)
 paste0("  The files '", toString(file[!exi]), "'\n  do not exist at ", getwd()) else
 paste0("  The file '",           file,      "'\n  does not exist at ", getwd())
 #
-if(trace) Text <- paste(calltrace, Text, sep="\n")
+if(trace) Text <- paste(calltrace, Text)
 # return message, if file nonexistent:
 if(any(!exi)) fun(Text, ...)
 return(invisible(exi))
