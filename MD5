@@ -1,6 +1,6 @@
-454edeb449fb431a75ef4ebbee457406 *DESCRIPTION
+7544b700b4b57f685de1ea94eaf21f7d *DESCRIPTION
 d584705c8f4d0284f705b0c9824c4e00 *NAMESPACE
-87ae7ae6983ede5857527761a92436be *NEWS
+5d91ec54a14f145f0866deb23475f7e6 *NEWS
 9d08e26a644b8d03d9f962be3ac4e287 *R/TFtest.R
 d56c2b800a238fa9815aca84cced69ea *R/addAlpha.R
 f7f68cba2284087227b2d56a684612b2 *R/addFade.R
@@ -23,9 +23,9 @@ ba7336f5e1861d578a264425a0e841c3 *R/colPointsHist.R
 b2654f7b9cf4f8691e3d80430f138cee *R/colPointsLegend.R
 85cce7e54db091719ba387ebc1593d49 *R/combineFiles.R
 a814493cc77bd06bf7097766e966f325 *R/compareFiles.R
-f93ef33236f92874c0ae75b9d926c06d *R/createDoc.R
-90b8f2e88ce67c00e9d7456c1c20c7dd *R/createFun.R
-516d5a25bf835b99ca4b8e3db8f5a473 *R/dataDWD.R
+44fb17e900d10a581ae69b016c269b27 *R/createDoc.R
+5771a38019159ae9bd3313ce2e689d4c *R/createFun.R
+40c5fecaf13c2cbbb3c9b4107184f0da *R/dataDWD.R
 bf71141e80e0914d2557d8fdd99e87dc *R/dataStr.R
 c06d09155ce74c1964599251c373764f *R/distance.R
 8f5d052bdd6d6a861d8af45e71697db6 *R/divPal.R
@@ -94,7 +94,7 @@ d3aea0992f941883dfcf1a861cdd623a *R/superPos.R
 713c7d95c0418cee854c004aa9a5f02b *R/textField.R
 983b1af16f12ffadb4fd8997ce7ed4c9 *R/timer.R
 ee558fcf085139b3e7d2780b9a16fe91 *R/toupper1.R
-5d4af6912815fc93370a7b322b439252 *R/traceCall.R
+6418ca0023777919b1c78f67d4c37bbb *R/traceCall.R
 8bfc48fed46879b8c8d317f3c8d702a9 *R/unitHydrograph.R
 c6b8fe9b806faf5d50f69327ee4a2b59 *R/yearSample.R
 858929d5df5d42eeda21d10c65cd383a *build/vignette.rds
@@ -102,6 +102,7 @@ c6b8fe9b806faf5d50f69327ee4a2b59 *R/yearSample.R
 7b478e7861578864d2718753ab7940ef *inst/doc/berryFunctions.Rmd
 3552ca5f9c7a39b3142b3b67cafeb132 *inst/doc/berryFunctions.html
 046b65f1b130aa470befa2eb65f6f620 *inst/extdata/Q_P.txt
+55b2e5c6822eeffcf4fce92f1a6e3a23 *inst/extdata/RainfallStationsMap.pdf
 2fb1bd0f866160e3b2541f4eb6cc944b *inst/extdata/Temp.txt
 33fab2b9198cdacff917ace4e086945f *inst/extdata/calctime_nameSample.txt
 42da919b3bbed76e246e73bbfa0720a8 *inst/extdata/calctime_nameSample2.txt
@@ -138,9 +139,9 @@ e0e29b840fdeddd5b28bf2b9012b53fd *man/colPoints.Rd
 e34f0c0500f936ec35205c16e2762894 *man/colPointsLegend.Rd
 0d4ed330411d7551623dc8f9b3e9799b *man/combineFiles.Rd
 80a1ffe821a43ad24c1ab47813a0d5a9 *man/compareFiles.Rd
-c520d4b55ec4e09cfe770a61d8c27c29 *man/createDoc.Rd
-00fe2ad8a5e2b92709a433e528f4f3b5 *man/createFun.Rd
-688321a627ca07983538ac4da02e98f8 *man/dataDWD.Rd
+d316db59323ad86433422e91db71a6b6 *man/createDoc.Rd
+9ad3910f7f64acc27a5674fcba1c66f8 *man/createFun.Rd
+3748ff69fd6a92b89458a2a90e41db10 *man/dataDWD.Rd
 28c35383fb9a9470d9414c86b6e4ff94 *man/dataStr.Rd
 45ea10b50072bbdd71ba8c96f8b2cdbf *man/distance.Rd
 c04d7afa7a1d674b0dabe3d760ff7ccb *man/divPal.Rd
@@ -209,7 +210,7 @@ dde0cf7af1e7dedf2c1fadf36f594497 *man/spiralDateAnim.Rd
 a831fa360b5e1556ba7eed3ca68ac24a *man/textField.Rd
 93ae09b99b944d9c866b5ac2b8f04921 *man/timer.Rd
 4e6bce1ad9bce038566cbb6aae25d17c *man/toupper1.Rd
-7d7accb3f62b7b3079fa009bb659dbca *man/traceCall.Rd
+32de1559af80f131de965fcaa38e399c *man/traceCall.Rd
 81188e20865a73df19f4f54264eb5eaf *man/unitHydrograph.Rd
 856d8669d55d5446a0c8f8b7bce0bbde *man/yearSample.Rd
 7b478e7861578864d2718753ab7940ef *vignettes/berryFunctions.Rmd
