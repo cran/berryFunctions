@@ -4,12 +4,14 @@
 \alias{seasonality}
 \title{Seasonality analysis}
 \usage{
-seasonality(dates, values, data, drange = NULL, vrange = NULL, shift = 0,
-  janline = TRUE, nmax = 0, maxargs = NULL, plot = 1,
-  months = substr(month.abb, 1, 1), xlab = "Year", ylab = "Month",
-  zlab = substitute(values), ylim = NA, xaxs = "r", yaxs = "i",
+seasonality(dates, values, data, drange = NA, vrange = NA, shift = 0,
+  janline = TRUE, nmax = 0, maxargs = NULL, plot = 1, add = FALSE,
+  nmin = 100, probs = 0.5, width = 1, text = TRUE, textargs = NULL,
+  months = substr(month.abb, 1, 1), slab = "Month", tlab = "Year",
+  vlab = NA, xlim = NA, ylim = NA, xaxs = NA, yaxs = NA,
   main = "Seasonality", adj = 0.2, mar = c(3, 3, 4, 1), mgp = c(1.7,
-  0.7, 0), keeppar = TRUE, legargs = NULL, ...)
+  0.7, 0), keeppar = TRUE, legend = TRUE, legargs = NULL,
+  returnall = FALSE, ...)
 }
 \arguments{
 \item{dates}{Dates in ascending order. 
@@ -20,11 +22,11 @@ as accepted (and coerced) by \code{\link{as.Date}}}
 
 \item{data}{Optional: data.frame with the column names as given by dates and values}
 
-\item{drange}{Optional date range (analogous to xlim), 
-can be a vector like \code{dates}. DEFAULT: NULL}
+\item{drange}{Optional date range (analogous to xlim), can be a vector like 
+\code{dates}. DEFAULT: NA (computed from \code{dates} internally)}
 
-\item{vrange}{Optional value range (analogous to ylim), 
-can be a vector like \code{values}. DEFAULT: NULL}
+\item{vrange}{Optional value range (analogous to ylim), can be a vector like
+\code{values}. DEFAULT: NA (computed from \code{values} internally)}
 
 \item{shift}{Number of days to move the year-break to. 
 E.g. shift=61 for German hydrological year (Nov to Oct). DEFAULT: 0}
@@ -36,26 +38,43 @@ January 1st if \code{shift!=0}? DEFAULT: TRUE}
 Currently, only 0 and 1 are implemented. DEFAULT: 0}
 
 \item{maxargs}{List of arguments passed to \code{\link{lines}} for annual maxima,
-e.g. \code{maxargs=list(type="l", col="red", lty=3)}. DEFAULT: NULL}
+e.g. \code{maxargs=list(type="l", col="red", lty=3)}. 
+DEFAULT: NULL (several internal defaults are used, but can be overridden)}
 
 \item{plot}{Integer specifying the type of plot. Can be a vector to produce several plots. \cr 
-0: none, only data.frame with annual maxima. \cr
+0: none, only return the data.frame with annual maxima. \cr
 1: color coded doy (day of the year) over year (the default). \cr
 2: Color coded spiral graph with \code{\link{spiralDate}}. \cr
 3: Spaghetti line plot with discharge over doy, one line per year. \cr
-4: plot of annmax over time for crude trend analysis. \cr
+4: Annmax over time for crude trend analysis. \cr
+5: \code{probs} \code{\link{quantileMean}} over doy, with optional 
+   aggregation window (\code{width}) around each doy. \cr
 DEFAULT: 1}
+
+\item{add}{Logical. Add to existing plot? DEFAULT: FALSE}
+
+\item{nmin}{Minimum number of values that must be present per (hydrological) year
+to be plotted in plot type 4. DEFAULT: 100}
+
+\item{probs}{Probabilities passed to \code{\link{quantileMean}} for plot=5. DEFAULT: 0.5}
+
+\item{width}{Window width for plot=5. DEFAULT: 1}
+
+\item{text}{Logical. Call \code{\link{textField}} if plot=5? DEFAULT: TRUE}
+
+\item{textargs}{List of arguments passed to \code{\link{textField}} for plot=5. DEFAULT: NULL}
 
 \item{months}{Labels for the months. DEFAULT: J,F,M,A,M,J,J,A,S,O,N,D}
 
-\item{xlab, ylab, zlab}{Labels for the axes and title of \code{\link{colPointsLegend}}. 
-Note that these are switched in plot 3 and 4.
-DEFAULT: Year, Month, substitute(values)}
+\item{slab, tlab, vlab}{Labels for the \bold{s}eason, \bold{t}ime (year) and \bold{v}alues
+used on the axes and title of \code{\link{colPointsLegend}}. 
+DEFAULT: "Month", "Year", substitute(values)}
 
-\item{ylim}{Limits of y axis. DEFAULT: NA (specified internally per plot type)}
+\item{xlim, ylim}{Limits of x and y axis. DEFAULT: NA (specified internally per plot type)}
 
 \item{xaxs, yaxs}{x and y Axis style, see \code{\link{par}}. 
-DEFAULT: "r" (regular 4\% expansion), "i" (internal range only)}
+Use "r" for regular 4\% expansion, "i" for in range only.
+DEFAULT: NA (specified internally per plot type)}
 
 \item{main, adj}{Graph title and offset to the left 
 (\code{adj} passsed to \code{\link{title}}). DEFAULT: "Seasonality", 0.2}
@@ -66,21 +85,31 @@ DEFAULT: c(3,3,4,1), c(1.7,0.7,0) (Changed for plot 3:4 if not given)}
 \item{keeppar}{Logical: Keep the margin parameters? If FALSE, they are reset
 to the previous values. DEFAULT: TRUE}
 
+\item{legend}{Logical. Should a legend be drawn? DEFAULT: TRUE}
+
 \item{legargs}{List of arguments passed as \code{legargs} to \code{\link{colPoints}}.
 DEFAULT: NULL (internally, plots 3:4 have density=F as default)}
 
+\item{returnall}{Logical: return all relevant output as a list instead of only}
+
 \item{\dots}{Further arguments passed to \code{\link{colPoints}} like 
-pch, main, xaxs, but not Range (use \code{vrange}).
+quiet=TRUE, pch, main, xaxs, but not Range (use \code{vrange}).
 Passed to \code{\link{spiralDate}} if \code{plot=2}, like add, format, lines.}
 }
 \value{
-Data.frame with \code{year}, \code{n}umber of nonNA entries, 
+The output is always invisible, don't forget to assign it. 
+        If returnall=FALSE: Data.frame with \code{year}, \code{n}umber of nonNA entries, 
         \code{max} value + \code{doy} of annual maxima.
-        Please note that the column year does not note the calendrical year 
-        if \code{shift!=0}.
+        Please note that the column year does not match the calendrical year 
+        if \code{shift!=0}. \cr
+        if returnall=TRUE: a list with \code{annmax} (df from above) as well as: \cr
+        \code{data}: data.frame(doy, values, year) and optionally: \cr
+        \code{plot1, plot3, plot4, plot5}: outputs from \code{\link{colPoints}} \cr
+        \code{plot2}: output list from \code{\link{spiralDate}} \cr
+        and other elements depending on plot type, \code{like data3, data5, probs5, width5}.
 }
 \description{
-Plot time series to examine it for seasonality
+Examine time series for seasonality of high (low) values
 }
 \examples{
 browseURL("http://nrfa.ceh.ac.uk/data/station/meanflow/39072")
@@ -95,27 +124,36 @@ seas <- seasonality(date, discharge, data=Q, shift=100, main="NRFA: Thames\\nRoy
 head(seas)
 # notice how n for nonmissing values is lower in one single hydrological year, 
 # which includes parts of two consecutive calendarical years.
-seas <- seasonality(date, discharge, data=Q, plot=2) # most floods in winter
-seas <- seasonality(date, discharge, data=Q, plot=3)
-seas <- seasonality(date, discharge, data=Q, plot=3, shift=100)
-seasonality(date, discharge, data=Q[200:300,], plot=3, nmax=1)
-seasonality(date, discharge, data=Q[100:200,], plot=3, nmax=1, shift=100)
+
+# Be careful with your interpretation. This looks normal up to 2007, but then BAM!:
+seasonality(date, discharge, data=Q[Q$date<as.Date("2007-07-15"),], plot=3, shift=100, nmax=1)
+seasonality(date, discharge, data=Q[Q$date<as.Date("2007-08-15"),], plot=3, shift=100, nmax=1)
+
+# Shift is important. You don't want to have this event included twice:
+seasonality(date, discharge, data=Q[850:950,], plot=3, nmax=1, quiet=TRUE, shift=100)
+
+seasonality(date, discharge, data=Q, plot=2) # most floods in winter
+seasonality(date, discharge, data=Q, plot=4, vlab="Dude, look at Q!")
+seasonality(date, discharge, data=Q, plot=4, shift=100)
+s <- seasonality(date, discharge, data=Q, plot=5, shift=100, width=7, returnall=TRUE)
+str(s, max.lev=1)
 
 \dontrun{
 dev.new(noRStudioGD=TRUE, record=TRUE)     # large graph on 2nd monitor
 par(mfrow=c(2,2))
-seas <- seasonality(date, discharge, data=Q, plot=1:4, shift=100)
-seas <- seasonality(date, discharge, data=Q, plot=1:4, lwd=2)
-seas <- seasonality(date, discharge, data=Q, plot=1:4, nmax=1, shift=100)
-seas <- seasonality(date, discharge, data=Q, plot=1:4, col=divPal(100, ryb=TRUE))
+seasonality(date, discharge, data=Q, plot=1:4, shift=100)
+seasonality(date, discharge, data=Q, plot=1:4, lwd=2)
+seasonality(date, discharge, data=Q, plot=1:4, nmax=1, shift=100)
+seasonality(date, discharge, data=Q, plot=1:4, col=divPal(100, ryb=TRUE))
 }
 
 }
 \author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Jul 2016
+Berry Boessenkool, \email{berry-b@gmx.de}, Jul-Oct 2016
 }
 \seealso{
-\code{\link{spiralDate}}
+\code{\link{spiralDate}}, \code{\link{colPoints}},
+         \url{http://nwis.waterdata.usgs.gov/nwis/peak?search_site_no=01400500}
 }
 \keyword{aplot}
 

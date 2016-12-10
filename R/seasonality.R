@@ -1,13 +1,20 @@
 #' Seasonality analysis
 #'
-#' Plot time series to examine it for seasonality
+#' Examine time series for seasonality of high (low) values
 #'
-#' @return Data.frame with \code{year}, \code{n}umber of nonNA entries, 
+#' @return The output is always invisible, don't forget to assign it. 
+#'         If returnall=FALSE: Data.frame with \code{year}, \code{n}umber of nonNA entries, 
 #'         \code{max} value + \code{doy} of annual maxima.
-#'         Please note that the column year does not note the calendrical year 
-#'         if \code{shift!=0}. 
-#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Jul 2016
-#' @seealso \code{\link{spiralDate}}
+#'         Please note that the column year does not match the calendrical year 
+#'         if \code{shift!=0}. \cr
+#'         if returnall=TRUE: a list with \code{annmax} (df from above) as well as: \cr
+#'         \code{data}: data.frame(doy, values, year) and optionally: \cr
+#'         \code{plot1, plot3, plot4, plot5}: outputs from \code{\link{colPoints}} \cr
+#'         \code{plot2}: output list from \code{\link{spiralDate}} \cr
+#'         and other elements depending on plot type, \code{like data3, data5, probs5, width5}.
+#' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Jul-Oct 2016
+#' @seealso \code{\link{spiralDate}}, \code{\link{colPoints}},
+#'          \url{http://nwis.waterdata.usgs.gov/nwis/peak?search_site_no=01400500} 
 #' @keywords aplot
 #' @export
 #' @examples
@@ -23,19 +30,27 @@
 #' head(seas)
 #' # notice how n for nonmissing values is lower in one single hydrological year, 
 #' # which includes parts of two consecutive calendarical years.
-#' seas <- seasonality(date, discharge, data=Q, plot=2) # most floods in winter
-#' seas <- seasonality(date, discharge, data=Q, plot=3)
-#' seas <- seasonality(date, discharge, data=Q, plot=3, shift=100)
-#' seasonality(date, discharge, data=Q[200:300,], plot=3, nmax=1)
-#' seasonality(date, discharge, data=Q[100:200,], plot=3, nmax=1, shift=100)
+#' 
+#' # Be careful with your interpretation. This looks normal up to 2007, but then BAM!:
+#' seasonality(date, discharge, data=Q[Q$date<as.Date("2007-07-15"),], plot=3, shift=100, nmax=1)
+#' seasonality(date, discharge, data=Q[Q$date<as.Date("2007-08-15"),], plot=3, shift=100, nmax=1)
+#' 
+#' # Shift is important. You don't want to have this event included twice:
+#' seasonality(date, discharge, data=Q[850:950,], plot=3, nmax=1, quiet=TRUE, shift=100)
+#' 
+#' seasonality(date, discharge, data=Q, plot=2) # most floods in winter
+#' seasonality(date, discharge, data=Q, plot=4, vlab="Dude, look at Q!")
+#' seasonality(date, discharge, data=Q, plot=4, shift=100)
+#' s <- seasonality(date, discharge, data=Q, plot=5, shift=100, width=7, returnall=TRUE)
+#' str(s, max.lev=1)
 #' 
 #' \dontrun{
 #' dev.new(noRStudioGD=TRUE, record=TRUE)     # large graph on 2nd monitor
 #' par(mfrow=c(2,2))
-#' seas <- seasonality(date, discharge, data=Q, plot=1:4, shift=100)
-#' seas <- seasonality(date, discharge, data=Q, plot=1:4, lwd=2)
-#' seas <- seasonality(date, discharge, data=Q, plot=1:4, nmax=1, shift=100)
-#' seas <- seasonality(date, discharge, data=Q, plot=1:4, col=divPal(100, ryb=TRUE))
+#' seasonality(date, discharge, data=Q, plot=1:4, shift=100)
+#' seasonality(date, discharge, data=Q, plot=1:4, lwd=2)
+#' seasonality(date, discharge, data=Q, plot=1:4, nmax=1, shift=100)
+#' seasonality(date, discharge, data=Q, plot=1:4, col=divPal(100, ryb=TRUE))
 #' }
 #' 
 #' @param dates Dates in ascending order. 
@@ -43,10 +58,10 @@
 #'              as accepted (and coerced) by \code{\link{as.Date}}
 #' @param values Values to be mapped in color with \code{\link{colPoints}} 
 #' @param data Optional: data.frame with the column names as given by dates and values
-#' @param drange Optional date range (analogous to xlim), 
-#'               can be a vector like \code{dates}. DEFAULT: NULL
-#' @param vrange Optional value range (analogous to ylim), 
-#'               can be a vector like \code{values}. DEFAULT: NULL
+#' @param drange Optional date range (analogous to xlim), can be a vector like 
+#'               \code{dates}. DEFAULT: NA (computed from \code{dates} internally)
+#' @param vrange Optional value range (analogous to ylim), can be a vector like
+#'              \code{values}. DEFAULT: NA (computed from \code{values} internally)
 #' @param shift Number of days to move the year-break to. 
 #'              E.g. shift=61 for German hydrological year (Nov to Oct). DEFAULT: 0
 #' @param janline Logical: Should horizontal line be plotted at 
@@ -54,64 +69,85 @@
 #' @param nmax Number of annual maxima to be marked, plotted and returned. 
 #'             Currently, only 0 and 1 are implemented. DEFAULT: 0
 #' @param maxargs List of arguments passed to \code{\link{lines}} for annual maxima,
-#'                e.g. \code{maxargs=list(type="l", col="red", lty=3)}. DEFAULT: NULL
+#'                e.g. \code{maxargs=list(type="l", col="red", lty=3)}. 
+#'                DEFAULT: NULL (several internal defaults are used, but can be overridden)
 #' @param plot Integer specifying the type of plot. Can be a vector to produce several plots. \cr 
-#'             0: none, only data.frame with annual maxima. \cr
+#'             0: none, only return the data.frame with annual maxima. \cr
 #'             1: color coded doy (day of the year) over year (the default). \cr
 #'             2: Color coded spiral graph with \code{\link{spiralDate}}. \cr
 #'             3: Spaghetti line plot with discharge over doy, one line per year. \cr
-#'             4: plot of annmax over time for crude trend analysis. \cr
+#'             4: Annmax over time for crude trend analysis. \cr
+#'             5: \code{probs} \code{\link{quantileMean}} over doy, with optional 
+#'                aggregation window (\code{width}) around each doy. \cr
 #'             DEFAULT: 1
+#' @param add Logical. Add to existing plot? DEFAULT: FALSE
+#' @param nmin Minimum number of values that must be present per (hydrological) year
+#'             to be plotted in plot type 4. DEFAULT: 100
+#' @param probs Probabilities passed to \code{\link{quantileMean}} for plot=5. DEFAULT: 0.5
+#' @param width Window width for plot=5. DEFAULT: 1
+#' @param text Logical. Call \code{\link{textField}} if plot=5? DEFAULT: TRUE
+#' @param textargs List of arguments passed to \code{\link{textField}} for plot=5. DEFAULT: NULL
 #' @param months Labels for the months. DEFAULT: J,F,M,A,M,J,J,A,S,O,N,D
-#' @param xlab,ylab,zlab Labels for the axes and title of \code{\link{colPointsLegend}}. 
-#'                       Note that these are switched in plot 3 and 4.
-#'                       DEFAULT: Year, Month, substitute(values)
-#' @param ylim Limits of y axis. DEFAULT: NA (specified internally per plot type)
+#' @param slab,tlab,vlab Labels for the \bold{s}eason, \bold{t}ime (year) and \bold{v}alues
+#'                       used on the axes and title of \code{\link{colPointsLegend}}. 
+#'                       DEFAULT: "Month", "Year", substitute(values)
+#' @param xlim,ylim Limits of x and y axis. DEFAULT: NA (specified internally per plot type)
 #' @param xaxs,yaxs x and y Axis style, see \code{\link{par}}. 
-#'                DEFAULT: "r" (regular 4\% expansion), "i" (internal range only)
+#'                  Use "r" for regular 4\% expansion, "i" for in range only.
+#'                  DEFAULT: NA (specified internally per plot type)
 #' @param main,adj Graph title and offset to the left 
-#'              (\code{adj} passsed to \code{\link{title}}). DEFAULT: "Seasonality", 0.2
+#'                 (\code{adj} passsed to \code{\link{title}}). DEFAULT: "Seasonality", 0.2
 #' @param mar,mgp Parameters specifying plot margin size and labels placement.
 #'                DEFAULT: c(3,3,4,1), c(1.7,0.7,0) (Changed for plot 3:4 if not given)
 #' @param keeppar Logical: Keep the margin parameters? If FALSE, they are reset
 #'                to the previous values. DEFAULT: TRUE
+#' @param legend Logical. Should a legend be drawn? DEFAULT: TRUE
 #' @param legargs List of arguments passed as \code{legargs} to \code{\link{colPoints}}.
 #'                DEFAULT: NULL (internally, plots 3:4 have density=F as default)
+#' @param returnall Logical: return all relevant output as a list instead of only                
 #' @param \dots Further arguments passed to \code{\link{colPoints}} like 
-#'              pch, main, xaxs, but not Range (use \code{vrange}).
+#'              quiet=TRUE, pch, main, xaxs, but not Range (use \code{vrange}).
 #'              Passed to \code{\link{spiralDate}} if \code{plot=2}, like add, format, lines.
 #'
 seasonality <- function(
   dates,
   values,
   data,
-  drange=NULL,
-  vrange=NULL,
+  drange=NA,
+  vrange=NA,
   shift=0,
   janline=TRUE,
   nmax=0,
   maxargs=NULL,
   plot=1,
+  add=FALSE,
+  nmin=100,
+  probs=0.5,
+  width=1,
+  text=TRUE,
+  textargs=NULL,
   months=substr(month.abb,1,1),
-  xlab="Year",
-  ylab="Month",
-  zlab=substitute(values),
+  slab="Month",
+  tlab="Year",
+  vlab=NA,
+  xlim=NA,
   ylim=NA,
-  xaxs="r",
-  yaxs="i",
+  xaxs=NA,
+  yaxs=NA,
   main="Seasonality",
   adj=0.2,
   mar=c(3,3,4,1),
   mgp=c(1.7,0.7,0),
   keeppar=TRUE,
+  legend=TRUE,
   legargs=NULL,
+  returnall=FALSE,
   ...
 )
 {
-# Convert before promise is evaluated: 
-missingzlab <- missing(zlab)
-isnaylim <- all(is.na(ylim))
-if(missingzlab) zlab <- deparse(zlab)
+# Convert before promise 'values' is evaluated: 
+vlab1 <- if(is.na(vlab)) deparse(substitute(values)) else vlab
+allNA <- function(x) all(is.na(x))
 # input columns or vectors
 if(!missing(data)) # get vectors from data.frame
   {
@@ -121,12 +157,13 @@ if(!missing(data)) # get vectors from data.frame
 #check input
 if(length(dates)!=length(values)) stop("length of dates and values not equal (",
                                          length(dates),", ",length(values),").")
-if(!all(plot %in% 0:4)) stop("The argument 'plot' must be an integer in 0:4, not ", plot)
+if(!all(plot %in% 0:5)) stop("The argument 'plot' must be an integer in 0:5, not ", plot)
 #
+# ### check dates for completeness ###
 # convert to date
 dates <- as.Date(dates)
 # date range (analogous to xlim):
-if(!is.null(drange))
+if(!allNA(drange))
   {
   dmin <- min(as.Date(drange), na.rm=TRUE)
   dmax <- max(as.Date(drange), na.rm=TRUE)
@@ -138,9 +175,9 @@ if(!is.null(drange))
   drange3 <- as.numeric(format(c(dmin,dmax), "%Y")) # for plot=3 option
   }
 # values range
-vrange <- range(   if(!is.null(vrange)) vrange else values  , na.rm=TRUE)  
+vrange <- range(   if(!allNA(vrange)) vrange else values  , na.rm=TRUE)  
 # shift break to other month
-if(shift<0) warning("'shift' was negative. Absolute value now used.")
+if(shift<0) warning("'shift' was negative (",shift,"). Absolute value now used.")
 shift <- abs(shift)
 if(shift>366) stop("'shift' is", shift, ", but should be between 0 and 366.")
 dates <- dates + shift
@@ -154,12 +191,18 @@ doy  <- as.numeric(format(dates,"%j")) # Day of Year
 annmax <- tapply(X=values, INDEX=year, FUN=function(x) sum(!is.na(x)))
 annmax <- data.frame(year=as.numeric(names(annmax)), n=annmax)
 rownames(annmax) <- NULL
-annmax$max <- tapply(X=values, INDEX=year, FUN=max, na.rm=TRUE)
-annmax$doy <- tapply(X=values, INDEX=year, FUN=which.max)
+mymax <-      function(xx) if(allNA(xx)) NA else max(xx, na.rm=TRUE)
+mywhichmax <- function(xx) if(allNA(xx)) NA else which.max(xx)
+annmax$max <- tapply(X=values, INDEX=year, FUN=mymax)
+annmax$doy <- tapply(X=values, INDEX=year, FUN=mywhichmax)
 annmax$index <- tapply(X=values, INDEX=year, FUN=length)
 annmax$index <- c(0,head(cumsum(annmax$index),-1)) + annmax$doy
+# correct doy if time series doesn't start at january 1st - shift:
+annmax$doy <- as.numeric(format(dates[annmax$index],"%j"))
 ### nmax for secondary, tertiary, ... maxima. with new function for event separation
 #
+# output preparation
+output <- list(annmax=annmax)
 # PLOTTING
 #
 # Margin parameters
@@ -170,76 +213,144 @@ labs <- monthLabs(2004,2004, npm=1) + shift
 ldoy <- as.numeric(format(labs,"%j"))
 # Actual plotting
 #
+xlim1 <- if(allNA(ylim)) extendrange(year, f=0.01) else xlim
+xaxs1 <- if(is.na(xaxs)) "i" else xaxs
+#
 if(1 %in% plot) # doy ~ year, col=Q
 {
-  if(isnaylim) ylim <- c(370,-3)
-  colPoints(year, doy, values, Range=vrange, add=FALSE, zlab=zlab,
-            ylab=ylab, xlab=xlab, yaxt="n", ylim=ylim, yaxs=yaxs, legargs=legargs, ...)
+  ylim1 <- if(allNA(ylim)) c(370,-3) else ylim
+  yaxs1 <- if(is.na(yaxs)) "i" else yaxs
+  output$plot1 <- colPoints(year, doy, values, Range=vrange, add=add, yaxt="n",
+            xlim=xlim1, ylim=ylim1, xaxs=xaxs1, yaxs=yaxs1, 
+            ylab=slab, xlab=tlab, zlab=vlab1, legend=legend, legargs=legargs, ...)
   # Axis labelling
+  if(!add){
   if(janline & shift!=0) abline(h=shift+1)
   axis(2, ldoy, months, las=1)
   title(main=main, adj=adj)
-  if(nmax==1) do.call(lines, owa(list(x=annmax$year, y=annmax$doy, type="o"), maxargs))
+  }
+  if(nmax==1) do.call(points, owa(list(x=annmax$year, y=annmax$doy, 
+                                      pch=3, cex=0.5), maxargs, "x","y"))
 }
 #
 if(2 %in% plot) # Spiral graph, col=Q
 {
-  spd <- spiralDate(dates-shift, values, zlab=zlab, drange=drange, vrange=vrange, 
-             months=months, shift=shift, legargs=legargs, ...)
+  output$plot2 <- spd <- spiralDate(dates-shift, values, zlab=vlab1, drange=drange, 
+             vrange=vrange, months=months, shift=shift, legend=legend, legargs=legargs, add=add, ...)
+  if(!add){
   title(main=main, adj=adj)
   if(janline) segments(x0=0, y0=0, x1=sin(shift/365.25*2*pi), y1=cos(shift/365.25*2*pi))
-  if(missing(nmax)) nmax <- 0 # looks really ugly
-  if(nmax==1) do.call(lines, owa(list(x=spd[annmax$index,"x"], 
-                                      y=spd[annmax$index,"y"], type="o"), maxargs))
+  }
+  if(nmax==1) do.call(points, owa(list(x=spd[annmax$index,"x"], y=spd[annmax$index,"y"],
+                                       pch=3, cex=0.3), maxargs, "x","y"))
 }
 # parameters for both next plots
 if(missing(mar)) par(mar=c(3,4,4,1))
 if(missing(mgp)) mgp <- c(2.7,0.7,0)
-if(isnaylim) ylim <- range(values, na.rm=TRUE)
-if(missing(yaxs)) yaxs <- "r"
+xlim3 <- if(allNA(xlim)) c(0,367) else xlim
+ylim3 <- if(allNA(ylim)) lim0(values) else ylim
+xaxs3 <- if(is.na(xaxs)) "i" else xaxs
+yaxs3 <- if(is.na(yaxs)) "r" else yaxs
 #
+output$data <- data3 <- data.frame(doy, values, year)
 if(3 %in% plot) # Q~doy, col=year
 {
   # date year range
   if(!exists("drange3", inherits=FALSE)) drange3 <- range(year)
-  xaxs3 <- if(missing(xaxs)) "i" else xaxs
   # NAs between years
-  data3 <- data.frame(doy, values, year)
   if(diff(range(year, na.rm=TRUE))>0)
     {
     separators <- which(diff(year)!=0)
     separators <- separators + 1:length(separators)
-    data3 <- insertRows(data3, separators)
+    data3 <- insertRows(output$data, separators)
+    output$data3 <- data3
     }
   # plot
-  colPoints(doy, values, year, data=data3, Range=drange3, add=FALSE, zlab=xlab,
-            ylab="", xlab=ylab, xaxt="n", legargs=owa(list(density=FALSE),legargs), 
-            ylim=ylim, yaxs=yaxs, lines=TRUE, nint=1, xaxs=xaxs3,
-            if(!exists("col", inherits=FALSE)) col=seqPal(100, colors=c("red","blue")), 
-             ...)
+  output$plot3 <- colPoints(doy, values, year, data=data3, Range=drange3, add=add, 
+      zlab=tlab, ylab="", xlab=slab, xaxt="n", legend=legend, legargs=owa(list(density=FALSE),legargs), 
+      xlim=xlim3, ylim=ylim3, xaxs=xaxs3, yaxs=yaxs3, lines=TRUE, nint=1,
+      if(!exists("col", inherits=FALSE)) col=seqPal(100, colors=c("red","blue")),  ...)
+  if(!add){
   mtext("") # weird behaviour: title not added without this line. ### Is this a bug?
-  title(ylab=zlab, mgp=mgp)
+  title(ylab=vlab1, mgp=mgp)
   # Axis labelling
   axis(1, ldoy, months, las=1)
   title(main=main, adj=adj)  
   if(janline & shift!=0) abline(v=shift+1)
-  if(nmax==1) do.call(lines, owa(list(x=doy[annmax$index], y=values[annmax$index],
-                                    type="p", pch=21, cex=1.5, lwd=2, bg="white"), maxargs))
+  if(nmax==1) do.call(points, owa(list(x=doy[annmax$index], y=values[annmax$index],
+                                  pch=21, cex=0.8, lwd=1.5, bg="white"), maxargs))
+  }
 }
 #
 if(4 %in% plot) # annmax~year, col=n
 {
-  if(missingzlab) zlab <- paste("Annual max", zlab)
-  colPoints("year", "max", "n", data=annmax, add=FALSE, zlab="n nonNA / hydrol. year",
-            ylab="", xlab=xlab, legargs=owa(list(density=FALSE),legargs), lines=TRUE, ...)
+  vlab4 <- if(is.na(vlab)) paste("annual maximum", vlab1) else vlab
+  nalab <- if(shift==0) "n nonNA / year" else "n nonNA / hydrol. year"
+  annmax4 <- annmax
+  annmax4[ annmax4$n < nmin , c("n", "max")] <- NA
+  output$plot4 <- colPoints("year", "max", "n", data=annmax4, add=add, zlab=nalab,
+            xlim=xlim1, xaxs=xaxs1, ylim=ylim3, yaxs=yaxs3, ylab="", xlab=tlab, 
+            legend=legend, legargs=owa(list(density=FALSE),legargs), lines=TRUE, ...)
+  if(!add){
   mtext("") ### as above
-  title(ylab=zlab, mgp=mgp)
-  if(missing(main)) main <- "Trend of annual maxima"
+  title(ylab=vlab4, mgp=mgp)
+  if(missing(main)) main <- "Annual maxima"
   title(main=main, adj=adj)  
+  }
   ### nmax once larger values are possible
 }
 #
+if(5 %in% plot) # Qpercentile~doy, col=n
+{
+  ## DOY cyclicity (not perfect!!)
+  #doyselect <- function(d) sapply(d, function(d) if(d<1) 365+d else if(d>366) d-366 else d)
+  ## select all the dates width days (e.g one week) around a DOY:
+  #doyselect(day+(-width):width)
+  # width control:
+  if(width %% 2 == 0)
+    {
+    warning("even width (", width, ") is changed to odd width (", width+1, ").")
+    width <- width+1
+  }
+  # Half the width in each direction:
+  s <- floor(width/2)
+  output$width5 <- width
+  output$probs5 <- probs
+  Qp <- sapply(1:366, function(day)
+    {
+    select <- unique(unlist(lapply(which(doy==day), function(w) (w-s):(w+s))))
+    select <- select[select>0 & select<length(doy)]
+    c(length(select), quantileMean(values[select], probs=probs, na.rm=TRUE)   )
+    }, USE.NAMES=FALSE)
+  Qp <- t(Qp)
+  colnames(Qp)[1] <- "n"
+  output$data5 <- Qp
+  # plot
+  ylim5 <- if(allNA(ylim)) lim0(Qp[,-1]) else ylim
+  zlab5 <- if(s==0) "n per doy" else paste0("n per (doy +- ", s,")")
+  vlab5 <- if(length(probs)==1) paste0(vlab1, " (",probs*100,"th percentile") else
+                               paste0(vlab1, " percentile")
+  vlab5 <- if(is.na(vlab))vlab5 else vlab 
+  output$plot5 <- colPoints(1:366, Qp[,2], Qp[,1], add=add, zlab=zlab5,
+            ylab="", xlab=slab, xaxt="n", legend=legend, legargs=owa(list(density=FALSE),legargs), 
+            xlim=xlim3, ylim=ylim5, xaxs=xaxs3, yaxs=yaxs3, lines=TRUE, nint=3, ...)
+  if(length(probs)!=1) 
+    {
+    for(i in 2:length(probs))
+    colPoints(1:366, Qp[,i+1], Qp[,1], add=TRUE, legend=FALSE, lines=TRUE, nint=3, ...)
+    if(text) do.call(textField, owa(list(x=15, y=Qp[15,-1], labels=paste0(round(probs*100,1),"%"), quiet=TRUE), textargs))
+    }
+  if(!add){
+  mtext("") # weird behaviour: title not added without this line. ### Is this a bug?
+  title(ylab=vlab5, mgp=mgp)
+  # Axis labelling
+  axis(1, ldoy, months, las=1)
+  title(main=main, adj=adj)  
+  if(janline & shift!=0) abline(v=shift+1)
+  }
+}
+#
 # Function output
-return(annmax)
+return(invisible(if(returnall) output else annmax))
 }
 

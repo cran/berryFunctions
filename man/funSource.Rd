@@ -4,27 +4,45 @@
 \alias{funSource}
 \title{Source code of a function}
 \usage{
-funSource(x, character.only = FALSE)
+funSource(x, character.only = is.character(x), trydirect = TRUE)
 }
 \arguments{
 \item{x}{function name, with or without quotation marks}
 
-\item{character.only}{If TRUE, look for SomeFun instead of MyFun if  MyFun <- "SomeFun". DEFAULT: FALSE}
+\item{character.only}{If TRUE, look for SomeFun instead of MyFun if
+MyFun <- "SomeFun". DEFAULT: \code{\link{is.character}(x)}}
+
+\item{trydirect}{If TRUE, try direct url to file \code{x.R}. DEFAULT: TRUE}
 }
 \value{
-link that is also opened
+links that are also opened with \code{\link{browseURL}}
 }
 \description{
-open github.com/cran source code of a function in a package
-}
-\note{
-This is not finished yet...
+open source code of a function in a loaded or specified package on github.com/cran or github.com/wch/r-source
 }
 \examples{
-# ToDo: add message: "function also found in: " 
+\dontrun{ ## browser windows should not be openend in CRAN checks
+library("berryFunctions")
+funSource(colPoints) 
+funSource("head") 
+funSource("require", trydirect=FALSE) 
+
+funSource(earthDist) 
+funSource(OSMscale::earthDist) 
+funSource("OSMscale::earthDist") 
+}
+
+\dontrun{ # developmental testing
+require(plotrix); require(scales)
+funSource(rescale
+
+tail <- function(...) stop("This is a dummy function. Type: rm(tail)")
+funSource("tail")
+rm(tail)
+}
 
 }
 \author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Jan 2016
+Berry Boessenkool, \email{berry-b@gmx.de}, Jan+Dec 2016
 }
 

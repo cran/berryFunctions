@@ -4,8 +4,8 @@
 \alias{spiralDate}
 \title{Spiral graph of time series}
 \usage{
-spiralDate(dates, values, data, drange = NULL, vrange = NULL,
-  months = substr(month.abb, 1, 1), add = FALSE, shift = 0, prop = NULL,
+spiralDate(dates, values, data, drange = NA, vrange = NA,
+  months = substr(month.abb, 1, 1), add = FALSE, shift = 0, prop = NA,
   zlab = substitute(values), format = "\%Y", nint = 1, ...)
 }
 \arguments{
@@ -17,9 +17,9 @@ as accepted (and coerced) by \code{\link{as.Date}}}
 
 \item{data}{Optional: data.frame with the column names as given by dates and values}
 
-\item{drange}{Optional date range (analogous to xlim), can be a vector like \code{dates}. DEFAULT: NULL}
+\item{drange}{Optional date range (analogous to xlim), can be a vector like \code{dates}. DEFAULT: NA}
 
-\item{vrange}{Optional value range (analogous to ylim), can be a vector like \code{values}. DEFAULT: NULL}
+\item{vrange}{Optional value range (analogous to ylim), can be a vector like \code{values}. DEFAULT: NA}
 
 \item{months}{Labels for the months. DEFAULT: J,F,M,A,M,J,J,A,S,O,N,D}
 
@@ -27,7 +27,7 @@ as accepted (and coerced) by \code{\link{as.Date}}}
 
 \item{shift}{Number of days to move january 1st clockwise. DEFAULT: 0}
 
-\item{prop}{Proportion of the data to be actually plotted, used in \code{\link{spiralDateAnim}}. DEFAULT: NULL}
+\item{prop}{Proportion of the data to be actually plotted, used in \code{\link{spiralDateAnim}}. DEFAULT: NA (ignored)}
 
 \item{zlab}{Title of \code{\link{colPointsLegend}}}
 
@@ -61,13 +61,10 @@ colPoints(time,vals,vals, data=fakeData, col=divPal(100), add=FALSE, legend=FALS
           lines=TRUE, pch=NA, nint=1, lwd=2)
 title(main="classical time series\\nworks badly for long time series\\nshows trends well")
 
-fakeData$Year <- as.numeric(format(fakeData$time,"\%Y"))
-fakeData$DOY  <- as.numeric(format(fakeData$time,"\%j")) # Day of Year
-colPoints(Year, DOY, vals, data=fakeData, add=FALSE, zlab="Daily mean discharge",
-           ylim=c(366,0), col=divPal(100), legend=FALSE)
-title(main="yearly time series\\nday of year over time\\nfails for cyclicity over the winter")
+seasonality(time, vals, fakeData, col=divPal(100), mar=c(3,3,6,1), legend=FALSE, main="", shift=61)
+title(main="yearly time series\\nday of year over time\\nfails for cyclicity over all year")
 
-spiralDate(time,vals, data=fakeData, col=divPal(100), legargs=list(y1=70,y2=80))
+spiralDate(time,vals, data=fakeData, col=divPal(100), legargs=list(y1=0.7,y2=0.8))
 title(main="spiral graph\\nshows cyclic values nicely 
             trends are harder to detect\\nrecent values = more visual weight")
 
