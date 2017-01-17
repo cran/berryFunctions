@@ -4,7 +4,8 @@
 \alias{logHist}
 \title{Histogram of logarithmic values}
 \usage{
-logHist(x, logargs = NULL, main = xmain, xlab = xname, col = "tan", ...)
+logHist(x, logargs = NULL, main = xmain, xlab = xname, col = "tan",
+  add = FALSE, las = 1, ylim = NULL, freq = TRUE, ...)
 }
 \arguments{
 \item{x}{Vector of numerical values}
@@ -17,7 +18,16 @@ logHist(x, logargs = NULL, main = xmain, xlab = xname, col = "tan", ...)
 
 \item{col}{Color of histogram bars}
 
-\item{\dots}{further arguments passed to \code{\link{hist}} like breaks, freq, xlim=c(-1,3), ..., but not xaxt or add.}
+\item{add}{Logical: add to existing plot?}
+
+\item{las}{Integer: label axis style. DEFAULT: 1 (numbers upright)}
+
+\item{ylim}{2 Numbers: y-axis range. DEFAULT: NULL}
+
+\item{freq}{Logical: counts instead of density? DEFAULT: TRUE}
+
+\item{\dots}{further arguments passed to \code{\link{hist}} 
+like breaks, xlim=c(-1,3), ..., but not xaxt}
 }
 \value{
 none
@@ -29,6 +39,8 @@ Draw histogram of values on a logarithmic scale with nice axis labels
 
 dat <- rbeta(1e4, 2, 18)*100
 hist(dat, col="tan", breaks=50)
+logHist(dat)
+logHist(dat, freq=FALSE)
 logHist(dat, breaks=50)
 logHist(dat,xlim=c(0,2)) # xlim in powers of ten
 logHist(c(-1,0,1,2,2,3,3,4,8,10,50)) # warning for negative values

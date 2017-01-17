@@ -25,6 +25,8 @@ ToDo-list (take care of in the near future)
 - colPointsLegend: improve text placement position for large/small legend fields
 - contemplate moving tryStack and traceCall to own package, maybe "trace"
 - combineFiles: path expansion (see rdwd::fileDWD), remove dir arguments
+- plot(c(50,1000), c(2500,35000), log="yx", axes=F) ; logAxis(1:2) # Error 'at' and 'labels' lengths differ, 9 != 12
+
 
 ---------------------------------------
 wishlist (implement if bored, in order of usefulnes)
@@ -37,12 +39,31 @@ wishlist (implement if bored, in order of usefulnes)
 - implement identical(FALSE, legargs) wherever owa is used and that makes sense
 - exp4p: allow initial values for optim, try to improve with nls(y~expfun(p,x=x), start=as.list(param) ) 
 - climateGraph documentation Roxygen issue (escaping unicode)
+- tryStack: if silent=TRUE, put warnings and messages into final output (all of them, not just last one)
+- tryStack: example warning with log(-1:6) for non-repeated call stack
 
 
 
 ---------------------------------------
 actual NEWS
 ---------------------------------------
+
+
+-----------------------------
+-----------------------------
+
+
+Version 1.14.0 (2017-01-16)
+- tryStack: API change (new and changed arguments), now also traces messages
+- logHist: can now handle add=TRUE input, nicer y axis limits by default 
+- climateGraph: now in a single layout plot for multipanel plot usage
+- exTime: can now time a complete package 
+- googleLink2pdf: all regular hex characters converted to ascii
+- l2array: now uses abind for much faster results, handles lists with matrices
+
+
+-----------------------------
+-----------------------------
 
 
 Version 1.13.0 (2016-12-10)

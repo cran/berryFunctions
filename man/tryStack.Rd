@@ -4,23 +4,27 @@
 \alias{tryStack}
 \title{try an expression, returning the error stack}
 \usage{
-tryStack(expr, silent = FALSE, tracewarnings = TRUE, file = "",
+tryStack(expr, silent = FALSE, warn = TRUE, short = TRUE, file = "",
   removetry = TRUE)
 }
 \arguments{
 \item{expr}{Expresssion to try, potentially wrapped in curly braces if 
 spanning several commands.}
 
-\item{silent}{Logical: Should error message + stack printing be suppressed?
-DEFAULT: FALSE}
+\item{silent}{Logical: Should printing of error message + stack be suppressed?
+Does not affect warnings and messages. DEFAULT: FALSE}
 
-\item{tracewarnings}{Logical: Should warnings be traced as well?
-They will still be printed as regular warnings, 
-but with trace stack. DEFAULT: TRUE}
+\item{warn}{Logical: trace \code{\link{warning}s} and \code{\link{message}s} also?
+They are still handled like regular warnings / messages unless 
+\code{file !=""}, when they are catted into that file. DEFAULT: TRUE}
+
+\item{short}{Logical: should trace be abbreviated to upper -> middle -> lower?
+If NA, it is set to TRUE for warnings and messages, FALSE for errors.
+DEFAULT: TRUE}
 
 \item{file}{File name passed to \code{\link{cat}}. 
 If given, Errors will be appended to the file after two empty lines. 
-if tracewarnings=TRUE and file!="", warnings will not be shown, 
+if \code{warn=T} and file!="", warnings and messages will not be shown, 
 but also appended to the file.
 This is useful in lapply simulation runs.
 DEFAULT: "" (catted to the console)}
@@ -45,14 +49,15 @@ trace errors and warnings and ease debugging.
 
 # Functions -----
 
-lower <- function(a) a+10
+lower <- function(a) {message("fake message, a = ", a); a+10}
 middle <- function(b) {plot(b, main=b) ; warning("fake warning, b = ", b); lower(b) }
 upper <- function(c) {cat("printing c:", c, "\\n") ; middle(c)}
 d <- upper(42)
 d
 rm(d)
 
-# Classical error management -----
+
+# Classical error management with try -----
 
 \dontrun{ ## intentional error
 d <- upper("42")                # error, no d creation 
@@ -63,13 +68,15 @@ d <- try(upper("42"), silent=TRUE)      # d created
 cat(d)                                  # with error message, but no traceback
 inherits(d, "try-error")                # use for coding
 
-# tryStack -----
+
+# way cooler with tryStack -----
 
 d <- tryStack(upper("42"), silent=TRUE) # like try, but with traceback, even for warnings
 cat(d)
-d <- tryStack(upper("42"), silent=TRUE, tracewarnings=FALSE) # don't touch warnings
-
+d <- tryStack(upper("42"), silent=TRUE, warn=0) # don't touch warnings
+ 
 tryStack(upper(42)) # returns normal output, but warnings are easier to debug
+# Note: you can also set options(showWarnCalls=TRUE)
 
 stopifnot(inherits(d, "try-error"))
 stopifnot(tryStack(upper(42))==52)
@@ -80,14 +87,15 @@ system2("open", "log.txt")
 unlink("log.txt")
 }
 
+
 # Nested calls -----
 
 f <- function(k) tryStack(upper(k), silent=TRUE)
 d <- f(42)                 ; cat("-----\\n", d, "\\n-----\\n") ; rm(d)
 d <- f("42")               ; cat("-----\\n", d, "\\n-----\\n") ; rm(d)
 d <- tryStack(f(4) )       ; cat("-----\\n", d, "\\n-----\\n") ; rm(d) 
-# warnings in nested calls are printed twice, unless tracewarnings=FALSE
-d <- tryStack(f(4), tracewarnings=FALSE) # could also be set within 'f'
+# warnings in nested calls are printed twice, unless warn=0
+d <- tryStack(f(4), warn=0) # could also be set within 'f'
 
 d <- tryStack(f("4"))      ; cat("-----\\n", d, "\\n-----\\n") 
 d[1:3] ; rm(d)
@@ -100,11 +108,12 @@ cat( tryStack(upper("42")) )
 f <- function(k) tryStack(stop("oh oh"))
 d <- f(42) ; cat("-----\\n", d, "\\n-----\\n") ; rm(d) # level 4 not helpful, but OK
 
+# stuff with base::try
 f <- function(k) try(upper(k), silent=TRUE)
 d <- f(42)     ; cat("-----\\n", d, "\\n-----\\n") ; rm(d)
 d <- f("42")   ; cat("-----\\n", d, "\\n-----\\n") ; rm(d) # regular try output
 
-f2 <- function(k) tryStack(f(k), tracewarnings=FALSE, silent=TRUE)
+f2 <- function(k) tryStack(f(k), warn=0, silent=TRUE)
 d <- f2(42)    ; cat("-----\\n", d, "\\n-----\\n") ; rm(d)
 d <- f2("42")  ; cat("-----\\n", d, "\\n-----\\n") ; rm(d) # try -> no error. 
 # -> Use tryCatch and you can nest those calls. note that d gets longer.
