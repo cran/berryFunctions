@@ -34,3 +34,14 @@
 #' 
 NULL
 
+
+#' dataDWD and readDWD are now in 'rdwd'.
+#' 
+#' \code{dataDWD} and \code{readDWD} have been greatly improved and are now in the package \code{rdwd}.
+#' This provides a much better infrastructure for file selection and downloading. 
+#' See \url{https://github.com/brry/rdwd#rdwd} for usage instructions.
+#' 
+#' @name dataDWD
+#' @aliases dataDWD readDWD
+#' 
+NULL

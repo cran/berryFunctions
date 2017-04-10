@@ -8,29 +8,34 @@ colPoints(x, y, z, data, add = TRUE, col = seqPal(cl$nbins), col2 = c(NA,
   "grey", "black"), Range = range(z, finite = TRUE),
   method = "equalinterval", breaks, sdlab = 1, legend = TRUE,
   legargs = NULL, hist = FALSE, histargs = NULL, lines = FALSE,
-  nint = 30, xlab = substitute(x), ylab = substitute(y),
-  zlab = substitute(z), las = 1, pch = 16, x1 = 0.6, y1 = 0.88,
-  x2 = 0.99, y2 = 0.99, density = TRUE, quiet = FALSE, ...)
+  nint = 30, xlab = deparse(substitute(x)), ylab = deparse(substitute(y)),
+  zlab = deparse(substitute(z)), axes = TRUE, las = 1, pch = 16,
+  x1 = 0.6, y1 = 0.88, x2 = 0.99, y2 = 0.99, density = NULL,
+  quiet = FALSE, ...)
 }
 \arguments{
 \item{x, y}{Vectors with coordinates of the points to be drawn}
 
-\item{z}{z values belonging to coordinates. Vector or matrix with the color-defining height values}
+\item{z}{z values belonging to coordinates. 
+Vector or matrix with the color-defining height values}
 
 \item{data}{Optional: data.frame with the column names as given by x,y and z.}
 
 \item{add}{Logical. Should the points be added to current (existing!) plot? 
-If FALSE, a new plot is started. DEFAULT: TRUE (It's called col\bold{Points}, after all)}
+If FALSE, a new plot is started. 
+DEFAULT: TRUE (It's called col\bold{Points}, after all)}
 
 \item{col}{Vector of colors to be used. DEFAULT: 100 colors from sequential 
 palette \code{\link{seqPal}} (color-blind safe, black/white-print safe)}
 
-\item{col2}{Color for points where z is NA, or lower / higher than \code{Range}. DEFAULT: c(NA, 1, 8)}
+\item{col2}{Color for points where z is NA, or lower / higher than \code{Range}.
+DEFAULT: c(NA, 1, 8)}
 
-\item{Range}{Ends of color bar. DEFAULT: range(z, finite=TRUE)}
+\item{Range}{Ends of color bar. If NULL, it is again the DEFAULT: range(z, finite=TRUE)}
 
 \item{method}{Classification method (partial matching is performed), 
-see \code{\link{classify}} (ways to get color breakpoints). DEFAULT: "equalinterval")}
+see \code{\link{classify}} (ways to get color breakpoints). 
+DEFAULT: "equalinterval")}
 
 \item{breaks}{Specification for method, see \code{\link{classify}}. 
 DEFAULT: different defaults for each method}
@@ -49,33 +54,37 @@ DEFAULT: FALSE (TRUE if histargs are given)}
 \item{histargs}{List. Arguments passed to \code{\link{colPointsHist}}. DEFAULT: NULL}
 
 \item{lines}{Logical. Should lines be drawn instead of / underneath the points? 
-(color of each \code{\link{segments}} is taken from starting point, last point is endpoint.) 
-If lines=TRUE and pch is not given, pch ist set to NA. DEFAULT: FALSE}
+(color of each \code{\link{segments}} is taken from starting point, 
+last point is endpoint.) If lines=TRUE and pch is not given, 
+pch ist set to NA. DEFAULT: FALSE}
 
 \item{nint}{Numeric of length 1. Number of interpolation points between each 
 coordinate if \code{lines=TRUE}. nint=1 means no interpolation. 
-Values below 10 will smooth coordinates and might miss the original points. DEFAULT: 30}
+Values below 10 will smooth coordinates and might 
+miss the original points. DEFAULT: 30}
 
-\item{xlab}{x-axis label. DEFAULT: \code{\link{substitute}(x)}}
+\item{xlab}{x-axis label. DEFAULT: \code{deparse(\link{substitute}(x))}}
 
 \item{ylab}{y-axis label. DEFAULT: ditto}
 
 \item{zlab}{\code{\link{colPointsLegend} title}. DEFAULT: ditto}
 
-\item{las}{Label Axis Style. Only used when add=FALSE. See \code{\link{par}}. 
-DEFAULT: 1 (all labels horizontal)}
+\item{axes, las}{Draw axes? Label Axis Style. Only used when add=FALSE. 
+See \code{\link{par}}. DEFAULT: axes=TRUE, las=1 (all labels horizontal)}
 
 \item{pch}{Point CHaracter. See \code{\link{par}}. DEFAULT: 16}
 
 \item{x1, x2, y1, y2}{Relative coordinates [0:1] of inset plot, see \code{\link{smallPlot}}. 
-Passed to \code{\link{colPointsLegend}}. DEFAULT: x: 0.6-0.99, y: 0.88-0.98}
+Passed to \code{\link{colPointsLegend}}. 
+DEFAULT: x: 0.6-0.99, y: 0.88-0.98}
 
-\item{density}{Logical: plot density line in \code{\link{colPointsLegend}}? DEFAUTL: TRUE}
+\item{density}{Arguments for density line in \code{\link{colPointsLegend}} 
+DEFAULT: NULL}
 
 \item{quiet}{Turn off warnings? DEFAULT: FALSE}
 
 \item{\dots}{Further graphical arguments passed to \code{\link{plot}}, 
-\code{\link{points}} and \code{\link{lines}}, 
+\code{\link{points}} and \code{\link{segments}}, 
 eg cex, xlim (when add=F), mgp, main, sub, asp (when add=F), etc. 
 Note: col does not work, as it is already another argument}
 }
@@ -152,7 +161,7 @@ text(rx,ry,round(rz), col=mycols(100)[classify(rz)$index], cex=0.7)
 
 # histogram in lower panel:
 layout(matrix(1:2), heights=c(8,4) )
-colPoints(i,j,k, add=FALSE, legargs=list(y1=0.8, y2=1))
+colPoints(i,j,k, add=FALSE, y1=0.8, y2=1)
 colPointsHist(z=k, x1=0.05, x2=1, y1=0, y2=0.4, mar=3, outer=TRUE)
 layout(1)
 
@@ -204,9 +213,6 @@ colPoints(x,y,sim1, data=xyz, col=rainbow2(100), add=FALSE)
 }
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, 2011-2014. I'd be interested in hearing what you used the function for.
-}
 \references{
 \url{http://uxblog.idvsolutions.com/2011/10/telling-truth.html},
             \url{http://www.theusrus.de/blog/the-good-the-bad-22012/}
@@ -214,7 +220,9 @@ Berry Boessenkool, \email{berry-b@gmx.de}, 2011-2014. I'd be interested in heari
 \seealso{
 \code{\link{classify}}, \code{\link{colPointsLegend}}, \code{\link{colPointsHist}}
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, 2011-2014. I'd be interested in hearing what you used the function for.
+}
 \keyword{aplot}
 \keyword{color}
 \keyword{hplot}
-

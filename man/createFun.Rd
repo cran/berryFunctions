@@ -4,14 +4,14 @@
 \alias{createFun}
 \title{create function framework}
 \usage{
-createFun(fun, package = "berryFunctions", path = "S:/Dropbox/Public")
+createFun(fun, package = "berryFunctions", path = "S:/Dropbox/Rpack")
 }
 \arguments{
 \item{fun}{Character string or unquoted name. Function that will be crated with identical filename}
 
 \item{package}{Character String with package name. DEFAULT: "berryFunctions"}
 
-\item{path}{Path to package in development (not package name itself) DEFAULT: "S:/Dropbox/Public"}
+\item{path}{Path to package in development (not package name itself) DEFAULT: "S:/Dropbox/Rpack"}
 }
 \value{
 file name as character string
@@ -25,12 +25,11 @@ Tries to open the file in the standard editor for .R files using \code{\link{sys
 \examples{
 #createFun("myNewFunction")
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, March 2016
-}
 \seealso{
 \code{\link{system2}}, \code{\link{funSource}}, Roxygen2: 
          \url{https://cran.r-project.org/package=roxygen2/vignettes/rd.html}
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, March 2016
+}
 \keyword{documentation}
-

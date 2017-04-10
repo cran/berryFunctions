@@ -77,7 +77,7 @@
 #' 
 #' # histogram in lower panel:
 #' layout(matrix(1:2), heights=c(8,4) )
-#' colPoints(i,j,k, add=FALSE, legargs=list(y1=0.8, y2=1))
+#' colPoints(i,j,k, add=FALSE, y1=0.8, y2=1)
 #' colPointsHist(z=k, x1=0.05, x2=1, y1=0, y2=0.4, mar=3, outer=TRUE)
 #' layout(1)
 #' 
@@ -128,47 +128,55 @@
 #' colPoints(x,y,sim1, data=xyz, col=rainbow2(100), add=FALSE)
 #' }
 #' 
-#' @param x,y Vectors with coordinates of the points to be drawn
-#' @param z z values belonging to coordinates. Vector or matrix with the color-defining height values
-#' @param data Optional: data.frame with the column names as given by x,y and z.
-#' @param add Logical. Should the points be added to current (existing!) plot? 
-#'            If FALSE, a new plot is started. DEFAULT: TRUE (It's called col\bold{Points}, after all)
-#' @param col Vector of colors to be used. DEFAULT: 100 colors from sequential 
-#'            palette \code{\link{seqPal}} (color-blind safe, black/white-print safe)
-#' @param col2 Color for points where z is NA, or lower / higher than \code{Range}. DEFAULT: c(NA, 1, 8)
-#' @param Range Ends of color bar. DEFAULT: range(z, finite=TRUE)
-#' @param method Classification method (partial matching is performed), 
-#'              see \code{\link{classify}} (ways to get color breakpoints). DEFAULT: "equalinterval")
-#' @param breaks Specification for method, see \code{\link{classify}}. 
-#'               DEFAULT: different defaults for each method
-#' @param sdlab Type of label and breakpoints if \code{method=standarddeviation}, 
-#'              see \code{\link{classify}}. DEFAULT: 1
-#' @param legend Logical. Should a \code{\link{colPointsLegend}} be drawn? DEFAULT: TRUE
-#' @param legargs List. Arguments passed to \code{\link{colPointsLegend}}. 
-#'                DEFAULT: NULL, with some defaults specified internally
-#' @param hist Logical. Should a \code{\link{colPointsHist}} be drawn? 
-#'             DEFAULT: FALSE (TRUE if histargs are given)
+#' @param x,y      Vectors with coordinates of the points to be drawn
+#' @param z        z values belonging to coordinates. 
+#'                 Vector or matrix with the color-defining height values
+#' @param data     Optional: data.frame with the column names as given by x,y and z.
+#' @param add      Logical. Should the points be added to current (existing!) plot? 
+#'                 If FALSE, a new plot is started. 
+#'                 DEFAULT: TRUE (It's called col\bold{Points}, after all)
+#' @param col      Vector of colors to be used. DEFAULT: 100 colors from sequential 
+#'                 palette \code{\link{seqPal}} (color-blind safe, black/white-print safe)
+#' @param col2     Color for points where z is NA, or lower / higher than \code{Range}.
+#'                 DEFAULT: c(NA, 1, 8)
+#' @param Range    Ends of color bar. If NULL, it is again the DEFAULT: range(z, finite=TRUE)
+#' @param method   Classification method (partial matching is performed), 
+#'                 see \code{\link{classify}} (ways to get color breakpoints). 
+#'                 DEFAULT: "equalinterval")
+#' @param breaks   Specification for method, see \code{\link{classify}}. 
+#'                 DEFAULT: different defaults for each method
+#' @param sdlab    Type of label and breakpoints if \code{method=standarddeviation}, 
+#'                 see \code{\link{classify}}. DEFAULT: 1
+#' @param legend   Logical. Should a \code{\link{colPointsLegend}} be drawn? DEFAULT: TRUE
+#' @param legargs  List. Arguments passed to \code{\link{colPointsLegend}}. 
+#'                 DEFAULT: NULL, with some defaults specified internally
+#' @param hist     Logical. Should a \code{\link{colPointsHist}} be drawn? 
+#'                 DEFAULT: FALSE (TRUE if histargs are given)
 #' @param histargs List. Arguments passed to \code{\link{colPointsHist}}. DEFAULT: NULL
-#' @param lines Logical. Should lines be drawn instead of / underneath the points? 
-#'             (color of each \code{\link{segments}} is taken from starting point, last point is endpoint.) 
-#'             If lines=TRUE and pch is not given, pch ist set to NA. DEFAULT: FALSE
-#' @param nint Numeric of length 1. Number of interpolation points between each 
-#'             coordinate if \code{lines=TRUE}. nint=1 means no interpolation. 
-#'             Values below 10 will smooth coordinates and might miss the original points. DEFAULT: 30
-#' @param xlab x-axis label. DEFAULT: \code{\link{substitute}(x)}
-#' @param ylab y-axis label. DEFAULT: ditto
-#' @param zlab \code{\link{colPointsLegend} title}. DEFAULT: ditto
-#' @param las Label Axis Style. Only used when add=FALSE. See \code{\link{par}}. 
-#'            DEFAULT: 1 (all labels horizontal)
-#' @param pch Point CHaracter. See \code{\link{par}}. DEFAULT: 16
+#' @param lines    Logical. Should lines be drawn instead of / underneath the points? 
+#'                 (color of each \code{\link{segments}} is taken from starting point, 
+#'                 last point is endpoint.) If lines=TRUE and pch is not given, 
+#'                 pch ist set to NA. DEFAULT: FALSE
+#' @param nint     Numeric of length 1. Number of interpolation points between each 
+#'                 coordinate if \code{lines=TRUE}. nint=1 means no interpolation. 
+#'                 Values below 10 will smooth coordinates and might 
+#'                 miss the original points. DEFAULT: 30
+#' @param xlab     x-axis label. DEFAULT: \code{deparse(\link{substitute}(x))}
+#' @param ylab     y-axis label. DEFAULT: ditto
+#' @param zlab     \code{\link{colPointsLegend} title}. DEFAULT: ditto
+#' @param axes,las Draw axes? Label Axis Style. Only used when add=FALSE. 
+#'                 See \code{\link{par}}. DEFAULT: axes=TRUE, las=1 (all labels horizontal)
+#' @param pch      Point CHaracter. See \code{\link{par}}. DEFAULT: 16
 #' @param x1,x2,y1,y2 Relative coordinates [0:1] of inset plot, see \code{\link{smallPlot}}. 
-#'                    Passed to \code{\link{colPointsLegend}}. DEFAULT: x: 0.6-0.99, y: 0.88-0.98
-#' @param density Logical: plot density line in \code{\link{colPointsLegend}}? DEFAUTL: TRUE
-#' @param quiet Turn off warnings? DEFAULT: FALSE
-#' @param \dots Further graphical arguments passed to \code{\link{plot}}, 
-#'              \code{\link{points}} and \code{\link{lines}}, 
-#'              eg cex, xlim (when add=F), mgp, main, sub, asp (when add=F), etc. 
-#'              Note: col does not work, as it is already another argument
+#'                 Passed to \code{\link{colPointsLegend}}. 
+#'                 DEFAULT: x: 0.6-0.99, y: 0.88-0.98
+#' @param density  Arguments for density line in \code{\link{colPointsLegend}} 
+#'                 DEFAULT: NULL
+#' @param quiet    Turn off warnings? DEFAULT: FALSE
+#' @param \dots    Further graphical arguments passed to \code{\link{plot}}, 
+#'                 \code{\link{points}} and \code{\link{segments}}, 
+#'                 eg cex, xlim (when add=F), mgp, main, sub, asp (when add=F), etc. 
+#'                 Note: col does not work, as it is already another argument
 #' 
 colPoints <- function(
   x, y, 
@@ -187,23 +195,22 @@ colPoints <- function(
   histargs=NULL, 
   lines=FALSE, 
   nint=30,
-  xlab=substitute(x),
-  ylab=substitute(y),
-  zlab=substitute(z),
-  las=1, 
+  xlab=deparse(substitute(x)),
+  ylab=deparse(substitute(y)),
+  zlab=deparse(substitute(z)),
+  axes=TRUE,
+  las=1,
   pch=16, 
   x1=0.6,
   y1=0.88,
   x2=0.99,
   y2=0.99,
-  density=TRUE,
+  density=NULL,
   quiet=FALSE, 
   ...)
 {
  # default labels need to be obtained before x and y are evaluated
-xlab <- if(missing(xlab)) deparse(xlab) else xlab
-ylab <- if(missing(ylab)) deparse(ylab) else ylab
-zlab <- if(missing(zlab)) deparse(zlab) else zlab
+xlab <- xlab ; ylab <- ylab ; zlab <- zlab
 # error checking:
 if(length(nint)>1) if(!quiet) warning("Only the first value of 'nint' is used.")
 nint <- nint[1]
@@ -212,7 +219,8 @@ col2 <- rep(col2, length.out=3) # in case only one, two or >3 values are given.
 # Partial matching of method:
 PossibleValues <- c("equalinterval", "quantile", "logspaced", "standarddeviation", "usergiven")
 method <- PossibleValues[pmatch(tolower(method),  PossibleValues)]
-if(is.na(method)) stop("method can only be equalinterval, quantile, logspaced, standarddeviation, or usergiven (but the name can be abbreviated).")
+if(is.na(method)) stop("method can only be equalinterval, quantile, logspaced, ",
+                       "standarddeviation, or usergiven (but the name can be abbreviated).")
 #
 # vector vs matrix and dimension check: ----------------------------------------
 # a) argument data is given
@@ -234,11 +242,13 @@ if(is.vector(z))
    if(missing(x)) {x <- 1:ncol(z) ; if(missing(xlab)) xlab <- "x" }
    if(missing(y)) {y <- nrow(z):1 ; if(missing(ylab)) ylab <- "y" }
    if(!(length(x)==ncol(z) & length(y)==nrow(z)))
-     stop("Dimension of z (ncol*nrow) is not length(x) * length(y)!")
+     stop("Dimension of z (ncol*nrow=",ncol(z),",",nrow(z),
+          ") is not length(x) * length(y) (=",length(x),",",length(y),")!")
    x <- rep(x, each=nrow(z));  y <- rep(y, ncol(z));  z <- as.vector(z)
    }
 # error checking:
 if(diff(range(z, finite=TRUE))==0) if(!quiet) warning("All z-values are equal.")
+if(is.null(Range)) Range <- range(z, finite=TRUE)
 #
 # CLASSIFICATION # -------------------------------------------------------------
 if(method=="equalinterval") if(!missing(col)) breaks <- length(col)
@@ -252,22 +262,22 @@ output$z <- z
 if(length(col) != cl$nbins) stop("Number of colors is not equal to number of classes.")
 #
 # ACTUAL PLOTTING --------------------------------------------------------------
-if(!add) plot(x, y, col=NA, pch=pch, xlab=xlab, ylab=ylab, las=las, ...)
+if(!add) plot(x, y, type="n", xlab=xlab, ylab=ylab, las=las, axes=axes, ...)
 # Plot lines if wanted:
 if(lines)
   {
   if(missing(pch)) pch <- NA
   # linear interpolation between coordinates (smoother line colors):
   np <- length(x)*nint-nint+1 # replacing NA necessary if NAs are at start or end
-  x2 <- approx2(x,n=np) #approx(replace(x, is.na(x), median(x, na.rm=TRUE)), n=np)$y
-  y2 <- approx2(y,n=np) #approx(replace(y, is.na(y), median(y, na.rm=TRUE)), n=np)$y
-  z2 <- approx2(z,n=np) #approx(replace(z, is.na(z), median(z, na.rm=TRUE)), n=np)$y
+  xl <- approx2(x,n=np, quiet=quiet) #approx(replace(x, is.na(x), median(x, na.rm=TRUE)), n=np)$y
+  yl <- approx2(y,n=np, quiet=quiet) #approx(replace(y, is.na(y), median(y, na.rm=TRUE)), n=np)$y
+  zl <- approx2(z,n=np, quiet=quiet) #approx(replace(z, is.na(z), median(z, na.rm=TRUE)), n=np)$y
   # classify interpolated values:
-  cl2 <- classify(x=z2, method=method, breaks=breaks, sdlab=sdlab, Range=Range, quiet=quiet)
+  cl2 <- classify(x=zl, method=method, breaks=breaks, sdlab=sdlab, Range=Range, quiet=quiet)
   output <- cl
-  output$x <- x2
-  output$y <- y2
-  output$z <- z2
+  output$x <- xl
+  output$y <- yl
+  output$z <- zl
   # Where are NAs in the vectors?
   wNA <- is.na(x) | is.na(y) | is.na(z)
   # change single values (surrounded by NA) to NA:
@@ -277,7 +287,7 @@ if(lines)
   for(i in which(wNA))
       cl2$index[pmax((i-2)*nint+1, 1) : pmin(i*nint, np)] <- NA
   # Actually draw segments:
-  segments(x0=x2[-length(x2)],  y0=y2[-length(y2)],  x1=x2[-1],  y1=y2[-1],
+  segments(x0=xl[-length(xl)],  y0=yl[-length(yl)],  x1=xl[-1],  y1=yl[-1],
            col=col[cl2$index], ...)
   }
 points(x[is.na(z)], y[is.na(z)], col=col2[1], pch=pch, ...)

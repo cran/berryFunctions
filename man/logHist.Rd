@@ -5,7 +5,7 @@
 \title{Histogram of logarithmic values}
 \usage{
 logHist(x, logargs = NULL, main = xmain, xlab = xname, col = "tan",
-  add = FALSE, las = 1, ylim = NULL, freq = TRUE, ...)
+  add = FALSE, las = 1, ylim = NULL, freq = TRUE, quiet = FALSE, ...)
 }
 \arguments{
 \item{x}{Vector of numerical values}
@@ -25,6 +25,8 @@ logHist(x, logargs = NULL, main = xmain, xlab = xname, col = "tan",
 \item{ylim}{2 Numbers: y-axis range. DEFAULT: NULL}
 
 \item{freq}{Logical: counts instead of density? DEFAULT: TRUE}
+
+\item{quiet}{Logical: suppress warning about non-positive values? DEFAULT: FALSE}
 
 \item{\dots}{further arguments passed to \code{\link{hist}} 
 like breaks, xlim=c(-1,3), ..., but not xaxt}
@@ -46,12 +48,11 @@ logHist(dat,xlim=c(0,2)) # xlim in powers of ten
 logHist(c(-1,0,1,2,2,3,3,4,8,10,50)) # warning for negative values
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Feb 2016
-}
 \seealso{
 \code{\link{logAxis}}, \code{\link{hist}}
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, Feb 2016
+}
 \keyword{aplot}
 \keyword{dplot}
-

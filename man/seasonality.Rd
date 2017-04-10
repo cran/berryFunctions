@@ -6,12 +6,13 @@
 \usage{
 seasonality(dates, values, data, drange = NA, vrange = NA, shift = 0,
   janline = TRUE, nmax = 0, maxargs = NULL, plot = 1, add = FALSE,
-  nmin = 100, probs = 0.5, width = 1, text = TRUE, textargs = NULL,
-  months = substr(month.abb, 1, 1), slab = "Month", tlab = "Year",
-  vlab = NA, xlim = NA, ylim = NA, xaxs = NA, yaxs = NA,
-  main = "Seasonality", adj = 0.2, mar = c(3, 3, 4, 1), mgp = c(1.7,
-  0.7, 0), keeppar = TRUE, legend = TRUE, legargs = NULL,
-  returnall = FALSE, ...)
+  nmin = 100, probs = c(0, 25, 50, 75, 95, 99.9)/100, width = 3,
+  text = TRUE, texti = seq(200, 20, length.out = length(probs)),
+  textargs = NULL, months = substr(month.abb, 1, 1), slab = "Month",
+  tlab = "Year", vlab = NA, xlim = NA, ylim = NA, xaxs = NA,
+  yaxs = NA, main = "Seasonality", adj = 0.2, mar = c(3, 3, 4, 1),
+  mgp = c(1.7, 0.7, 0), keeppar = TRUE, legend = TRUE, legargs = NULL,
+  returnall = FALSE, quiet = FALSE, ...)
 }
 \arguments{
 \item{dates}{Dates in ascending order. 
@@ -41,28 +42,39 @@ Currently, only 0 and 1 are implemented. DEFAULT: 0}
 e.g. \code{maxargs=list(type="l", col="red", lty=3)}. 
 DEFAULT: NULL (several internal defaults are used, but can be overridden)}
 
-\item{plot}{Integer specifying the type of plot. Can be a vector to produce several plots. \cr 
+\item{plot}{Integer specifying the type of plot. 
+Can be a vector to produce several plots. \cr 
 0: none, only return the data.frame with annual maxima. \cr
 1: color coded doy (day of the year) over year (the default). \cr
 2: Color coded spiral graph with \code{\link{spiralDate}}. \cr
 3: Spaghetti line plot with discharge over doy, one line per year. \cr
-4: Annmax over time for crude trend analysis. \cr
-5: \code{probs} \code{\link{quantileMean}} over doy, with optional 
+4: \code{probs} \code{\link{quantileMean}} over doy, with optional 
    aggregation window (\code{width}) around each doy. \cr
+5: Annmax over time for crude trend analysis. \cr
 DEFAULT: 1}
 
 \item{add}{Logical. Add to existing plot? DEFAULT: FALSE}
 
-\item{nmin}{Minimum number of values that must be present per (hydrological) year
-to be plotted in plot type 4. DEFAULT: 100}
+\item{nmin}{Minimum number of values that must be present per (hydrological) 
+year to be plotted in plot type 5. DEFAULT: 100}
 
-\item{probs}{Probabilities passed to \code{\link{quantileMean}} for plot=5. DEFAULT: 0.5}
+\item{probs}{Probabilities passed to \code{\link{quantileMean}} for plot=4. 
+DEFAULT: c(0,25,50,75,95,99)/100}
 
-\item{width}{Window width for plot=5. DEFAULT: 1}
+\item{width}{Numeric: window width for plot=4. Used as sd in gaussian weighting.
+Support (number of values around a DOY passed to 
+quantile funtion at least once) is ca 4.9*width. 
+The value at doy itself is used 10 times. 
+Larger values of width require more computing time.
+DEFAULT: 3}
 
-\item{text}{Logical. Call \code{\link{textField}} if plot=5? DEFAULT: TRUE}
+\item{text}{Logical. Call \code{\link{textField}} if plot=4? DEFAULT: TRUE}
 
-\item{textargs}{List of arguments passed to \code{\link{textField}} for plot=5. DEFAULT: NULL}
+\item{texti}{Numerical (vector): indices at which to label the lines.
+DEFAULT: seq(200,20,length.out=length(probs))}
+
+\item{textargs}{List of arguments passed to \code{\link{textField}} for plot=4. 
+DEFAULT: NULL}
 
 \item{months}{Labels for the months. DEFAULT: J,F,M,A,M,J,J,A,S,O,N,D}
 
@@ -77,10 +89,11 @@ Use "r" for regular 4\% expansion, "i" for in range only.
 DEFAULT: NA (specified internally per plot type)}
 
 \item{main, adj}{Graph title and offset to the left 
-(\code{adj} passsed to \code{\link{title}}). DEFAULT: "Seasonality", 0.2}
+(\code{adj} passsed to \code{\link{title}}). 
+DEFAULT: "Seasonality", 0.2}
 
 \item{mar, mgp}{Parameters specifying plot margin size and labels placement.
-DEFAULT: c(3,3,4,1), c(1.7,0.7,0) (Changed for plot 3:4 if not given)}
+DEFAULT: c(3,3,4,1), c(1.7,0.7,0) (Changed for plot 3:5 if not given)}
 
 \item{keeppar}{Logical: Keep the margin parameters? If FALSE, they are reset
 to the previous values. DEFAULT: TRUE}
@@ -88,13 +101,18 @@ to the previous values. DEFAULT: TRUE}
 \item{legend}{Logical. Should a legend be drawn? DEFAULT: TRUE}
 
 \item{legargs}{List of arguments passed as \code{legargs} to \code{\link{colPoints}}.
-DEFAULT: NULL (internally, plots 3:4 have density=F as default)}
+DEFAULT: NULL (internally, plots 3 and 5 have density=F as default)}
 
-\item{returnall}{Logical: return all relevant output as a list instead of only}
+\item{returnall}{Logical: return all relevant output as a list instead of only
+annmax data.frame? DEFAULT: FALSE}
+
+\item{quiet}{Logical: suppress progress stuff and colPoints messages?
+DEFAULT: FALSE}
 
 \item{\dots}{Further arguments passed to \code{\link{colPoints}} like 
-quiet=TRUE, pch, main, xaxs, but not Range (use \code{vrange}).
-Passed to \code{\link{spiralDate}} if \code{plot=2}, like add, format, lines.}
+pch, main, xaxs, but not Range (use \code{vrange}).
+Passed to \code{\link{spiralDate}} if \code{plot=2}, 
+like add, format, lines.}
 }
 \value{
 The output is always invisible, don't forget to assign it. 
@@ -106,13 +124,13 @@ The output is always invisible, don't forget to assign it.
         \code{data}: data.frame(doy, values, year) and optionally: \cr
         \code{plot1, plot3, plot4, plot5}: outputs from \code{\link{colPoints}} \cr
         \code{plot2}: output list from \code{\link{spiralDate}} \cr
-        and other elements depending on plot type, \code{like data3, data5, probs5, width5}.
+        and other elements depending on plot type, \code{like data3, data4, probs4, width4}.
 }
 \description{
 Examine time series for seasonality of high (low) values
 }
 \examples{
-browseURL("http://nrfa.ceh.ac.uk/data/station/meanflow/39072")
+# browseURL("http://nrfa.ceh.ac.uk/data/station/meanflow/39072")
 qfile <- system.file("extdata/discharge39072.csv", package="berryFunctions")
 Q <- read.table(qfile, skip=19, header=TRUE, sep=",", fill=TRUE)[,1:2]
 rm(qfile)
@@ -133,27 +151,32 @@ seasonality(date, discharge, data=Q[Q$date<as.Date("2007-08-15"),], plot=3, shif
 seasonality(date, discharge, data=Q[850:950,], plot=3, nmax=1, quiet=TRUE, shift=100)
 
 seasonality(date, discharge, data=Q, plot=2) # most floods in winter
-seasonality(date, discharge, data=Q, plot=4, vlab="Dude, look at Q!")
-seasonality(date, discharge, data=Q, plot=4, shift=100)
-s <- seasonality(date, discharge, data=Q, plot=5, shift=100, width=7, returnall=TRUE)
+seasonality(date, discharge, data=Q, plot=5, vlab="Dude, look at annual max Q!")
+seasonality(date, discharge, data=Q, plot=5, shift=100)
+s <- seasonality(date, discharge, data=Q, plot=4, shift=100, width=3, returnall=TRUE)
 str(s, max.lev=1)
+
+\dontrun{ # excluded from CRAN checks because it is slow
+seasonality(date, discharge, data=Q, plot=3:4, add=0:1, ylim=lim0(400), shift=117)
+seasonality(date, discharge, data=Q, plot=4, add=TRUE, lwd=3, shift=117, width=3)
+}
 
 \dontrun{
 dev.new(noRStudioGD=TRUE, record=TRUE)     # large graph on 2nd monitor
 par(mfrow=c(2,2))
-seasonality(date, discharge, data=Q, plot=1:4, shift=100)
-seasonality(date, discharge, data=Q, plot=1:4, lwd=2)
-seasonality(date, discharge, data=Q, plot=1:4, nmax=1, shift=100)
-seasonality(date, discharge, data=Q, plot=1:4, col=divPal(100, ryb=TRUE))
+seasonality(date, discharge, data=Q, plot=(1:5)[-4], shift=100)
+seasonality(date, discharge, data=Q, plot=(1:5)[-4], lwd=2)
+seasonality(date, discharge, data=Q, plot=(1:5)[-4], nmax=1, shift=100)
+seasonality(date, discharge, data=Q, plot=(1:5)[-4], col=divPal(100, ryb=TRUE))
+dev.off()
 }
 
+}
+\seealso{
+\code{\link{spiralDate}}, \code{\link{colPoints}},
+         \url{https://waterdata.usgs.gov/nwis}
 }
 \author{
 Berry Boessenkool, \email{berry-b@gmx.de}, Jul-Oct 2016
 }
-\seealso{
-\code{\link{spiralDate}}, \code{\link{colPoints}},
-         \url{http://nwis.waterdata.usgs.gov/nwis/peak?search_site_no=01400500}
-}
 \keyword{aplot}
-

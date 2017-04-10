@@ -1,36 +1,20 @@
 
----------------------------------------
 berryFunctions
 miscellaneous package by Berry Boessenkool, berry-b@gmx.de
 Any feedback is welcome, per email or on github.com/brry/berryFunctions
+
 ---------------------------------------
-content: 
-issues
 ToDo-list
-wishlist
-actual NEWS
-
----------------------------------------
-issues (important to fix)
----------------------------------------
-- smallPlot: mtext afterwards not working (maybe because of outer=TRUE / mar=0000). see Tests.R
-- after rdwd is on CRAN: delete dataDWD and readDWD
-
----------------------------------------
-ToDo-list (take care of in the near future)
 ---------------------------------------
 - textField: support srt. Enable positioning with xy.coords as in legend. expr=F if labels contain expression. Adjust adj parameter based on pos and offset: if(!is.null(pos)), I want the field to still be drawn with adj, but have it based on pos
 - implement is.error and getColumn (eg spiralDate) wherever applicable
 - reference to sortDF in addRow, insertRow, etc
 - colPointsLegend: improve text placement position for large/small legend fields
 - contemplate moving tryStack and traceCall to own package, maybe "trace"
-- combineFiles: path expansion (see rdwd::fileDWD), remove dir arguments
+- combineFiles: path expansion (see rdwd::fileDWD), remove dir arguments, add ... for encoding etc
 - plot(c(50,1000), c(2500,35000), log="yx", axes=F) ; logAxis(1:2) # Error 'at' and 'labels' lengths differ, 9 != 12
-
-
----------------------------------------
-wishlist (implement if bored, in order of usefulnes)
----------------------------------------
+- insertRows: r <- r + seq_along(r)-1
+- late 2017: delete dataDWD and readDWD
 - colPoints: zlog=TRUE, correct colPoints(i,j,k, cex=1.5, pch="+", add=FALSE, Range=c(150,190), density=T)
 - monthAxis: ym=NA (set automatically depending on axis time length)
 - monthAxis: ypos=6 (with vector option) for ts ending before (or starting after) june/july
@@ -41,12 +25,32 @@ wishlist (implement if bored, in order of usefulnes)
 - climateGraph documentation Roxygen issue (escaping unicode)
 - tryStack: if silent=TRUE, put warnings and messages into final output (all of them, not just last one)
 - tryStack: example warning with log(-1:6) for non-repeated call stack
+- tryStack: mapply, do.call etc put function name in next element
+- tryStack: return output invisibly?
+- checkFile: eror in ->-> checkFile: n/n file(s) do not exist at getwd: \n truncMessage(files[nonexi])
 
 
 
 ---------------------------------------
 actual NEWS
 ---------------------------------------
+
+
+
+-----------------------------
+-----------------------------
+
+
+Version 1.15.0 (2017-04-10)
+- traceCall: vignette and knitr stuff removed from trace, speed gain through sys.calls
+- after smallPlot calls, mtext, axis etc can be used normally again. Messages are improved.
+- colPoints: lines bug fixed, new legend density bandwidth default
+- seasonality: plotting defaults improved, plotting order changed, moving window now gaussian
+- some functions gain quiet arguments and improved messages and argument defaults, see github url below
+New functions: almost.equal, newFilename, createPres, pdfpng, popleaf, legendmt
+Removed functions: dataDWD, readDWD (kept as help file with reference to rdwd until late 2017)
+For all changes, see:
+https://github.com/brry/berryFunctions/compare/master@{2017-01-16}...master@{2017-04-07}#files_bucket
 
 
 -----------------------------

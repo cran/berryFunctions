@@ -4,7 +4,7 @@
 \alias{approx2}
 \title{Smart linear NA interpolation}
 \usage{
-approx2(x, fill = NULL, n = length(x), ...)
+approx2(x, fill = NULL, n = length(x), quiet = FALSE, ...)
 }
 \arguments{
 \item{x}{Vector with (numeric) values}
@@ -12,6 +12,8 @@ approx2(x, fill = NULL, n = length(x), ...)
 \item{fill}{Function to fill NAs at the start or end of the vector. See Details. DEFAULT: NULL}
 
 \item{n}{Number of points to interpolate to}
+
+\item{quiet}{Logical: suppress warning for no non-NA values? DEFAULT: FALSE}
 
 \item{\dots}{Further arguments passed to \code{\link{approx}}}
 }
@@ -48,12 +50,11 @@ approx2(c( 2,NA, 6, 4, 8, 9, 3, 2, 1), n=17)
 approx2(c( 2, 4, 6, 4, 8, 9,NA, 2,NA), n=17)
 
 }
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, July 2015
-}
 \seealso{
 \code{\link{approx}}, zoo::na.locf, \code{\link{ciBand}} for usage example
 }
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, July 2015
+}
 \keyword{arith}
 \keyword{dplot}
-
