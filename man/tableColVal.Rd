@@ -6,14 +6,15 @@
 \usage{
 tableColVal(mat, main = deparse(substitute(mat)), nameswidth = 0.3,
   namesheight = 0.1, palette = seqPal(100), Range = range(mat, finite =
-  TRUE), digits = 2, classargs = NULL, cellargs = NULL, ...)
+  TRUE), digits = 2, ..., classargs = NULL, cellargs = NULL,
+  colargs = NULL, rowargs = NULL, mainargs = NULL)
 }
 \arguments{
 \item{mat}{Matrix with values and row/column names}
 
 \item{main}{Title for topleft space. DEFAULT: name of mat object.}
 
-\item{nameswidth}{Relative width of row names at the left, as a percentage of plot. 
+\item{nameswidth}{Relative width of row names at the left, as a percentage of plot.
 DEFAULT: 0.3}
 
 \item{namesheight}{Relative height of column names at the top. DEFAULT: 0.1}
@@ -24,12 +25,14 @@ DEFAULT: 0.3}
 
 \item{digits}{Number of digits rounded to for writing. DEFAULT: 2}
 
-\item{classargs}{List of arguments specifying how to call \code{\link{classify}}, 
+\item{\dots}{Further arguments passed to all \code{\link{text}} like cex, col, srt, ...}
+
+\item{classargs}{List of arguments specifying how to call \code{\link{classify}},
 e.g. method. DEFAULT: NULL}
 
-\item{cellargs}{List of arguments passed to \code{\link{text}} only for the cells.}
-
-\item{\dots}{Further arguments passed to all \code{\link{text}} like cex, col, srt, ...}
+\item{cellargs, colargs, rowargs, mainargs}{List of arguments passed to \code{\link{text}} 
+only for the cells, column labels, row labels or title,
+respectively. DEFAULTS: NULL}
 }
 \value{
 List of locations in plot.
@@ -51,6 +54,7 @@ Bsp
 (  tableColVal(Bsp)   )
 tableColVal(Bsp, nameswidth=0.1) # relative to plot width
 tableColVal(Bsp, namesheight=0.5, srt=45)
+tableColVal(Bsp, namesheight=0.5, colargs=c(srt=45))
 
 tableColVal(Bsp, cellargs=list(cex=2), col="red")
 tableColVal(Bsp, Range=c(10,40))
@@ -67,7 +71,7 @@ colPointsLegend(Bsp2, horizontal=FALSE, x1=0.05, x2=0.15, y1=0.1, y2=0.8, title=
 ## Rcmd check --as-cran doesn't like to open external devices such as pdf,
 ## so this example is excluded from running in the checks.
 pdf("TableColVal.pdf", height=5);  tableColVal(Bsp);  dev.off()
-system2("open", "TableColVal.pdf")
+openFile("TableColVal.pdf")
 unlink("TableColVal.pdf")
 }
 

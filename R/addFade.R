@@ -7,7 +7,7 @@
 #' @param target Target color that should be faded into. DEFAULT: "white"
 #' @param \dots Further arguments passed to \code{\link{colorRamp}}
 
-#' @return character matirx with hexadecimal color codes.
+#' @return character matrix with hexadecimal color codes.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Feb 2016
 #' @seealso \code{\link{addAlpha}}, \code{\link{colorRamp}}, \code{\link{colors}}
 #' @keywords dplot color
@@ -24,10 +24,10 @@
 #' plot(runif(1000), col=NewColors, pch=16, cex=2)
 #' 
 addFade <- function(
-  col, 
+  col,
   fade=0.3,
-  target="white", 
-  ... 
+  target="white",
+  ...
   )
 {
 if(any(fade<0 | fade>1)) stop("fade must be between 0 and 1, not ",

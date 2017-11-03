@@ -1,33 +1,35 @@
 #' Create .Rnw presentation template
-#'
+#' 
 #' Create folder with .Rnw presentation template and fig_extern folder.
-#'
+#' 
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Mar 2017
 #' @seealso \code{\link{createFun}}
 #' @keywords file
+#' @importFrom graphics par plot
+#' @importFrom grDevices dev.off pdf
 #' @importFrom stats rnorm
 #' @export
 #' @examples
 #' createPres("Berry_Conference")
-#'
-#' @param presname Name of .Rnw file to be created. DEFAULT: "presentation"
-#' @param dir      Name of directory that will contain .Rnw file and 
+#' 
+#' @param presname Name of .Rnw file to be created. DEFAULT: "pres"
+#' @param dir      Name of directory that will contain .Rnw file and
 #'                 fig_extern folder. "_1" will be appended if already existing,
 #'                 see \code{\link{newFilename}}. DEFAULT: "presentation"
 #' @param path     Location of \code{dir}. Passed to \code{\link{setwd}}.
 #'                 DEFAULT: "."
-#'
+#' 
 createPres <- function(
-presname="presentation",
+presname="pres",
 dir="presentation",
 path="."
 )
 {
-#  
+#
 owd <- setwd(path)
 on.exit(setwd(owd))
 dir <- newFilename(dir, quiet=TRUE)
-message("Creating '", presname, ".Rnw' in '", normalizePath(path,"/"),"/",dir,"'.")
+message("Creating '", presname, ".Rnw' in '", dir,"'.")
 
 dir.create(dir)
 dir.create(file.path(dir, "fig_extern"))
@@ -53,13 +55,18 @@ cat(
 % Berry Boessenkool, Potsdam University, Germany
 % berry-b@gmx.de
 
-\\documentclass[compress, xcolor=dvipsnames]{beamer}
+
+% Make sure to set weaving to knitr before compiling:
+% Rstudio - Tools - Global Options - Sweave - weave Rnw files using: knitr
+
+
+\\documentclass[compress, xcolor=dvipsnames]{beamer} % handout option for non-animated slides
 \\setbeamerfont{frametitle}{size=\\normalsize}
 
 \\usepackage{hyperref, graphicx}
 \\usepackage[dvipsnames]{xcolor}
 \\renewcommand\\appendixname{Appendix}
-\\usepackage[absolute,overlay]{textpos}
+\\usepackage[absolute,overlay,showboxes]{textpos}
 \\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
 % \\beamertemplatenavigationsymbolsempty
 \\setbeamertemplate{navigation symbols}[only frame symbol]
@@ -69,6 +76,13 @@ cat(
 \\beamersetrightmargin{0.5cm}
 \\let\\Tiny=\\tiny % avoid warning: Font shape `OT1/cmss/m/n' in size <4> not available. size <5> substituted on input line
 \\setbeamertemplate{footline}[frame number]
+\\setbeamertemplate{footline}[text line]{%
+  \\parbox{\\linewidth}{\\vspace*{-12pt}
+   % \\scriptsize
+  ~~ Berry Boessenkool, ",curmonth,":
+  NiceFooterTitle,
+  \\href{https://github.com/brry/course\\#slides}{github.com/brry/course} \\hfill
+  ~~ \\insertframenumber / \\inserttotalframenumber~~~~~~~~~}}
 
 % Reference images:
 \\newcommand{\\bildlink}[1]{\\flushleft{\\tiny \\href{#1}{\\textcolor{gray}{#1}} \\normalsize }}
@@ -83,7 +97,7 @@ cat(
 }
 \\newcommand{\\appendixend}{
    \\addtocounter{framenumberappendix}{-\\value{framenumber}}
-   \\addtocounter{framenumber}{\\value{framenumberappendix}} 
+   \\addtocounter{framenumber}{\\value{framenumberappendix}}
 }
 
 
@@ -111,11 +125,15 @@ opts_chunk$set(cache=T, echo=TRUE, fig.height=3.3, fig.width=5, out.width='0.9\\
 \\Large
 \\textbf{NiceTitle\\\\[1.5em] \\large SubTitle}\\\\[2em]
 \\normalsize
-Berry Boessenkool, \\href{http://www.geo.uni-potsdam.de/geoecology.html}{uni-potsdam.de},",curmonth,"\\\\[1em]
+Berry Boessenkool, \\href{http://www.geo.uni-potsdam.de/geoecology.html}{uni-potsdam.de}, ",curmonth,"\\\\[1em]
 \\texttt{berry-b@gmx.de}\\\\[1em]
 \\href{https://github.com/brry/rdwd\\#rdwd}{github.com/brry/rdwd}\\\\
-\\href{https://cran.r-project.org/package=extremeStat/vignettes/extremeStat.html}{cran.r-project.org/package=extremeStat}
+\\href{https://cran.r-project.org/package=extremeStat/vignettes/extremeStat.html}{cran.r-project.org/package=extremeStat}\\\\[1em]
+\\scriptsize
+\\textit{Presentation template generated with} \\rcode{berryFunctions::createPres}\\\\
+\\normalsize
 
+\\TPshowboxesfalse % no border around this box
 \\only<2-3>{ % photography note and licence
 \\begin{textblock*}{8em}(250pt,30pt) % topleft corner x=250pt, y=30pt
 \\centering
@@ -131,9 +149,11 @@ ENCOURAGED\\\\[0.5em]%
 \\normalsize
 \\vspace{0.5em}
 \\end{textblock*}
-}
-
+\\TPshowboxestrue % borders around other boxes, as specified by \\usepackage[...,showboxes]{textpos}
+} % end camera + licence
+\\textblockcolour{} % reset block fill color to none/transparent
 \\end{frame}
+
 
 % ---------------------------
 
@@ -150,6 +170,7 @@ plot(rnorm(1000))
 % ---------------------------
 
 \\begin{frame}[fragile]{Frametitle}
+\\textblockrulecolour{red}
 \\pause
 \\begin{itemize}[<+->]
 \\item ItemOne
@@ -157,6 +178,11 @@ plot(rnorm(1000))
 \\end{itemize}
 \\onslide<+->
 \\begin{flushleft} SomeMore \\end{flushleft}
+\\only<5>{
+\\begin{textblock*}{1.2cm}(2.0cm,3.6cm)
+\\vspace{1.1cm} ~
+\\end{textblock*}
+}
 \\end{frame}
 
 % ---------------------------
@@ -204,6 +230,6 @@ Works with pause
 
 \\appendixend
 
-\\end{document}", file=paste0(dir, "/", presname, ".Rnw") )
+\\end{document}", file=paste0(dir, "/", presname, ".Rnw"), sep="")
 
 }

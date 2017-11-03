@@ -1,13 +1,13 @@
 #' Funnel plots for proportional data
 #' 
-#' Funnel plots for proportional data with confdence interval based on sample size. Introduced by Stephen Few, 2013
+#' Funnel plots for proportional data with confidence interval based on sample size. Introduced by Stephen Few, 2013
 #' 
 #' @return Nothing - the function just plots
 #' @note the default for lty is not taken from par("lty"). This would yield "solid".
 #'  Overwriting lty for one of the three line categories then produces
 #'  eg c("2", "solid", "solid"), which cannot be processed by legend.\cr
 #'  \bold{Wilson's Method:} algebraic approximation to the binomial distribution, very accurate, even for very small numbers.\cr
-#'  \url{http://www.apho.org.uk/resource/item.aspx?RID=39445} see "contains".\cr
+#'  \url{http://webarchive.nationalarchives.gov.uk/20170106081156/http://www.apho.org.uk/resource/item.aspx?RID=39445} see "contains".\cr
 #'  \bold{classic = Stephen Few's Method = the way I knew it:} sqrt( mu*(1-mu) / n )\cr
 #'  \url{http://www.jerrydallal.com/LHSP/psd.htm}\cr
 #'  \url{http://commons.wikimedia.org/wiki/File:ComparisonConfidenceIntervals.png}\cr
@@ -23,7 +23,7 @@
 #' See Stephen Few and Katherine Rowel's PDF for details on the interpretation.
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Oct 2013
 #' @references
-#'    http://www.perceptualedge.com/articles/visual_business_intelligence/variation_and_its_discontents.pdf\cr
+#'    \url{https://www.perceptualedge.com/articles/visual_business_intelligence/variation_and_its_discontents.pdf}\cr
 #'    \url{http://sfew.websitetoolbox.com/post/variation-and-its-discontents-6555336?}\cr
 #'    Excellent explanation of bayesian take on proportions: \url{http://varianceexplained.org/r/empirical_bayes_baseball/}
 #' @keywords hplot aplot
@@ -106,7 +106,7 @@
 #' @param xlab DEFAULT: "Sample size n"
 #' @param ylab DEFAULT: "Success rate [\%]"
 #' @param main DEFAULT: "Funnel plot for Proportions"
-#' @param a3 List with arguments for CI lines at 3*sd (eg: col, lty, lwd, lend, etc.). 
+#' @param a3 List with arguments for CI lines at 3*sd (eg: col, lty, lwd, lend, etc.).
 #'        Overwrites defaults that are defined within the function (if contentually possible). DEFAULT: NULL
 #' @param a2 Arguments for line of 2 sd. DEFAULT: NULL
 #' @param am Arguments for mean line. DEFAULT: NULL

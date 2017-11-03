@@ -37,6 +37,15 @@ upper(dummy) # still stable
 
 upper(stackloss[1:5,])
 
+upper2 <- function(data) upper(data)
+upper2("K")
+upper2(K)
+
+# getName only works correctly if x is not an evaluated object:
+lower2 <- function(inp, assign=FALSE) {if(assign) inp <- inp; getName(inp)}
+lower2(pi)       # "pi"
+lower2(pi, TRUE) # "3.14159265358979"
+
 }
 \seealso{
 \url{http://stackoverflow.com/a/26558733}, \code{\link{substitute}}

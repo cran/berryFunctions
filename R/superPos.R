@@ -2,22 +2,22 @@
 #' 
 #' superposition of precipitation along unit hydrograph (to simulate Q from P)
 #' 
-#' @return list with optimized n and k, Nash-Sutcliffe Index, and simulated discharge
+#' @return Vector of streamflow values
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, July 2013
 #' @seealso \code{\link{lsc}} where superPos is used, \code{\link{unitHydrograph}}
 #' @keywords hplot ts
 #' @export
-#' @examples 
+#' @examples
 #' 
 #' N <- c(9,5,2,14,1,3) # [mm/hour]
-#' UH <- c(0.1, 0.4, 0.3, 0.1, 0.1) # [1/h]
+#' UH <- c(0, 0.1, 0.4, 0.3, 0.1, 0.1) # [1/h]
 #' sum(UH) # sum must be 1
 #' 
 #' superPos(N, UH)
 #' # If catchment area = 34 km^2 and precipitation is homogenous:
 #' superPos(N/10^3, UH) * 34*10^6 / 3600  # m^3/s  # Add baseflow and you're done...
 #' 
-#' SP <- data.frame(Prec=c(N, 0,0,0,0),
+#' SP <- data.frame(Prec=c(N, 0,0,0,0,0),
 #'           P1=c( UH*N[1], 0,0,0,0,0),
 #'           P2=c(0, UH*N[2], 0,0,0,0),
 #'           P3=c(0,0, UH*N[3], 0,0,0),
@@ -33,13 +33,12 @@
 #' par(new=TRUE)
 #' plot(1, type="n", ylim=c(0, 15), xlim=c(1, 10), axes=FALSE, ann=FALSE)
 #' axis(4, las=1)
-#' polygon(x=c(1:10, 10:1), y=c(SPcum[,1], rep(0, 10)), col=2)
-#' for(i in 2:6) polygon(x=c(1:10, 10:1), y=c(SPcum[,i], rev(SPcum[,i-1])), col=i+1)
-#' text(2.5, 1, "Shape of UH")
-#' 
+#' polygon(x=c(1:11, 11:1), y=c(SPcum[,1], rep(0, 11)), col=2)
+#' for(i in 2:6) polygon(x=c(1:11, 11:1), y=c(SPcum[,i], rev(SPcum[,i-1])), col=i+1)
+#' text(3.5, 1, "Shape of UH")
 #' lines( superPos(N, UH), lwd=3)
 #' 
-#' plot(UH, type="o", ylim=c(0, 0.4), las=1)
+#' plot(UH, type="o", ylim=lim0(0.4), las=1)
 #' lines(UH, type="h" )
 #' 
 #' 
@@ -68,7 +67,7 @@
 #' lines(superPos(P=P_c, UH=UH_1), col=5)
 #' legend("topright", c("P a","P b", "P c"), title="with UH_1", col=3:5, lty=1)
 #' #
-#' plot( superPos(P=P_a, UH=UH_2), col=3, ylim=c(0,5), type="l", 
+#' plot( superPos(P=P_a, UH=UH_2), col=3, ylim=c(0,5), type="l",
 #'       main="Discharge", ylab="Q [m^3/s]")
 #' lines(superPos(P=P_b, UH=UH_2), col=4)
 #' lines(superPos(P=P_c, UH=UH_2), col=5)

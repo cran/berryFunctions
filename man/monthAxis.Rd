@@ -4,124 +4,133 @@
 \alias{monthAxis}
 \title{Label date axis}
 \usage{
-monthAxis(side = 1, timeAxis = NA, origin = "1970-01-01",
-  startyear = NULL, stopyear = NULL, n = 5, npm = NULL, npy = NA,
-  format = "\%d.\%m.\\n\%Y", labels = format.Date(d, format), ym = FALSE,
-  mcex = 0.6, mmgp = c(3, 0, 0), midyear = FALSE, midmonth = FALSE,
-  midargs = NULL, mgp = c(3, 1.5, 0), cex.axis = 1, tick = TRUE,
-  tcl = par("tcl"), las = 1, ...)
+monthAxis(side = 1, time = NA, origin = "1970-01-01",
+  mlabels = substr(month.abb, 1, 1), yformat = "\%Y", nmonths = 3,
+  nym_half = 3.5, nym_none = 5, mcex = 0.7, ycex = 1,
+  mtcl = par("tcl"), ytcl = par("tcl") - 1.7, mline = -1, yline = 0.2,
+  las = 1, lrange = NA, ym = TRUE, mgp = c(3, 1, 0), mt = NULL,
+  ml = NULL, yt = NULL, yl = NULL, quiet = FALSE, ...)
 }
 \arguments{
-\item{side}{Which \code{\link{axis}} are to be labeled? (can be several). DEFAULT: 1}
+\item{side}{Which \code{\link{axis}} is to be labeled? DEFAULT: 1}
 
-\item{timeAxis}{Logical indicating whether the axis is \code{\link{POSIXct}}, not date.
-DEFAULT: NA, meaning axis value >1e5}
+\item{time}{Logical indicating whether the axis is \code{\link{POSIXct}},
+not \code{\link{Date}}. DEFAULT: NA, meaning axis value >1e5}
 
-\item{origin}{Origin for\code{\link{as.Date}} and \code{\link{as.POSIXct}}. DEFAULT: "1970-01-01"}
+\item{origin}{Origin for\code{\link{as.Date}} and \code{\link{as.POSIXct}}. 
+DEFAULT: "1970-01-01"}
 
-\item{startyear}{Integer. starting year. DEFAULT: NULL = internally computed from \code{\link{par}("usr")}}
+\item{mlabels}{Labels for the months. DEFAULT: J,F,M,A,M,J,J,A,S,O,N,D}
 
-\item{stopyear}{Ditto for ending year. DEFAULT: NULL}
+\item{yformat}{Format of year labels, see details in \code{\link{strptime}}.
+Use \code{yformat=" "} (with space) to suppress year labeling. 
+DEFAULT: "\%Y"}
 
-\item{n}{Approximate number of labels that should be printed (as in \code{\link{pretty}}). DEFAULT: 5}
+\item{nmonths}{Minimum number of months required before a year at the
+axis boundary is labeled. DEFAULT: 3}
 
-\item{npm}{Number of labels per month, overrides n. DEFAULT: NULL = internally computed.}
+\item{nym_half}{Number of years on axis above which only every second month
+is labeled. DEFAULT: 3.5}
 
-\item{npy}{Number of labels per year, overrides npm and n. DEFAULT: NA}
+\item{nym_none}{Number of years on axis above which the months are
+not labeled. DEFAULT: 5}
 
-\item{format}{Format of date, see details in \code{\link{strptime}}. DEFAULT: "\%d.\%m.\\n\%Y"}
+\item{mcex}{\code{cex.axis} (letter size) for month labels. DEFAULT: 0.7}
 
-\item{labels}{labels. DEFAULT: format.Date(d, format)}
+\item{ycex}{\code{cex.axis} (letter size) for year labels. DEFAULT: 1}
 
-\item{ym}{Label months with first letter at the center of the month and year at center below.
-Sets midyear and midmonth to TRUE. Uses \code{labels} and \code{format}
-for the years, but ignores them for the months. DEFAULT: FALSE}
+\item{mtcl}{Month tick length (negative text line height units). 
+0 to suppress ticks. DEFAULT: par("tcl") = -0.5}
 
-\item{mcex}{\code{cex.axis} for month labels if ym=TRUE. DEFAULT: 0.8}
+\item{ytcl}{Year tick length (negative text line height units). 
+0 to suppress ticks. DEFAULT: par("tcl")-1.7 = -2.2}
 
-\item{mmgp}{\code{mgp} for month labels if ym=TRUE. DEFAULT: 3,0,0}
+\item{mline}{Line of month labels. DEFAULT: -1}
 
-\item{midyear}{Place labels in the middle of the year? if TRUE, format default is "\%Y". DEFAULT: FALSE}
-
-\item{midmonth}{Place labels in the middle of the month? if TRUE, format default is "\%m\\n\%Y". DEFAULT: FALSE}
-
-\item{midargs}{List of arguments passed to \code{\link{axis}} for the year-start lines without labels. DEFAULT: NULL}
-
-\item{mgp}{MarGinPlacement, see \code{\link{par}}. The second value is for label distance to axis. DEFAULT: c(3,1.5,0)}
-
-\item{cex.axis}{CharacterEXpansion (letter size). DEFAULT: 1}
-
-\item{tick}{Draw tick lines? DEFAULT: TRUE}
-
-\item{tcl}{Tick length (negative to go below axis) in text line height units like mgp[2]
-Changed to -2.5 for year borders if ym=TRUE. DEFAULT: par("tcl")}
+\item{yline}{Line of year labels. DEFAULT: 0.2}
 
 \item{las}{LabelAxisStyle for orientation of labels. DEFAULT: 1 (upright)}
 
-\item{\dots}{Further arguments passed to \code{\link{axis}}, like \code{lwd, col.ticks, hadj, lty}, ...}
+\item{lrange}{Label range (two \code{\link{Date}} values).
+DEFAULT: NA = internally computed from \code{\link{par}("usr")}}
+
+\item{ym}{Kept for back reference. DEFAULT: TRUE}
+
+\item{mgp}{MarGin Placement. Suggested not to change this, since 
+_tcl and _line defaults are chosen for the DEFAULT: c(3,1,0)}
+
+\item{mt, ml, yt, yl}{Lists with further arguments passed to \code{\link{axis}}, 
+like \code{lwd, col.ticks, lwd.ticks, hadj, lty}, separately
+for month ticks, month labels, year ticks, year labels.
+DEFAULT: NULL}
+
+\item{quiet}{Suppress warning about short time axis? DEFAULT: FALSE}
+
+\item{\dots}{Arguments passed to \code{\link{axis}} for all 4 elements.}
 }
 \value{
-The dates that were labelled
+List with locations of month and year labels and ticks, each a Date vector.
 }
 \description{
-Labels date axes at sensible intervals in the time domain of weeks to decades.
+Labels date axes at sensible monthly intervals in the 
+              time domain of years to decades.
 }
 \examples{
 
 set.seed(007) # for reproducibility
-Date1 <- as.Date("2013-09-25")+sort(sample(0:150, 30))
-plot(Date1, cumsum(rnorm(30)), type="l", xaxt="n", ann=FALSE)
-monthAxis(side=1)
-monthAxis(1, npm=2, cex.axis=0.5, col.axis="red") # fix number of labels per month
+timePlot <- function(nydays, start="2013-08-25", ...) 
+   plot(as.Date(start)+sort(c(0,sample(1:nydays, 50))), 
+        cumsum(rnorm(51)), type="l", xaxt="n", ann=FALSE, las=1, ...)
 
-DateYM <- as.Date("2013-04-25")+0:500
-plot(DateYM, cumsum(rnorm(501)), type="l", xaxt="n", ann=FALSE)
-monthAxis(ym=TRUE)
-monthAxis(ym=TRUE, mgp=c(3,1,0))
-monthAxis(ym=TRUE, cex.axis=1.4)
-monthAxis(ym=TRUE, mcex=0.9, col.axis="red")
- 
-plot(Date1, cumsum(rnorm(30)), type="l", xaxt="n", ann=FALSE)
-monthAxis(labels=FALSE, col.ticks=2)
-monthAxis(1, format=" ")  # equivalent to axis(labels=FALSE)
-monthAxis(1)
-d <- monthAxis(1, labels=letters[1:24], mgp=c(3,2.5,0))
-d # d covers the full year, thus is longer than n=5
+timePlot(1100)
+monthAxis()
+monthAxis(1, nmonths=6, col.axis="red") # 2013 not labeled anymore
+monthAxis(side=3, nym_half=2) # if axis > 2 years, label only partially
 
-Date2 <- as.Date("2011-07-13")+sort(sample(0:1400, 50))
-plot(Date2, cumsum(rnorm(50)), type="l", xaxt="n", ann=FALSE)
-monthAxis(npy=12, format=" ")  # fix number of labels per year
-monthAxis(tcl=-0.8, lwd.ticks=2, format="\%Y/\%m", mgp=c(3,1,0))
-monthAxis(format="", mgp=c(3,2,0)) # International Date format YYYY-mm-dd
+timePlot(2e3)
+monthAxis()   # long time series (>nym_none) only have years labeled
+monthAxis(side=3, font=2)
 
-plot(Date2, cumsum(rnorm(50)), type="l", xaxt="n", ann=FALSE)
-monthAxis(midyear=TRUE)
-abline(v=monthLabs(npm=1), col=8)
+timePlot(900)
+monthAxis(side=3, mtcl=0) # no tick lines between months
+monthAxis(ycex=1.4, ytcl=2, lwd.ticks=2)
+monthAxis(yline=1, col.axis=4, col=4)
+monthAxis(mcex=1, col.axis="red", yformat=" ") # no years labeled
 
-Date3 <- as.Date("2011-07-13")+sort(sample(0:1200, 50))
-plot(Date3, cumsum(rnorm(50)), type="l", xaxt="n", ann=FALSE)
-monthAxis(1, n=4, font=2)
-monthAxis(1, col.axis=3) # too many labels with default n=5
+timePlot(800)
+monthAxis()
+monthAxis(mgp=c(2,1,0)) # the same. element 2 is relevant here
+monthAxis(mgp=c(3,0,0)) # requires change in mline andy yline placement
 
-# mid-year labels:
-plot(Date3, cumsum(rnorm(50)), type="l", xaxt="n", ann=FALSE)
-monthAxis(midyear=TRUE, midargs=list(tcl=-1.2))
+timePlot(400)
+ma <- monthAxis(lwd=3, yl=list(col.axis=3), mlabels=letters[1:12], mcex=1)
+abline(v=ma$mtics, col=8) # use output from monthAxis for other functions
 
-# mid-month labels:
-plot(Date1, cumsum(rnorm(30)), type="l", xaxt="n", ann=FALSE)
-monthAxis(midmonth=TRUE)
+timePlot(80)
+monthAxis(mlabels=month.abb, mcex=1) # short time series give a warning
+
+timePlot(80, "2013-11-14")
+monthAxis(mlabels=month.abb, mcex=1, nmonths=0, quiet=TRUE)
 
 # Time axis instead of date axis:
-plot(as.POSIXct(Sys.time()+c(0,10)*24*3600), 1:2, xaxt="n")
-monthAxis(n=3)
+plot(as.POSIXct(Sys.time()+c(0,2)*360*24*3600), 1:2, xaxt="n")
+monthAxis(nmonths=2)
+
+timePlot(800, "2015-01-01")
 monthAxis()
+timePlot(900, "2015-01-01", xaxs="i")
+monthAxis()
+timePlot(300, "2015-01-01", xaxs="i")
+monthAxis() # if less than a full year is covered, the year label is centered
 
 }
 \seealso{
-\code{\link{monthLabs}} for the numbercrunching itself, \code{\link{axis.Date}} with defaults that are less nice.
+\code{\link{monthLabs}} for the numbercrunching itself, 
+         \code{\link{timeAxis}} for shorter or longer time frames, 
+         \code{\link{axis.Date}} with defaults that are less nice.
 }
 \author{
-Berry Boessenkool, \email{berry-b@gmx.de}, Feb 2015, update labels and midyear Dec 2015
+Berry Boessenkool, \email{berry-b@gmx.de}, Feb + Dec 2015, Oct 2017
 }
 \keyword{aplot}
 \keyword{chron}

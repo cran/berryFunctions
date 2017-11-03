@@ -31,10 +31,10 @@ upper(3, skip=1) # traceCall skips last level (warning)
 upper(3, skip=4) # now the stack is empty
 d <- tryStack(upper("four"), silent=TRUE)
 inherits(d, "try-error")
-cat(d) 
+cat(d)
 
-lower <- function(a,...) {warning(traceCall(1,"",": "), "stupid berry warning: ", 
-                                  a+10, call.=FALSE); a}
+lower <- function(a,...) {warning(traceCall(1, prefix="in ", suffix=": "), 
+                          "How to use traceCall in functions ", call.=FALSE); a}
 upper(3)
 
 }

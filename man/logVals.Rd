@@ -15,7 +15,8 @@ logVals(from = -7, to = 7, Range, base = 1, big.mark = "'",
 
 \item{Range}{Or give from and to as range}
 
-\item{base}{Bases to be used, eg. c(1,2,5)}
+\item{base}{Bases to be used, eg. c(1,2,5). Use base=NA to switch 
+between 1 and c(1,2,5) depending on range. DEFAULT 1}
 
 \item{big.mark}{Symbol separating thousands, eg. space, comma, dot, etc. see \code{\link{format}} and \code{\link{prettyNum}}}
 
@@ -33,13 +34,13 @@ Compare to \code{\link{options}("scipen")}. This is mainly for \code{\link{logAx
 \item{\dots}{Ignored arguments}
 }
 \value{
-A list with 
+A list with
        \item{vals}{Values for lines and label positions}
-       \item{labs}{Formatted values for labels} 
+       \item{labs}{Formatted values for labels}
        \item{all}{Values for lines}
 }
 \description{
-Create nice values and labels to write at logartihmic axes
+Create nice values and labels to write at logarithmic axes
 }
 \examples{
 

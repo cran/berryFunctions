@@ -15,7 +15,7 @@
 #' smoothLines(x,y)
 #' #png("smoothLines.png")
 #' par(mar=c(2,2,2,0)+.5)
-#' plot(1:100, las=1, type="n", main="usage of blines(x,y, lwd, col, n, alpha ...)")
+#' plot(1:100, las=1, type="n", main="usage of smoothLines(x,y, lwd, col, n, alpha ...)")
 #' abline(h=0:10*10, v=0:10*10, col=6); box()
 #' for(i in 0:9) { smoothLines(x=c(0,10,25,35), y=c(i*10, i*10, i*10+12, i*10+7), lwd=i)
 #'                 text(25, i*10+5, paste("n=5,lwd=", i, sep="")) }
@@ -27,7 +27,7 @@
 #' 
 #' #dev.off()
 #' 
-#' @param x numrical. x-coordinates. x can be a matrix, then the y coordinates are taken from the second column
+#' @param x numerical. x-coordinates. x can be a matrix, then the y coordinates are taken from the second column
 #' @param y numerical. y-coordinates
 #' @param lwd single integer. line width
 #' @param col color. DEFAULT: 1 (black)
@@ -49,5 +49,5 @@ if(is.vector(x)) {x <- x; y <- y} else {y <- x[,2]; x <- x[,1]}
 # plot transparent lines above each other
 for(i in 1:n) {lines(x,y, col=addAlpha(col, alpha=alpha), lwd=lwd+n+1-i, ...) }
 # add the original line above the rest
-lines(x,y, col=col, lwd=lwd, ...)   
+lines(x,y, col=col, lwd=lwd, ...)
 } # end of function

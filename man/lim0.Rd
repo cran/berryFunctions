@@ -11,7 +11,7 @@ lim0(x, f = 1/27, curtail = TRUE)
 
 \item{f}{Numeric. Extension factor. DEFAULT: 0.04 as in extendrange used eg. by \code{\link{curve}}}
 
-\item{curtail}{Logical. Should the range returned be trimmed by 4\%? That way, 
+\item{curtail}{Logical. Should the range returned be trimmed by 4\%? That way,
 plotting doesn't need the default \code{\link{par}} xaxs or yaxs changed. DEFAULT: TRUE}
 }
 \value{
@@ -42,6 +42,10 @@ round( par("usr")  , digits=5) # zero is not included on axis anymore
 b <- -val
 plot(b)
 plot(b, ylim=lim0(b) ) # works with only negative values as well
+
+# can handle only-NA input:
+lim0(c(7,NA,NA,NA)[-1])
+lim0(c(NA,NA,NA))
 
 }
 \references{

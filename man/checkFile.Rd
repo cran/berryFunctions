@@ -2,9 +2,9 @@
 % Please edit documentation in R/checkFile.R
 \name{checkFile}
 \alias{checkFile}
-\title{check file existance}
+\title{check file existence}
 \usage{
-checkFile(file, warnonly = FALSE, trace = TRUE)
+checkFile(file, warnonly = FALSE, trace = TRUE, pwd = TRUE)
 }
 \arguments{
 \item{file}{Filename(s) as character string to be checked for existence.}
@@ -12,9 +12,9 @@ checkFile(file, warnonly = FALSE, trace = TRUE)
 \item{warnonly}{Logical: Only issue a \code{\link{warning}} instead of an
 error with \code{\link{stop}}? DEFAULT: FALSE}
 
-\item{trace}{Logical: Add function call stack to the message? DEFAULT: TRUE
-WARNING: in \link{do.call} settings with large objects,
-tracing may take a lot of computing time.}
+\item{trace}{Logical: Add function call stack to the message? DEFAULT: TRUE}
+
+\item{pwd}{Logical: Print working directory in message? DEFAULT: TRUE}
 }
 \value{
 TRUE/FALSE, invisibly
@@ -38,7 +38,7 @@ compareFiles("dummy.nonexist", "dummy2.nonexist")
 checkFile("dummy.nonexist")
 }
 
-dingo <- function(k="brute.nonexist", trace=TRUE) 
+dingo <- function(k="brute.nonexist", trace=TRUE)
          checkFile(k, warnonly=TRUE, trace=trace)
 dingo()
 dingo("dummy.nonexist")

@@ -14,7 +14,7 @@ quantileBands(mat, x = 1:ncol(mat), col = rgb(0, 0, 1, alpha = c(0.5, 0.7)),
 
 \item{x}{X-axis positions for each column. DEFAULT: 1:ncol(mat)}
 
-\item{col}{Vector of colors for each quantile group, recycled reversively if necessary. DEFAULT: rgb(0,0,1, alpha=c(0.5, 0.7))}
+\item{col}{Vector of colors for each quantile group, recycled reversely if necessary. DEFAULT: rgb(0,0,1, alpha=c(0.5, 0.7))}
 
 \item{add}{Add to existing plot? Allows to add to highly customized plot. DEFAULT: FALSE}
 
@@ -32,7 +32,7 @@ quantileBands(mat, x = 1:ncol(mat), col = rgb(0, 0, 1, alpha = c(0.5, 0.7)),
 
 \item{meanargs}{List of arguments passed to lines drawing \code{\link{mean}}. Not drawn if NULL. DEFAULT: NULL}
 
-\item{txi}{Text x position index (along columns of mat), recyled if necessary. NA to suppress. INTERNAL DEFAULT: middle of the plot for all.}
+\item{txi}{Text x position index (along columns of mat), recycled if necessary. NA to suppress. INTERNAL DEFAULT: middle of the plot for all.}
 
 \item{textargs}{List of arguments passed to \code{\link{text}}, like col, adj, ... DEFAULT: NULL}
 
@@ -66,10 +66,10 @@ quantileBands(neff2, x=1:400, smooth=35, ylab="mean of rnorm(n)",
   xlab="sample size (n)", probs=0:10/10, col=brewer.pal(5,"BuGn"),
   txi=c(40,50,60), textargs=list(col="yellow"), medargs=list(lwd=2),
   meanargs=list(col=2, lty=1), main="Mean converges to true population mean")
-   
+
 }
 \seealso{
-\code{\link{quantile}}, \code{\link{quantileMean}}, \code{\link{ciBand}}, 
+\code{\link{quantile}}, \code{\link{quantileMean}}, \code{\link{ciBand}},
          \code{\link{polygon}}, \url{https://cran.r-project.org/package=fanplot}
 }
 \author{

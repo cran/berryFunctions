@@ -12,7 +12,7 @@ funSource(x, character.only = is.character(x), trydirect = TRUE)
 \item{character.only}{If TRUE, look for SomeFun instead of MyFun if
 MyFun <- "SomeFun". DEFAULT: \code{\link{is.character}(x)}}
 
-\item{trydirect}{If TRUE, try direct url to file \code{x.R}. DEFAULT: TRUE}
+\item{trydirect}{If TRUE, try direct urls to files \code{x.R} and \code{x.r}. DEFAULT: TRUE}
 }
 \value{
 links that are also opened with \code{\link{browseURL}}
@@ -23,13 +23,13 @@ open source code of a function in a loaded or specified package on github.com/cr
 \examples{
 \dontrun{ ## browser windows should not be openend in CRAN checks
 library("berryFunctions")
-funSource(colPoints) 
-funSource("head") 
-funSource("require", trydirect=FALSE) 
+funSource(colPoints)
+funSource("head")
+funSource("require", trydirect=FALSE)
 
-funSource(earthDist) 
-funSource(OSMscale::earthDist) 
-funSource("OSMscale::earthDist") 
+funSource(earthDist)
+funSource(OSMscale::earthDist)
+funSource("OSMscale::earthDist")
 }
 
 \dontrun{ # developmental testing
@@ -41,6 +41,9 @@ funSource("tail")
 rm(tail)
 }
 
+}
+\seealso{
+\url{https://github.com/brry/rskey} to add this as a keyboard shortcut
 }
 \author{
 Berry Boessenkool, \email{berry-b@gmx.de}, Jan+Dec 2016

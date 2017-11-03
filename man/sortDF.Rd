@@ -9,9 +9,9 @@ sortDF(df, col, decreasing = TRUE, ...)
 \arguments{
 \item{df}{Data.frame to be sorted}
 
-\item{col}{Column (index or (un)qouted name) to be sorted by}
+\item{col}{Column (index or (un)quoted name) to be sorted by}
 
-\item{decreasing}{Logical: should highest value be on top? 
+\item{decreasing}{Logical: should highest value be on top?
 DEFAULT: TRUE (unlike \code{\link{order}}!)}
 
 \item{\dots}{Further arguments passed to \code{\link{order}}, like eg \code{na.last or method}}
@@ -23,8 +23,8 @@ data.frame
 sort a data.frame by column - basically just a wrapper for order
 }
 \examples{
-
-sortDF(USArrests[USArrests$Murder>11,], "Assault")
+sortDF(USArrests[USArrests$Murder>11,], Assault)
+sortDF(USArrests[USArrests$Murder>11,], "Assault") # safer within functions
 sortDF(USArrests[USArrests$Murder>11,], 3)
 
 }

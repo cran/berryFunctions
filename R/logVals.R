@@ -1,10 +1,10 @@
 #' Create log-axis values and labels
 #' 
-#' Create nice values and labels to write at logartihmic axes
+#' Create nice values and labels to write at logarithmic axes
 #' 
-#' @return A list with 
+#' @return A list with
 #'        \item{vals}{Values for lines and label positions}
-#'        \item{labs}{Formatted values for labels} 
+#'        \item{labs}{Formatted values for labels}
 #'        \item{all}{Values for lines}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Feb 2014
 #' @seealso \code{\link{log10}}, \code{\link{logAxis}}, \url{http://r.789695.n4.nabble.com/expression-exponent-labeling-td4661174.html}
@@ -39,7 +39,8 @@
 #' @param from Lower exponent \emph{OR} vector with data
 #' @param to High end
 #' @param Range Or give from and to as range
-#' @param base Bases to be used, eg. c(1,2,5)
+#' @param base         Bases to be used, eg. c(1,2,5). Use base=NA to switch 
+#'                     between 1 and c(1,2,5) depending on range. DEFAULT 1
 #' @param big.mark Symbol separating thousands, eg. space, comma, dot, etc. see \code{\link{format}} and \code{\link{prettyNum}}
 #' @param decimal.mark Character separating comma values, see \code{\link{format}} and \code{\link{prettyNum}}
 #' @param scientific See \code{\link{format}}
@@ -76,10 +77,12 @@ if( !missing(Range)  )
   from <- floor(Range[1])
   to <- ceiling(Range[2])
   }
+# base
+if(any(is.na(base))) base <- if(abs(to-from)>4) 1 else c(1,2,5) 
 # values for lines and labels:
 vals <- base*10^rep(floor(from):ceiling(to), each=length(base))
 # formatted values for labels:
-labs <-  format(vals, big.mark=big.mark, trim=TRUE, scientific=scientific, 
+labs <-  format(vals, big.mark=big.mark, trim=TRUE, scientific=scientific,
                       drop0trailing=TRUE, decimal.mark=decimal.mark)
 # change to expression if value > exponent :
 change1 <- abs(log10(vals)) >= exponent  & log10(vals)%%1 ==0 # base=1

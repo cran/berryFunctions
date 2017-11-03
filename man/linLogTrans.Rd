@@ -44,7 +44,7 @@ linLogTrans(x, y, log = "x", steps = 100, base = 1, las = 1,
 
 \item{write_t}{Write transformation value in lower right corner? DEFAULT: TRUE}
 
-\item{values_t}{Supply vector with values for transformation (1/t). Overides steps. If you have a better algorithm than I do, please let me know! DEFAULT: NULL for internal calculation based on size of steps.}
+\item{values_t}{Supply vector with values for transformation (1/t). Overrides steps. If you have a better algorithm than I do, please let me know! DEFAULT: NULL for internal calculation based on size of steps.}
 
 \item{pointsarg}{List of further arguments passed to points, like pch, cex, col. DEFAULT: NULL}
 
@@ -57,12 +57,12 @@ Returned invisibly: transformation values used. Plotted: \code{steps} number of 
 draw images that gradually transform from a linear to a logarithmic axis
 }
 \note{
-if(steps>1000) steps <- 1000. In the unlikely case you need more steps, please let me know and I'll change the code.\cr 
+if(steps>1000) steps <- 1000. In the unlikely case you need more steps, please let me know and I'll change the code.\cr
       It's best to save the plots into a pdf (see the example) or wrap it within\cr
       \code{png("Transition\%03d"); linLogTrans(x,y); dev.off()}
 }
 \examples{
- 
+
 set.seed(42);  x <- 10^rnorm(100, 3);  y <- runif(100)
 linLogTrans(x,y, steps=15, sleep=0.01) # 0.05 might be smoother...
 linLogTrans(x,y, steps=15, log="y", ylim=c(0.1, 0.8), base=c(1,2,5))
@@ -134,7 +134,7 @@ abline(b=1, a=0)
 
 }
 \references{
-x^(1/t) is based on the first comment on \url{http://stackoverflow.com/questions/15994442/}\cr 
+x^(1/t) is based on the first comment on \url{http://stackoverflow.com/questions/15994442/}\cr
   besides the nice graphic properties of logtransformations, check this page for the implications on rates of change: \cr
   \url{http://sfew.websitetoolbox.com/post/show_single_post?pid=1282690259&postcount=4}\cr
   \url{http://sfew.websitetoolbox.com/post/show_single_post?pid=1282691799&postcount=5}

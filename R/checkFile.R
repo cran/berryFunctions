@@ -1,7 +1,7 @@
-#' check file existance
-#'
+#' check file existence
+#' 
 #' check whether files exist and give a useful error/warning/message
-#'
+#' 
 #' @return TRUE/FALSE, invisibly
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, May 2016
 #' @seealso \code{\link{file.exists}}
@@ -11,7 +11,7 @@
 #' is.error( checkFile("FileThatDoesntExist.txt")  )
 #' checkFile("FileThatDoesntExist.txt", warnonly=TRUE)
 #' checkFile("FileThatDoesntExist.txt", warnonly=TRUE, trace=FALSE)
-#'
+#' 
 #' \dontrun{## Excluded from CRAN checks because of file creation
 #' # Vectorized:
 #' file.create("DummyFile2.txt")
@@ -22,29 +22,29 @@
 #' compareFiles("dummy.nonexist", "dummy2.nonexist")
 #' checkFile("dummy.nonexist")
 #' }
-#'
-#' dingo <- function(k="brute.nonexist", trace=TRUE) 
+#' 
+#' dingo <- function(k="brute.nonexist", trace=TRUE)
 #'          checkFile(k, warnonly=TRUE, trace=trace)
 #' dingo()
 #' dingo("dummy.nonexist")
-#'
+#' 
 #' upper <- function(h, ...) dingo(c(h, "dumbo.nonexist"), ...)
 #' upper("dumbo2.nonexist")
 #' upper(paste0("dumbo",2:8,".nonexist"))
 #' upper(paste0("dumbo",2:8,".nonexist"), trace=FALSE)
 #' 
-#'
+#' 
 #' @param file Filename(s) as character string to be checked for existence.
 #' @param warnonly Logical: Only issue a \code{\link{warning}} instead of an
 #'                 error with \code{\link{stop}}? DEFAULT: FALSE
 #' @param trace Logical: Add function call stack to the message? DEFAULT: TRUE
-#'              WARNING: in \link{do.call} settings with large objects,
-#'              tracing may take a lot of computing time.
-#'
+#' @param pwd   Logical: Print working directory in message? DEFAULT: TRUE
+#' 
 checkFile <- function(
 file,
 warnonly=FALSE,
-trace=TRUE
+trace=TRUE,
+pwd=TRUE
 )
 {
 # check actual file existence:
@@ -59,8 +59,9 @@ if(any(!exi))
   Text3 <- if(sum(!exi)>2) paste0(toString(file[!exi][1:2]), " (and ",sum(!exi)-2," others)") else
                            toString(file[!exi])
   Text4 <- if(sum(!exi)>1) "\n  do" else "'\n  does"
-  Text5 <- paste0(" not exist at ", getwd() )
-  Text <- paste0(Text1,Text2,Text3,Text4,Text5)
+  Text5 <- " not exist."
+  Text6 <- if(pwd) paste0(" Current getwd: ", getwd() ) else ""
+  Text <- paste0(Text1,Text2,Text3,Text4,Text5,Text6)
   if(warnonly) warning(Text, call.=!trace) else stop(Text, call.=!trace)
   }
 return(invisible(exi))

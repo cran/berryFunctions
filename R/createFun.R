@@ -1,12 +1,12 @@
 #' create function framework
-#'
-#' create a file with a complete (Roxygen) framework for a new function in this package
-#'
+#' 
+#' create a file with a complete (Roxygen) framework for a new function in a package
+#' 
 #' @details Tries to open the file in the standard editor for .R files using \code{\link{system2}}
-#'
+#' 
 #' @return file name as character string
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, March 2016
-#' @seealso \code{\link{system2}}, \code{\link{funSource}}, Roxygen2: 
+#' @seealso \code{\link{system2}}, \code{\link{funSource}}, Roxygen2:
 #'          \url{https://cran.r-project.org/package=roxygen2/vignettes/rd.html}
 #' @keywords documentation
 #' @export
@@ -14,88 +14,76 @@
 
 #' #createFun("myNewFunction")
 
-#' @param fun Character string or unquoted name. Function that will be crated with identical filename
-#' @param package Character String with package name. DEFAULT: "berryFunctions"
-#' @param path Path to package in development (not package name itself) DEFAULT: "S:/Dropbox/Rpack"
-#'
+#' @param fun  Character string or unquoted name. Function that will be created with identical filename.
+#' @param path Path to package in development (including package name itself).
+#'             Is passed to \code{\link{packagePath}}. DEFAULT: "."
+#' @param open Logical: open the file? If several instances of Rstudio are open,
+#'             the last one (not necessarily the active one) will be used.
+#'             DEFAULT: TRUE
+#' 
 createFun <- function(
 fun,
-package="berryFunctions",
-path="S:/Dropbox/Rpack"
+path=".",
+open=TRUE
 )
 {
+# check and deparse input:
 fun <- deparse(substitute(fun))
 fun <- gsub("\"", "", fun, fixed=TRUE)
 if(length(fun) >1)     stop("'fun' must be a single function name.")
-if(length(package) >1) stop("'package' must be a single name.")
 if(length(path)>1)     stop("'path' must be a single character string.")
-
-# laptop linux path change:
-if(!file.exists(path)) path <- gsub("S:", "~", path)
-# work PC path change:
-if(!file.exists(path)) path <- gsub("~", "C:/Users/boessenkool", path)
-# path control
-if(!file.exists(path)) stop("path does not exist. ", path)
-path <- paste0(path, "/", package, "/R")
-if(!file.exists(path)) stop("path does not exist. ", path)
+# Filename
+path <- packagePath(path)
+rfile <- paste0(path,"/R/",fun,".R")
+rfile <- newFilename(rfile) # append _1 if existent
 #
-rfile <- paste0(path,"/",fun,".R")
-# control for existence:
-Newfilecreated <- FALSE  ;  file_nr <- 1
-while(file.exists(rfile))
-    {
-    rfile <- paste0(path,"/",fun,"_", file_nr,".R")
-    file_nr <- file_nr + 1
-    Newfilecreated <- TRUE
-    }
-if(Newfilecreated) warning("File already existed. Created the file\n ", rfile)
-#
+# Date
+lct <- Sys.getlocale("LC_TIME"); Sys.setlocale("LC_TIME", "C")
+date <- paste0(format(Sys.Date(), "%b %Y"), "\n")
+Sys.setlocale("LC_TIME", lct)
 #
 # Write function structure
-part1 <- "' title
-'
-' description
-'
+part1 <- paste0(
+"' @title title
+' @description description
 ' @details detailsMayBeRemoved
 ' @aliases aliasMayBeRemoved
-'
-' @return ReturnValue
 ' @section Warning: warningMayBeRemoved
-' @author Berry Boessenkool, \\email{berry-b@@gmx.de}, "
-part1 <- paste0("#", strsplit(part1, "\n", fixed=TRUE)[[1]])
-part1 <- paste(part1, collapse="\n")
-lct <- Sys.getlocale("LC_TIME"); Sys.setlocale("LC_TIME", "C")
-part2 <- paste0(format(Sys.Date(), "%b %Y"), "\n")
-Sys.setlocale("LC_TIME", lct)
-part3 <- "' @seealso \\code{\\link{help}}, \\code{\\link{help}}
+' @return ReturnValue
+' @author Berry Boessenkool, \\email{berry-b@@gmx.de}, ", date,
+"' @seealso \\code{\\link{help}}, \\code{graphics::\\link[graphics]{plot}}
 ' @keywords aplot
-' @importFrom package fun1 fun2
+ @importFrom package fun1 fun2
 ' @export
 ' @examples
+' ",fun,"(rnorm(20))
 '
-'
-' @param
-' @param
-' @param
+' @param a     Numerical vector.
+' @param plot  Logical. Should values be plotted? This can be turned off if
+'              only the computation results are needed. DEFAULT: TRUE
+' @param dummy currently_Unused
 ' @param \\dots Further arguments passed to \\code{\\link{plot}}
 '
-"
-part3 <- paste0("#", strsplit(part3, "\n", fixed=TRUE)[[1]])
-part3 <- paste(part3, collapse="\n")
-
-part4 <- paste0("\n",
+")
+part2 <- paste0("\n",
 fun," <- function(
-
+a,
+plot=TRUE,
+dummy,
+...
 )
 {
-
+if(plot) plot(a, ...)
+# Output:
+return(invisible(a))
 }
 ")
-cat(part1,part2,part3,part4, file=rfile, sep="")
-message(rfile)
+
+part1 <- paste0("#", strsplit(part1, "\n", fixed=TRUE)[[1]])
+part1 <- paste(part1, collapse="\n")
+cat(part1,part2, file=rfile, sep="")
 # Open the file with the program associated with its file extension:
-linux <- Sys.info()["sysname"]=="Linux"
-try(if(!linux) system2("open", rfile) else system2("xdg-open", rfile), silent=TRUE)
+if(open) openFile(rfile)
 # return file name:
 invisible(rfile)
 }

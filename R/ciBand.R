@@ -44,15 +44,16 @@
 #' 
 #' @param yu y values of upper confidence region boundary
 #' @param yl y values of lower confidence region boundary
-#' @param ym y values of median/mean line. Only added if this argument is given. DEFAULT: NULL
+#' @param ym y values of middle/median/mean line. Only added if this argument is given. DEFAULT: NULL
 #' @param x x values (one ascending vector). DEFAULT: 1:length(yu)
 #' @param na Method used at NA points. One of "interpolate" or "remove". DEFAULT: "interpolate"
 #' @param nastars If na="interpolate", should stars be drawn at places that used to be NA? DEFAULT: TRUE
-#' @param singlepoints If na="remove", add points for places surrounded by NAs? 
-#'       can be a boolean (T/F) vector of length three for upper, lower, median. 
+#' @param singlepoints If na="remove", add points for places surrounded by NAs?
+#'       can be a boolean (T/F) vector of length three for upper, lower, median.
 #'       Code to identify isolated points is taken from wq::plotTs. DEFAULT: TRUE
 #' @param args List of arguments passed to \code{\link{points}} for the previous two arguments. DEFAULT: NULL
 #' @param add Add to existing plot? If FALSE, plot is called before adding confidence interval. DEFAULT: FALSE
+#' @param lwd Line width of middle line. DEFAULT: 1
 #' @param colm Color for median/mean line. DEFAULT: "green3"
 #' @param colb Color of the confidence region band. DEFAULT: addAlpha(colm)
 #' @param border \code{\link{polygon}} border. DEFAULT: NA
@@ -61,21 +62,22 @@
 #' @param \dots Further arguments passed to \code{\link{plot}} - or maybe better polygon??
 #' 
 ciBand <- function(
-yu,                  
-yl,                  
-ym=NULL,            
-x=1:length(yu),      
-na="interpolate",    
-nastars=TRUE,        
-singlepoints=TRUE,   
-args=NULL,           
-add=FALSE,          
-colm="green3",      
-colb=addAlpha(colm), 
-border=NA,           
-las=1,              
-ylim=range(yu,yl, finite=TRUE), 
-...   
+yu,
+yl,
+ym=NULL,
+x=1:length(yu),
+na="interpolate",
+nastars=TRUE,
+singlepoints=TRUE,
+args=NULL,
+add=FALSE,
+lwd=1,
+colm="green3",
+colb=addAlpha(colm),
+border=NA,
+las=1,
+ylim=range(yu,yl, finite=TRUE),
+...
 )
 {
 # input checking:
@@ -105,7 +107,7 @@ if(na=="interpolate")
   if(nastars) do.call(points, args=owa(list(x=x[is.na(yu)], y=yui[is.na(yu)], pch=8), args, "x", "y"))
   if(nastars) do.call(points, args=owa(list(x=x[is.na(yl)], y=yli[is.na(yl)], pch=8), args, "x", "y"))
   # Draw median/mean line:
-  if(!is.null(ym)) lines(x, ymi, col=colm)
+  if(!is.null(ym)) lines(x, ymi, col=colm, lwd=lwd)
   }
 else if(na=="remove")
   {
@@ -139,16 +141,16 @@ else if(na=="remove")
       #iso <- ifelse(iso.pts, x, NA)
       iso.pts
       }
-    if(singlepoints[1]) do.call(points, args=owa(list(x=x[iso(yu)], y=yu[iso(yu)], 
+    if(singlepoints[1]) do.call(points, args=owa(list(x=x[iso(yu)], y=yu[iso(yu)],
                                              pch=20, col=colb), args, "x", "y"))
-    if(singlepoints[2]) do.call(points, args=owa(list(x=x[iso(yl)], y=yl[iso(yl)], 
+    if(singlepoints[2]) do.call(points, args=owa(list(x=x[iso(yl)], y=yl[iso(yl)],
                                              pch=20, col=colb), args, "x", "y"))
     }
   # Draw median/mean line:
-  if(!is.null(ym)) 
+  if(!is.null(ym))
     {
-    lines(x, ym, col=colm)
-    if(singlepoints[3]) do.call(points, args=owa(list(x=x[iso(yl)], y=yl[iso(yl)], 
+    lines(x, ym, col=colm, lwd=lwd)
+    if(singlepoints[3]) do.call(points, args=owa(list(x=x[iso(yl)], y=yl[iso(yl)],
                                              pch=20, col=colm), args, "x", "y"))
     }
   } # End of na="remove"

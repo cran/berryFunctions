@@ -4,20 +4,23 @@
 \alias{createFun}
 \title{create function framework}
 \usage{
-createFun(fun, package = "berryFunctions", path = "S:/Dropbox/Rpack")
+createFun(fun, path = ".", open = TRUE)
 }
 \arguments{
-\item{fun}{Character string or unquoted name. Function that will be crated with identical filename}
+\item{fun}{Character string or unquoted name. Function that will be created with identical filename.}
 
-\item{package}{Character String with package name. DEFAULT: "berryFunctions"}
+\item{path}{Path to package in development (including package name itself).
+Is passed to \code{\link{packagePath}}. DEFAULT: "."}
 
-\item{path}{Path to package in development (not package name itself) DEFAULT: "S:/Dropbox/Rpack"}
+\item{open}{Logical: open the file? If several instances of Rstudio are open,
+the last one (not necessarily the active one) will be used.
+DEFAULT: TRUE}
 }
 \value{
 file name as character string
 }
 \description{
-create a file with a complete (Roxygen) framework for a new function in this package
+create a file with a complete (Roxygen) framework for a new function in a package
 }
 \details{
 Tries to open the file in the standard editor for .R files using \code{\link{system2}}
@@ -26,7 +29,7 @@ Tries to open the file in the standard editor for .R files using \code{\link{sys
 #createFun("myNewFunction")
 }
 \seealso{
-\code{\link{system2}}, \code{\link{funSource}}, Roxygen2: 
+\code{\link{system2}}, \code{\link{funSource}}, Roxygen2:
          \url{https://cran.r-project.org/package=roxygen2/vignettes/rd.html}
 }
 \author{

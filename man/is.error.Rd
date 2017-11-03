@@ -7,7 +7,7 @@
 is.error(expr, tell = FALSE, force = FALSE)
 }
 \arguments{
-\item{expr}{Expression to be tested for retunrning an error}
+\item{expr}{Expression to be tested for returning an error}
 
 \item{tell}{Logical: Should the error message be printed via \code{\link{message}}? DEFAULT: FALSE}
 
@@ -26,7 +26,7 @@ is.error(  log("a")            )
 is.error(  log(3),   tell=TRUE )
 is.error(  log("a"), tell=TRUE )
 stopifnot( is.error( log("a")  )  ) # or shorter:
-is.error(  log("a"), force=TRUE) 
+is.error(  log("a"), force=TRUE)
 # is.error(  log(3),   force=TRUE)
 stopifnot(is.error(  is.error(log(3), force=TRUE)  ))
 

@@ -1,21 +1,22 @@
 #' Source code of a function
 #' 
-#' open source code of a function in a loaded or specified package on github.com/cran or github.com/wch/r-source 
+#' open source code of a function in a loaded or specified package on github.com/cran or github.com/wch/r-source
 #' 
 #' @return links that are also opened with \code{\link{browseURL}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Jan+Dec 2016
 #' @importFrom utils browseURL find
 #' @export
+#' @seealso \url{https://github.com/brry/rskey} to add this as a keyboard shortcut
 #' @examples
 #' \dontrun{ ## browser windows should not be openend in CRAN checks
 #' library("berryFunctions")
-#' funSource(colPoints) 
-#' funSource("head") 
-#' funSource("require", trydirect=FALSE) 
+#' funSource(colPoints)
+#' funSource("head")
+#' funSource("require", trydirect=FALSE)
 #' 
-#' funSource(earthDist) 
-#' funSource(OSMscale::earthDist) 
-#' funSource("OSMscale::earthDist") 
+#' funSource(earthDist)
+#' funSource(OSMscale::earthDist)
+#' funSource("OSMscale::earthDist")
 #' }
 #' 
 #' \dontrun{ # developmental testing
@@ -28,12 +29,12 @@
 #' }
 #' 
 #' @param x function name, with or without quotation marks
-#' @param character.only If TRUE, look for SomeFun instead of MyFun if  
+#' @param character.only If TRUE, look for SomeFun instead of MyFun if
 #'                       MyFun <- "SomeFun". DEFAULT: \code{\link{is.character}(x)}
-#' @param trydirect If TRUE, try direct url to file \code{x.R}. DEFAULT: TRUE                      
+#' @param trydirect If TRUE, try direct urls to files \code{x.R} and \code{x.r}. DEFAULT: TRUE
 #' 
 funSource <- function(
-x, 
+x,
 character.only=is.character(x),
 trydirect=TRUE
 )
@@ -72,8 +73,9 @@ if(length(pn)>1)
 
 # select mirror (base R or CRAN) -----------------------------------------------
 
-if(pn %in% c("base", "compiler", "datasets", "grDevices", "graphics", "methods", 
-        "parallel", "profile", "stats", "stats4", "tools", "translations", "utils"))
+if(pn %in% c("base", "compiler", "datasets", "grDevices", "graphics", "grid",
+             "methods", "parallel", "profile", "splines", "stats", "stats4",
+             "tcltk", "tools", "translations", "utils"))
   {
   baselink <- "https://github.com/wch/r-source/tree/trunk/src/library/"
   finallink <- paste0(baselink,pn,"/R/", x,".R")
@@ -87,7 +89,7 @@ if(pn %in% c("base", "compiler", "datasets", "grDevices", "graphics", "methods",
 
 # open link in Browser ---------------------------------------------------------
 
-if(trydirect) browseURL(finallink)
+if(trydirect) {browseURL(finallink); browseURL(sub("\\.R$", '\\.r', finallink))}
 # Search github repo query link
 searchlink <- paste0("https://github.com/search?q=",x," function repo:",slink)
 browseURL(searchlink)

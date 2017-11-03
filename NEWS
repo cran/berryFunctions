@@ -9,25 +9,26 @@ ToDo-list
 - textField: support srt. Enable positioning with xy.coords as in legend. expr=F if labels contain expression. Adjust adj parameter based on pos and offset: if(!is.null(pos)), I want the field to still be drawn with adj, but have it based on pos
 - implement is.error and getColumn (eg spiralDate) wherever applicable
 - reference to sortDF in addRow, insertRow, etc
+- colPoints: if z is matrix, use image/filled.contour/heatmap instead of points
 - colPointsLegend: improve text placement position for large/small legend fields
 - contemplate moving tryStack and traceCall to own package, maybe "trace"
-- combineFiles: path expansion (see rdwd::fileDWD), remove dir arguments, add ... for encoding etc
 - plot(c(50,1000), c(2500,35000), log="yx", axes=F) ; logAxis(1:2) # Error 'at' and 'labels' lengths differ, 9 != 12
 - insertRows: r <- r + seq_along(r)-1
-- late 2017: delete dataDWD and readDWD
-- colPoints: zlog=TRUE, correct colPoints(i,j,k, cex=1.5, pch="+", add=FALSE, Range=c(150,190), density=T)
-- monthAxis: ym=NA (set automatically depending on axis time length)
-- monthAxis: ypos=6 (with vector option) for ts ending before (or starting after) june/july
+- late 2017: delete dataDWD, readDWD, funTinn, ci
+- colPoints: zlog=TRUE
 - linReg: col, colline, colband
 - lsc: better example dataset, optim problems
 - implement identical(FALSE, legargs) wherever owa is used and that makes sense
-- exp4p: allow initial values for optim, try to improve with nls(y~expfun(p,x=x), start=as.list(param) ) 
+- exp4p: allow initial values for optim, try to improve with nls(y~expfun(p,x=x), start=as.list(param) )
 - climateGraph documentation Roxygen issue (escaping unicode)
 - tryStack: if silent=TRUE, put warnings and messages into final output (all of them, not just last one)
 - tryStack: example warning with log(-1:6) for non-repeated call stack
 - tryStack: mapply, do.call etc put function name in next element
-- tryStack: return output invisibly?
-- checkFile: eror in ->-> checkFile: n/n file(s) do not exist at getwd: \n truncMessage(files[nonexi])
+- ciBand: check if at all x values yl,ym,yu are in ascending order
+- instGit: check versions of dependencies
+- catPal for categorical palettes
+- funSource: add option "local" for settings without internet connection
+- tstop, twarning and tmessage with traceCall
 
 
 
@@ -35,6 +36,31 @@ ToDo-list
 actual NEWS
 ---------------------------------------
 
+
+
+-----------------------------
+-----------------------------
+
+
+Version 1.16.0 (2017-11-03)
+- tryStack: error messages improved, skip argument added, output invisible
+- pdfpng: safer device closing, errors traced
+- createPres: several small improvements
+- classify: NAs handled
+- divPal,seqPal,showPal: more palettes added
+- createFun: default directory ".", handles subfolder wds, better examples
+- newFilename: handles "./file" paths, overwrite option, hugely improved messages
+- dataStr: sorted alphabetically, works for unloaded packages
+- importFrom entries completed
+- colPoints: bglines argument for grid drawing, new log argument, hist argument removed
+- colPointsLegend: bg=par("bg") instead of "white", nlab argument, smallPlot in try
+- funSource: also opens lowercase .r file
+- classify: true logspaced added, methods renamed, messages improved
+- getColumn: complete rewrite, several input methods now possible
+- owa: runs more checks on inputs
+- monthAxis: replaced with much cleaner code (kept as timeAxis for backwards compatibility)
+- several minor changes, see github commit history
+New functions: round0, openFile, parallelCode, between, packagePath, timeAxis
 
 
 -----------------------------
@@ -59,9 +85,9 @@ https://github.com/brry/berryFunctions/compare/master@{2017-01-16}...master@{201
 
 Version 1.14.0 (2017-01-16)
 - tryStack: API change (new and changed arguments), now also traces messages
-- logHist: can now handle add=TRUE input, nicer y axis limits by default 
+- logHist: can now handle add=TRUE input, nicer y axis limits by default
 - climateGraph: now in a single layout plot for multipanel plot usage
-- exTime: can now time a complete package 
+- exTime: can now time a complete package
 - googleLink2pdf: all regular hex characters converted to ascii
 - l2array: now uses abind for much faster results, handles lists with matrices
 
@@ -200,7 +226,7 @@ various small changes and bug fixes. See the commits on github
 - textField: vertical extend of bounding boxes is now correct through use of expression
 - tableColVal: text can be changed (eg logarithmized, see examples)
 - createDoc: case now checked. Fixed handling when several args per line or explanations contain 'DEFAULT:'
-- logAxis: good internal range and base defaults. exponents. side can be a vector. 
+- logAxis: good internal range and base defaults. exponents. side can be a vector.
 - owa: replaced u with ellipsis. order of arguments is not changed anymore.
 - nameSample has been enhanced a lot.
 - tableColVal now uses classify
@@ -260,7 +286,7 @@ To-Do-list centralized and sorted here, no to-Dos left in source code.
 - mReg: exp_4p outsourced, rsquare and rmse taken from package, R^2 is now calculated on the actual fit, not its linearization
 - require2 received the alias library2
 - colPoints, colPointsLegend: generally rewritten. classification methods, cpHist and smallPlot added.
-- extremeStatLmom: code for legend arguments improved (with owa) 
+- extremeStatLmom: code for legend arguments improved (with owa)
 - packages lmom and spatstat were moved from "suggests" to "imports", as they are within functions and not just in the examples.
 
 New functions: normPlot, betaPlot, exp4p, compFiles, funTinn, pretty2, colPointsHist, classify, smallPlot
