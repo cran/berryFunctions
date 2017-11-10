@@ -6,7 +6,7 @@
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, May 2016
 #' @seealso \code{\link{example}}, \code{\link{system.time}}
 #' @keywords documentation utilities
-#' @importFrom utils capture.output example
+#' @importFrom utils capture.output example read.table
 #' @importFrom grDevices dev.off pdf
 #' @importFrom graphics plot text
 #' @export
@@ -99,7 +99,7 @@ if(!is.na(package))
   {
   if(missing(quiet)) quiet <- TRUE
   if(missing(elapsed)) elapsed <- TRUE
-  funs <- ls(paste0("package:",package))
+  funs <- read.table(system.file("help/AnIndex", package=package), as.is=TRUE)[,1]
   cat("processing ", length(funs), " functions.\n")
   sapply(funs, exTimeSingle, catdot=TRUE, echo=echo, elapsed=elapsed, imagefile=imagefile, quiet=quiet, ...)
   } else
