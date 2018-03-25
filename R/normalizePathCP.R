@@ -1,6 +1,6 @@
 #' @title normalizePath Cross Platform
 #' @description \code{\link{normalizePath}} Cross Platform: Returns absolute
-#'              path even for not (yet) existing files even on Linux. 
+#'              path even for not (yet) existing files even on Linux.
 #'              On Windows, this is the default behaviour.
 #' @return path character string(s)
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Nov 2017
@@ -9,10 +9,13 @@
 #' @export
 #' @examples
 #' 
-#' normalizePath  ("doesnotexist.file", mustWork=FALSE) # on linux not full path
+#' normalizePath  ("doesnotexist.file", mustWork=FALSE) # on unix not full path
 #' normalizePathCP("doesnotexist.file") # full path on all platforms
-#' 
-#' checknp <- function(a,b=a,d=getwd()) 
+#'
+#' normalizePath  ("../doesnotexist.file", mustWork=FALSE)
+#' normalizePathCP("../doesnotexist.file")
+#'  
+#' checknp <- function(a,b=a,d=getwd())
 #'   {
 #'   aa <- normalizePathCP(a)
 #'   bb <- if(d=="") b else paste0(d,"/",b)
@@ -25,22 +28,22 @@
 #' checknp("notexistfolder/notexist.file")
 #' #checknp("/home/berry/notexist.file", d="") # fails on windows
 #' #checknp("S:/Dropbox/notexist.file",d="") # fails on linux
-#'
+#' 
 #' @param path     Character vector of file paths
-#' @param winslash Path separator on Windows. 
+#' @param winslash Path separator on Windows.
 #'                 DEFAULT: "/" (unlike \code{\link{normalizePath}})
 #' @param mustWork Logical for \code{\link{normalizePath}}. DEFAULT: FALSE
-#'
+#' 
 normalizePathCP <- function(
 path,
 winslash="/",
 mustWork=FALSE
 )
 {
-# Windows + Mac work fine by default:
-if(Sys.info()["sysname"] != "Linux") 
+# nonexistent files on Windows return full path by default:
+if(Sys.info()["sysname"] == "Windows")
   return(normalizePath(path=path, winslash=winslash, mustWork=mustWork))
-# Linux is more tricky
+# on Linux/Mac/Solaris, this is more tricky
 # fine if path exists
 pathexist <- file.exists(path)
 if(all(pathexist)) return(normalizePath(path=path, mustWork=mustWork))
@@ -50,7 +53,7 @@ dirup <- function(singlepath)
   out <- singlepath # file.path(getwd(), singlepath)
   outend <- ""
   count <- 0
-  while(!file.exists(out)) 
+  while(!file.exists(out))
    {
    outend <- file.path(basename(out), outend)
    out <- normalizePath(dirname(out), mustWork=FALSE)
@@ -59,9 +62,9 @@ dirup <- function(singlepath)
    if(count>20) stop("Cannot normalize path from '", singlepath,"'.")
    }
   # output
-  
+
   file.path(out, sub("/$","",outend))
-  } 
+  }
 #
 pathout <- path
 pathout[pathexist] <- normalizePath(pathout[pathexist], mustWork=mustWork)

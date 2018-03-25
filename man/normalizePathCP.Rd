@@ -9,7 +9,7 @@ normalizePathCP(path, winslash = "/", mustWork = FALSE)
 \arguments{
 \item{path}{Character vector of file paths}
 
-\item{winslash}{Path separator on Windows. 
+\item{winslash}{Path separator on Windows.
 DEFAULT: "/" (unlike \code{\link{normalizePath}})}
 
 \item{mustWork}{Logical for \code{\link{normalizePath}}. DEFAULT: FALSE}
@@ -19,15 +19,18 @@ path character string(s)
 }
 \description{
 \code{\link{normalizePath}} Cross Platform: Returns absolute
-             path even for not (yet) existing files even on Linux. 
+             path even for not (yet) existing files even on Linux.
              On Windows, this is the default behaviour.
 }
 \examples{
 
-normalizePath  ("doesnotexist.file", mustWork=FALSE) # on linux not full path
+normalizePath  ("doesnotexist.file", mustWork=FALSE) # on unix not full path
 normalizePathCP("doesnotexist.file") # full path on all platforms
 
-checknp <- function(a,b=a,d=getwd()) 
+normalizePath  ("../doesnotexist.file", mustWork=FALSE)
+normalizePathCP("../doesnotexist.file")
+ 
+checknp <- function(a,b=a,d=getwd())
   {
   aa <- normalizePathCP(a)
   bb <- if(d=="") b else paste0(d,"/",b)

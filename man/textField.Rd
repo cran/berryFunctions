@@ -5,10 +5,10 @@
 \title{Write text to plot with halo underneath}
 \usage{
 textField(x, y, labels = seq_along(x), fill = "white", border = NA,
-  expression = NA, margin = 0.3, field = "rounded", nv = 1000,
-  rounding = 0.75, lty = par("lty"), lwd = par("lwd"), cex = par("cex"),
-  xpd = par("xpd"), adj = par("adj"), pos = NULL, offset = 0.5,
-  quiet = TRUE, ...)
+  expression = NA, margin = 0.3, field = "rounded", nv = 500,
+  rounding = 0.25, rrarg = NULL, lty = par("lty"), lwd = par("lwd"),
+  cex = par("cex"), xpd = par("xpd"), adj = par("adj"), pos = NULL,
+  offset = 0.5, quiet = TRUE, ...)
 }
 \arguments{
 \item{x}{X coordinates, if necessary, they are recycled}
@@ -30,9 +30,12 @@ If FALSE, no conversion happens. DEFAULT: NA}
 \item{field}{'rectangle', 'ellipse', or 'rounded', partial matching is performed. DEFAULT: "rounded"}
 
 \item{nv}{number of vertices for field = "ellipse" or "rounded". low: fast drawing.
-high: high resolution in vector graphics as pdf possible. DEFAULT: 1000}
+high: high resolution in vector graphics as pdf possible. DEFAULT: 500}
 
-\item{rounding}{between 0 and 1: portion of height that is cut off rounded at edges when field = "rounded". DEFAULT: 0.75}
+\item{rounding}{between 0 and 0.5: portion of height that is cut off rounded 
+at edges when field = "rounded". DEFAULT: 0.25}
+
+\item{rrarg}{List of arguments passed to \code{\link{roundedRect}}. DEFAULT: NULL}
 
 \item{lty}{line type. DEFAULT: par("lty")}
 
@@ -88,8 +91,8 @@ textField(60,-3, "field='Rounded'", field="rounded", fill="orange", cex=1.7)
 textField(90, 5, "short", field="ell", fill=7, border=4, mar=-0.4)
 
 # Rounded can also vectorized:
-textField(30, c(2,0,-2,-4,-6), paste("rounding =",seq(0,1,len=5)), field="round",
-    fill=(2:6), mar=1, rounding=seq(0,1,len=5), border=1)
+textField(30, c(2,0,-2,-4,-6), paste("rounding =",seq(0,0.6,len=5)), field="round",
+    fill=(2:6), mar=1, rounding=seq(0,0.6,len=5), border=1)
 # turn off warning about recycling:
 textField(80, c(-5,-6.5), c("Ja", "Nein"), field="round", fill=6:8, quiet=TRUE)
 
@@ -130,10 +133,12 @@ textField(c(1,2.5,4)*1000, 0.2, paste("expression=\\n", c("FALSE","TRUE","NA")))
 
 }
 \references{
-with inspiration taken from \code{ordilabel} in package \code{vegan} and thanks to Jari Oksanen for his comments
+with inspiration taken from \code{ordilabel} in package \code{vegan}
+            and thanks to Jari Oksanen for his comments
 }
 \seealso{
-\code{\link{text}}; \code{shadowtext} in package \code{TeachingDemos}, see
+\code{\link{text}}, \code{\link{roundedRect}};
+         \code{shadowtext} in package \code{TeachingDemos}, see
          \url{http://blog.revolutionanalytics.com/2009/05/make-text-stand-out-with-outlines.html},
           and \url{http://stackoverflow.com/questions/25631216}. \cr
          \code{s.label} in package \code{ade4}, which is not so versatile and

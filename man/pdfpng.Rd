@@ -5,9 +5,9 @@
 \title{Create pdf and png graph}
 \usage{
 pdfpng(expr, file, pdf = TRUE, png = TRUE, overwrite = FALSE,
-  quiet = FALSE, tracewarnmes = !quiet, filargs = NULL, width = 7,
-  height = 5, units = "in", res = 500, seed = runif(1, -1e+09, 1e+09),
-  envlevel = 1, pdfargs = NULL, pngargs = NULL, ...)
+  open = TRUE, quiet = FALSE, tracewarnmes = !quiet, filargs = NULL,
+  width = 7, height = 5, units = "in", res = 500, seed = runif(1,
+  -1e+09, 1e+09), envlevel = 1, pdfargs = NULL, pngargs = NULL, ...)
 }
 \arguments{
 \item{expr}{Expression creating the plot, can be included in curly braces.}
@@ -27,6 +27,9 @@ captured by newFilename. You may also have to run dev.off().}
 \item{overwrite}{Logical: Overwrite existing \code{file}? Can be a vector
 for pdf and png separately.
 DEFAULT: FALSE (_n appended in filename)}
+
+\item{open}{Logical: open file(s) after creation using \code{\link{openFile}}? 
+DEFAULT: TRUE}
 
 \item{quiet}{Logical: suppress file creation messages and
 expr execution error tracing? DEFAULT: FALSE}
@@ -66,22 +69,28 @@ C:/Program Files/RStudio/bin/sumatra
 }
 \examples{
 
+\dontrun{ # excluded from CRAN checks, file opening not wanted
+pdfpng(   plot(rnorm(500), type="l")   , file="dummyplot", png=FALSE)
+}
+
 pdfpng({par(bg=8, las=1); plot(cumsum(rnorm(500)), type="l")},
-       file="dummyplot", res=100)
+       file="dummyplot", res=100, open=FALSE)
 pdfpng({par(bg=8, las=1); plot(cumsum(rnorm(500)), type="l")},
-       file="dummyplot", overwrite=c(TRUE,FALSE))
+       file="dummyplot", overwrite=c(TRUE,FALSE), open=FALSE)
 
 # Nesting of functions is possible:
 a <- list( cumsum(rnorm(2000)), cumsum(rnorm(20)) )
-pdfpng(plot(a[[1]]), file="dummyplot", overwrite=TRUE)
-bfun <- function(b) pdfpng(plot(b,type="l"), file="dummyplot", overwrite=TRUE)
+pdfpng(plot(a[[1]]), file="dummyplot", overwrite=TRUE, open=FALSE)
+bfun <- function(b) pdfpng(plot(b,type="l"), file="dummyplot", 
+                           overwrite=TRUE, open=FALSE)
 cfun <- function(c) bfun(c)
 bfun(a[[1]])
 sapply(a, function(d) cfun(d))
 
 
-pdfpng(plot(-10:100, log="y"), "dummyplot", overwrite=TRUE, png=FALSE)
-pdfpng({plot(1); plot(dummyobject)}, "dummyplot", overwrite=TRUE, png=FALSE)
+pdfpng(plot(-10:100, log="y"), "dummyplot",overwr=TRUE,png=FALSE, open=FALSE)
+pdfpng({plot(1); plot(dummyobject)}, "dummyplot", overwrite=TRUE, 
+       png=FALSE, open=FALSE)
 
 
 unlink("dummyplot.pdf") ; unlink("dummyplot.png") ; unlink("dummyplot_1.png")
