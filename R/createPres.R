@@ -20,12 +20,24 @@
 #'                 see \code{\link{newFilename}}. DEFAULT: "presentation"
 #' @param path     Location of \code{dir}. Passed to \code{\link{setwd}}.
 #'                 DEFAULT: "."
+#' @param navbullets Logical: include navigation slide bullet points in header?
+#'                 DEFAULT: FALSE
+#' @param bgblack  Logical: set a black background instead of a white one?
+#'                 Requires all R graphics fg and bg colors to be changed!
+#'                 See "How to avoid death By PowerPoint" at 11:49 minutes 
+#'                 \url{https://youtu.be/Iwpi1Lm6dFo?t=11m49s}.
+#'                 Change colors manually in the Rnw files searching for 
+#'                 \code{bg=}, \code{linkcolor=}, \code{urlcolor=}
+#'                 in the preamble and \code{color} right after \code{begin document}.
+#'                 DEFAULT bgblack: FALSE
 #' @param open     Logical: run \code{\link{openFile}}? DEFAULT: TRUE
 #' 
 createPres <- function(
 presname="pres",
 dir="presentation",
 path=".",
+navbullets=FALSE,
+bgblack=FALSE,
 open=TRUE
 )
 {
@@ -46,18 +58,40 @@ dev.off()
 cam1 <- system.file("extdata/camera1.jpg", package="berryFunctions")
 cam2 <- system.file("extdata/camera2.png", package="berryFunctions")
 ccby <- system.file("extdata/ccby.png",    package="berryFunctions")
+rlog <- system.file("extdata/Rlogo.png",   package="berryFunctions")
+
 file.copy(cam1, file.path(dir, "fig_extern/camera1.jpg"))
 file.copy(cam2, file.path(dir, "fig_extern/camera2.png"))
 file.copy(ccby, file.path(dir, "fig_extern/ccby.png"))
+file.copy(rlog, file.path(dir, "fig_extern/Rlogo.png"))
+
 
 Sys.setlocale(category = "LC_TIME", locale="C")
 curmonth <- format(Sys.Date(), "%B %Y")
 Sys.setlocale(category = "LC_TIME", locale="")
 
+             bgcolor <- "white" ; txcolor <- "black"
+if(bgblack) {bgcolor <- "black" ; txcolor <- "white"}
+             
+
+# header (depending on navbullets):
+nb_y <- "\\useoutertheme[subsection=false]{miniframes}"
+nb_n <- "\\setbeamertemplate{headline}
+{%
+  \\begin{beamercolorbox}[ht=3.5ex,dp=1.125ex,%
+      leftskip=0cm,rightskip=0cm plus1filll]{section in head/foot}
+    \\usebeamerfont{section in head/foot}\\usebeamercolor[fg]{section in head/foot}%
+    \\insertsectionnavigationhorizontal{0.99\\textwidth}{}{}
+  \\end{beamercolorbox}%
+}"
+nb_n <- strsplit(nb_n, "\n")[[1]]
+ 
+header <- if(navbullets) paste(  c(nb_y, paste("%",nb_n)  ), collapse="\n")
+          else           paste(  c(paste("%",nb_y), nb_n  ), collapse="\n")
+
 cat(
 "% presentation aboutSomething
-% Berry Boessenkool, Potsdam University, Germany
-% berry-b@gmx.de
+% Template by Berry Boessenkool, berry-b@gmx.de
 
 
 % Make sure to set weaving to knitr before compiling:
@@ -72,21 +106,27 @@ cat(
 \\renewcommand\\appendixname{Appendix}
 \\usepackage[absolute,overlay,showboxes]{textpos}
 \\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+\\setbeamercolor{background canvas}{bg=",bgcolor,"}
+\\setbeamercolor{normal text}{fg=",txcolor,"}
+% \\setbeamercolor{item}{fg=green}
 % \\beamertemplatenavigationsymbolsempty
 \\setbeamertemplate{navigation symbols}[only frame symbol]
 %\\usetheme{Madrid}
-\\useoutertheme[subsection=false]{miniframes}
+% Navigation slide bullets in header ON / OFF:\n",
+header,
+"
 \\beamersetleftmargin{0.5cm}
 \\beamersetrightmargin{0.5cm}
 \\let\\Tiny=\\tiny % avoid warning: Font shape `OT1/cmss/m/n' in size <4> not available. size <5> substituted on input line
 \\setbeamertemplate{footline}[frame number]
 \\setbeamertemplate{footline}[text line]{%
   \\parbox{\\linewidth}{\\vspace*{-12pt}
+  \\textcolor{",txcolor,"}{
    % \\scriptsize
   ~~ Berry Boessenkool, ",curmonth,":
-  NiceFooterTitle,
+  NiceFooterTitle ~~~~~
   \\href{https://github.com/brry/course\\#slides}{github.com/brry/course} \\hfill
-  ~~ \\insertframenumber / \\inserttotalframenumber~~~~~~~~~}}
+  ~~ \\insertframenumber / \\inserttotalframenumber~~~~~~~~~}}}
 
 % Reference images:
 \\newcommand{\\bildlink}[1]{\\flushleft{\\tiny \\href{#1}{\\textcolor{gray}{#1}} \\normalsize }}
@@ -109,6 +149,7 @@ cat(
 % ACTUAL SLIDES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \\begin{document}
+\\color{",txcolor,"}
 \\centering
 
 
@@ -125,18 +166,22 @@ opts_chunk$set(cache=T, echo=TRUE, fig.height=3.3, fig.width=5, out.width='0.9\\
 % ---------------------------
 
 \\begin{frame}%[plain]
-\\vspace{1em}
-\\Large
-\\textbf{NiceTitle\\\\[1.5em] \\large SubTitle}\\\\[2em]
+\\TPshowboxesfalse % no border around this box
+\\begin{textblock*}{18em}(10pt,30pt) % topleft corner x=10pt, y=30pt. width=18em
+\\centering
+\\vspace{1.5em}
+\\Large \\textbf{NiceTitle\\\\[1.0em] \\large SubTitle about}
+\\includegraphics[width=1.2em]{fig_extern/Rlogo.png}
+\\end{textblock*}
 \\normalsize
-Berry Boessenkool, \\href{http://www.geo.uni-potsdam.de/geoecology.html}{uni-potsdam.de}, ",curmonth,"\\\\[1em]
+\\vspace{9em}
+Berry Boessenkool, ",curmonth,"\\\\[1em]
 \\texttt{berry-b@gmx.de}\\\\[1em]
 \\href{https://github.com/brry/rdwd\\#rdwd}{github.com/brry/rdwd}\\\\
 \\href{https://cran.r-project.org/package=extremeStat/vignettes/extremeStat.html}{cran.r-project.org/package=extremeStat}\\\\[1em]
 \\scriptsize
 \\textit{Presentation template generated with} \\rcode{berryFunctions::createPres}\\\\
 \\normalsize
-
 \\TPshowboxesfalse % no border around this box
 \\only<2-3>{ % photography note and licence
 \\begin{textblock*}{8em}(250pt,30pt) % topleft corner x=250pt, y=30pt
@@ -162,7 +207,8 @@ ENCOURAGED\\\\[0.5em]%
 % ---------------------------
 
 \\begin{frame}[fragile]{Frametitle}
-<<chunkname, size=\"footnotesize\">>=
+<<chunkname, size=\"footnotesize\"", ifelse(bgblack,", fig.height=3","") , ">>=",
+if(bgblack) "\npar(fg=\"white\")", "
 plot(rnorm(1000))
 @
 \\end{frame}
@@ -198,7 +244,7 @@ R package \\rcode{rdwd} ~~$->$~~ easy usage of weather datasets
 % ---------------------------
 
 \\begin{frame}{includegraphics}
-\\includegraphics[height=0.9\\textheight]{fig_extern/MyFig.pdf}
+\\includegraphics[height=0.85\\textheight]{fig_extern/MyFig.pdf}
 % \\includegraphics[width=0.99\\textwidth]{fig_extern/MyFig.pdf}
 \\end{frame}
 

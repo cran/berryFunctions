@@ -4,24 +4,23 @@
 #' 
 #' @return links that are also opened with \code{\link{browseURL}}
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, Jan+Dec 2016
-#' @importFrom utils browseURL find
+#' @importFrom utils browseURL find getAnywhere
 #' @export
-#' @seealso \url{https://github.com/brry/rskey} to add this as a keyboard shortcut
+#' @seealso \url{https://github.com/brry/rskey#rskey} to add this as a keyboard shortcut
 #' @examples
-#' \dontrun{ ## browser windows should not be openend in CRAN checks
+#' \dontrun{ ## browser windows should not be opened in CRAN checks
 #' library("berryFunctions")
 #' funSource(colPoints)
 #' funSource("head")
-#' funSource("require", trydirect=FALSE)
+#' funSource("require", local=TRUE) # usefull when offline
 #' 
-#' funSource(earthDist)
-#' funSource(OSMscale::earthDist)
-#' funSource("OSMscale::earthDist")
+#' funSource("OSMscale::earthDist") # works even for non-installed CRAN packages
 #' }
 #' 
 #' \dontrun{ # developmental testing
+#' is.error(funSource("earthDist"), TRUE, TRUE) # Error for unloaded package
 #' require(plotrix); require(scales)
-#' funSource(rescale
+#' funSource(rescale) # from the last loaded package
 #' 
 #' tail <- function(...) stop("This is a dummy function. Type: rm(tail)")
 #' funSource("tail")
@@ -31,16 +30,19 @@
 #' @param x function name, with or without quotation marks
 #' @param character.only If TRUE, look for SomeFun instead of MyFun if
 #'                       MyFun <- "SomeFun". DEFAULT: \code{\link{is.character}(x)}
-#' @param trydirect If TRUE, try direct urls to files \code{x.R} and \code{x.r}. DEFAULT: TRUE
+#' @param local          Open offline version of the code? Lacks comments and
+#'                       original formatting of source code. DEFAULT: FALSE
 #' 
 funSource <- function(
 x,
 character.only=is.character(x),
-trydirect=TRUE
+local=FALSE
 )
 {
 # change input to character:
-if (!character.only) x <- deparse(substitute(x))
+xname <- deparse(substitute(x))
+xname <- gsub('"', "", xname)
+if(!character.only) x <- xname
 if(length(x)>1) stop("length(x) must be 1, not ", length(x))
 
 # Get package name -------------------------------------------------------------
@@ -71,6 +73,21 @@ if(length(pn)>1)
   }
 }
 
+# return offline function content ----------------------------------------------
+# reformatted by R, not original source
+if(local)
+  {
+  File <- paste0(tempdir(), "/", xname, ".R")
+  dd <- getAnywhere(x)
+  sink(File)
+  print(dd$objs[[1L]])
+  sink()
+  # Open the file with the program associated with its file extension
+  message("Now opening (in default viewer): ", File)
+  openFile(File)
+  return(invisible(File))
+  }
+
 # select mirror (base R or CRAN) -----------------------------------------------
 
 if(pn %in% c("base", "compiler", "datasets", "grDevices", "graphics", "grid",
@@ -89,11 +106,34 @@ if(pn %in% c("base", "compiler", "datasets", "grDevices", "graphics", "grid",
 
 # open link in Browser ---------------------------------------------------------
 
-if(trydirect) {browseURL(finallink); browseURL(sub("\\.R$", '\\.r', finallink))}
 # Search github repo query link
 searchlink <- paste0("https://github.com/search?q=",x," function repo:",slink)
-browseURL(searchlink)
-# output
-c(searchlink, finallink)
-}
 
+# little helper function to determine existence of a link:
+canBeRead <- function(url)
+ {
+ rl <- suppressWarnings(try(readLines(url, n=1), silent=TRUE))
+ !inherits(rl, "try-error")
+ }
+
+# Option 1: If the link can be read, open it in the browser and return output:
+if(canBeRead(finallink)) 
+ {
+ browseURL(finallink) 
+ return(c(searchlink, finallink))
+ }
+
+# Option 2: Try with lowercase r:
+finallink <- sub("\\.R$", '\\.r', finallink)
+if(canBeRead(finallink)) 
+ {
+ browseURL(finallink) 
+ return(c(searchlink, finallink))
+ }
+
+# Option 3: open the searchlink:
+# this would also occur if R has no internet acces, but the browser does
+browseURL(searchlink)
+return(searchlink)
+
+}

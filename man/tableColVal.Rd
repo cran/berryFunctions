@@ -5,8 +5,8 @@
 \title{Table with values with value-dependent colored backgrounds in pdf}
 \usage{
 tableColVal(mat, main = deparse(substitute(mat)), nameswidth = 0.3,
-  namesheight = 0.1, palette = seqPal(100), Range = range(mat, finite =
-  TRUE), digits = 2, ..., classargs = NULL, cellargs = NULL,
+  namesheight = 0.1, palette = seqPal(100), Range = range(mat, finite
+  = TRUE), digits = 2, ..., classargs = NULL, cellargs = NULL,
   colargs = NULL, rowargs = NULL, mainargs = NULL)
 }
 \arguments{
@@ -77,7 +77,7 @@ unlink("TableColVal.pdf")
 
 }
 \seealso{
-\code{\link{pdf}}, \code{\link{heatmap}}
+\code{\link{pdf}}, \code{\link{heatmap}}, \code{\link{sortDF}}
 }
 \author{
 Berry Boessenkool, \email{berry-b@gmx.de}, Nov 2012 + Nov 2016

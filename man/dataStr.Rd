@@ -4,24 +4,32 @@
 \alias{dataStr}
 \title{str of datasets}
 \usage{
-dataStr(package = NULL, ...)
+dataStr(package = NULL, df = FALSE, ...)
 }
 \arguments{
 \item{package}{Package name. DEFAULT: NULL}
 
+\item{df}{Logical: give information only about all data.frame objects? 
+DEFAULT: FALSE}
+
 \item{\dots}{other arguments passed to \code{\link{data}}}
 }
 \value{
-NULL. prints via \code{\link{message}} in a for loop.
+invisible data.frame. Mainly prints via \code{\link{message}} in a for loop.
 }
 \description{
 Print the \code{\link{str}} of each dataset returned by \code{\link{data}}
 }
 \examples{
 
-dataStr() # all loaded packages on search path (package=NULL)
+# dataStr() # all loaded packages on search path (package=NULL)
 dataStr("datasets") # only datasets in base R
 dataStr("colorspace") # works with an installed but unloaded package
+
+# data.frames only
+d <- dataStr(df=TRUE)
+head(d)
+d[,c("Call","ncol","nrow")]
 
 }
 \seealso{

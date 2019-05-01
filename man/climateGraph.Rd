@@ -1,15 +1,16 @@
-% edited for Unicode correction
+% edited for Unicode correction: usage section main+units
 \name{climateGraph}
 \alias{climateGraph}
 \title{climate graph after Walter and Lieth}
 \usage{
-climateGraph(temp, rain, main = "StatName\\n52\U{00B0}24' N / 12\U{00B0}58' E\\n42 m aSL",
-  units = c("\U{00B0}C", "mm"), labs = substr(month.abb, 1, 1), textprop = 0.25,
-  ylim = range(temp, rain/2), compress = FALSE, ticklab = -8:30 * 10,
-  ticklin = -15:60 * 5, box = TRUE, mar = c(1.5, 2.3, 4.5, 0.2),
-  keeppar = TRUE, colrain = "blue", coltemp = "red", lwd = 2,
-  arghumi = NULL, argarid = NULL, argcomp = NULL, arggrid = NULL,
-  argtext = NULL, ...)
+climateGraph(temp, rain,
+  main = "StatName\\n52\U{00B0}24' N / 12\U{00B0}58' E\\n42 m aSL",
+  units = c("\U{00B0}C", "mm"), labs = substr(month.abb, 1, 1), 
+  textprop = 0.25, ylim = range(temp, rain/2), compress = FALSE,
+  ticklab = -8:30 * 10, ticklin = -15:60 * 5, box = TRUE,
+  mar = c(1.5, 2.3, 4.5, 0.2), keeppar = TRUE, colrain = "blue",
+  coltemp = "red", lwd = 2, arghumi = NULL, argarid = NULL,
+  argcomp = NULL, arggrid = NULL, argtext = NULL, ...)
 }
 \arguments{
 \item{temp}{monthly temperature mean in degrees C}
@@ -19,7 +20,7 @@ climateGraph(temp, rain, main = "StatName\\n52\U{00B0}24' N / 12\U{00B0}58' E\\n
 \item{main}{location info as character string. can have \\n.
 DEFAULT: "StatName\\n52d 24' N / 12d 58' E\\n42 m aSL"}
 
-\item{units}{units used for labelling. DEFAULT: c("d C", "mm")}
+\item{units}{units used for labeling. DEFAULT: c("d C", "mm")}
 
 \item{labs}{labels for x axis. DEFAULT: J,F,M,A,M,J,J,A,S,O,N,D}
 
@@ -28,10 +29,10 @@ in a table to the right. DEFAULT: 0.25}
 
 \item{ylim}{limit for y axis in temp units. DEFAULT: range(temp, rain/2)}
 
-\item{compress}{should rain>100 mm be compressed with adjusted labelling?
+\item{compress}{should rain>100 mm be compressed with adjusted labeling?
 (not recommended for casual visualization!). DEFAULT: FALSE}
 
-\item{ticklab}{positions for vertical labelling. DEFAULT: -8:30*10}
+\item{ticklab}{positions for vertical labeling. DEFAULT: -8:30*10}
 
 \item{ticklin}{positions for horizontal line drawing. DEFAULT: -15:60*5}
 
@@ -64,7 +65,7 @@ like density, angle. DEFAULT: NULL (internal x,y, col, border)}
 None. Plots data and table.
 }
 \description{
-Draw a climate diagramm by the standards of Walter and Lieth.
+Draw a climate diagram by the standards of Walter and Lieth.
 }
 \examples{
 
@@ -97,13 +98,27 @@ climateGraph(temp, rain, compress=TRUE)
 # but heigths of rain cannot be visually compared anymore
 climateGraph(temp, rain, compress=TRUE, ylim=c(-10, 90))
 # needs ylim in linearly continued temp units
-climateGraph(temp, rain, compress=TRUE, argcomp=list(density=30, col=6))
+climateGraph(temp, rain, compress=TRUE, argcomp=list(density=30, col="green"))
+
+# example with (fake) weekly relative soil moisture (RSM) added:
+temp <- c(-9.3,-8.2,-2.8,6.3,13.4,16.8,18.4,17,11.7,5.6,-1,-5.9)
+rain <- c(46,46,36,30,31,21,26,57,76,85,59,46)
+set.seed(3)
+soil <- berryFunctions::rescale( cumsum(rnorm(52)), from=1, to=100)
+xsoil <- seq(1, 12, length.out=52)
+
+climateGraph(temp, rain, ylim=c(-10, 50) ) # ylim for RSM 0:100 on second axis
+lines(xsoil, soil/2, lwd=5, col="orange")
+
+mtext(paste("Relative\\nsoil moisture\\n\\U00D8", round(mean(soil), 1), "\%"), 
+      side=3, col="orange", line=1, adj=0.99)
+
 
 \dontrun{
 pdf("ClimateGraph.pdf")
 climateGraph(temp, rain, main="Another Station\\nlocated somewhere else")
 dev.off()
-openFile(ClimateGraph.pdf")
+openFile("ClimateGraph.pdf")
 unlink("ClimateGraph.pdf")
 
 # further German reading:
@@ -133,50 +148,48 @@ climateGraph(RT, RP, main=meta, compress=TRUE)
 
 # Climate Graphs for Germany:
 browseURL("https://github.com/brry/rdwd#rdwd")
-instGit("brry/rdwd")
 link <- rdwd::selectDWD("Potsdam", res="monthly", var="kl", per="h")
-clim <- rdwd::dataDWD(link, dir=tempdir())
-dates <- strptime(clim$MESS_DATUM_BEGINN, "\%Y\%m\%d")
-temp <- tapply(clim$LUFTTEMPERATUR, INDEX=format(dates, "\%m"), FUN=mean, na.rm=FALSE)
-precsums <- tapply(clim$NIEDERSCHLAGSHOEHE, INDEX=format(dates, "\%Y-\%m"), FUN=sum)
+file <- rdwd::dataDWD(link, dir=tempdir(), read=FALSE)
+clim <- rdwd::readDWD(file)
+rdwd::readVars(file)
+temp <- tapply(clim$MO_TT, INDEX=format(clim$MESS_DATUM, "\%m"), FUN=mean, na.rm=FALSE)
+precsums <- tapply(clim$MO_RR, INDEX=format(clim$MESS_DATUM, "\%Y-\%m"), FUN=sum)
 eachmonth <- format(strptime(paste(names(precsums),"01"), "\%Y-\%m \%d"),"\%m")
-prec <- tapply(precsums, eachmonth, FUN=mean)
-meta <- paste("Potsdam\\n", paste(range(dates, na.rm=TRUE), collapse=" to "), "\\n", sep="")
+prec <- tapply(precsums, eachmonth, FUN=mean, na.rm=TRUE)
+meta <- paste("Potsdam\\n", paste(range(clim$MESS_DATUM, na.rm=TRUE), 
+                                 collapse=" to "), "\\n", sep="")
 
 climateGraph(temp, prec, main=meta, ylim=c(-2, 45))
 # Add Quartiles (as in boxplots): numerically sorted, 50\% of the data lie inbetween
-TQ <- tapply(clim$LUFTTEMPERATUR, INDEX=format(dates, "\%m"), FUN=quantile)
+TQ <- tapply(clim$MO_TT, INDEX=format(clim$MESS_DATUM, "\%m"), FUN=quantile)
 TQ <- sapply(TQ, I)
 arrows(x0=1:12, y0=TQ["25\%",], y1=TQ["75\%",], angle=90, code=3, col=2, len=0.1)
 #
-PQ <- tapply(precsums, eachmonth, FUN=quantile)
+PQ <- tapply(precsums, eachmonth, FUN=quantile, na.rm=TRUE)
 PQ <- sapply(PQ, I)
 arrows(x0=1:12, y0=PQ["25\%",]/2, y1=PQ["75\%",]/2, angle=90, code=3, col=4, len=0, lwd=3, lend=1)
 mtext("IQR shown als lines", col=8, at=6.5, line=0.7, cex=1.2, font=2)
 
 
 # Comparison to diagram in climatol
-install.packages("climatol")
-help(package="climatol")
-library(climatol)
-data(datcli)
-diagwl(datcli,est="Example station",alt=100,per="1961-90",mlab="en")
+# library2("climatol") # commented out to avoid dah error in dataStr testing
+# data(datcli)
+# diagwl(datcli,est="Example station",alt=100,per="1961-90",mlab="en")
 
 }
 
-}
-\author{
-Berry Boessenkool, \email{berry-b@gmx.de}, June 2013
 }
 \references{
 Heinrich Walter, Helmut Lieth: Klimadiagramm-Weltatlas. Gustav Fischer Verlag, Jena 1967\cr
 Examples:\cr
 \url{https://www.hoelzel.at/__verlag/geojournal/archiv/klima/2006_01/lieth.gif}\cr
 \url{https://www.hoelzel.at/__verlag/geojournal/archiv/klima/istanbul/istanbul400.gif}\cr
-\url{http://www.ipb.uni-tuebingen.de/kurs/comp/1_excel2007/1_pic/2007diagramm_verbund02.jpg}\cr
 \url{http://www.zivatar.hu/felhotar/albums/userpics/wldp.png}
 }
 \seealso{
 \code{diagwl} in package \code{climatol}
+}
+\author{
+Berry Boessenkool, \email{berry-b@gmx.de}, June 2013
 }
 \keyword{hplot}

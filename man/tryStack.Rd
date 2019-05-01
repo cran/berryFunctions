@@ -4,8 +4,8 @@
 \alias{tryStack}
 \title{try an expression, returning the error stack}
 \usage{
-tryStack(expr, silent = FALSE, warn = TRUE, short = TRUE, file = "",
-  removetry = TRUE, skip = NULL)
+tryStack(expr, silent = FALSE, warn = TRUE, short = TRUE,
+  file = "", removetry = TRUE, skip = NULL)
 }
 \arguments{
 \item{expr}{Expression to try, potentially wrapped in curly braces if
@@ -63,10 +63,8 @@ rm(d)
 
 # Classical error management with try -----
 
-\dontrun{ ## intentional error
-d <- upper("42")                # error, no d creation
+is.error( d <- upper("42"), TRUE, TRUE) # error, no d creation
 traceback()                     # calling stack, but only in interactive mode
-}
 
 d <- try(upper("42"), silent=TRUE)      # d created
 cat(d)                                  # with error message, but no traceback

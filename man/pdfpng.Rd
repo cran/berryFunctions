@@ -5,9 +5,10 @@
 \title{Create pdf and png graph}
 \usage{
 pdfpng(expr, file, pdf = TRUE, png = TRUE, overwrite = FALSE,
-  open = TRUE, quiet = FALSE, tracewarnmes = !quiet, filargs = NULL,
-  width = 7, height = 5, units = "in", res = 500, seed = runif(1,
-  -1e+09, 1e+09), envlevel = 1, pdfargs = NULL, pngargs = NULL, ...)
+  open = TRUE, quiet = FALSE, tracewarnmes = !quiet,
+  filargs = NULL, width = 7, height = 5, units = "in", res = 500,
+  seed = runif(1, -1e+09, 1e+09), envlevel = 1, pdfargs = NULL,
+  pngargs = NULL, ...)
 }
 \arguments{
 \item{expr}{Expression creating the plot, can be included in curly braces.}
@@ -58,7 +59,7 @@ Never needs to be changed, as far as I can tell. DEFAULT: 1}
 \item{\dots}{Further arguments passed to both \code{\link{pdf}} and \code{\link{png}}}
 }
 \value{
-Nothing
+file paths, invisible
 }
 \description{
 Create both a \code{\link{pdf}} and a \code{\link{png}} file with a graph,

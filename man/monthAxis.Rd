@@ -7,9 +7,10 @@
 monthAxis(side = 1, time = NA, origin = "1970-01-01",
   mlabels = substr(month.abb, 1, 1), yformat = "\%Y", nmonths = 3,
   nym_half = 3.5, nym_none = 5, mcex = 0.7, ycex = 1,
-  mtcl = par("tcl"), ytcl = par("tcl") - 1.7, mline = -1, yline = 0.2,
-  las = 1, lrange = NA, ym = TRUE, mgp = c(3, 1, 0), mt = NULL,
-  ml = NULL, yt = NULL, yl = NULL, quiet = FALSE, ...)
+  mtcl = par("tcl"), ytcl = par("tcl") - 1.7, mline = -1,
+  yline = 0.2, las = 1, lrange = NA, trunc = NA, mgp = c(3, 1,
+  0), mt = NULL, ml = NULL, yt = NULL, yl = NULL, quiet = FALSE,
+  ...)
 }
 \arguments{
 \item{side}{Which \code{\link{axis}} is to be labeled? DEFAULT: 1}
@@ -54,7 +55,8 @@ not labeled. DEFAULT: 5}
 \item{lrange}{Label range (two \code{\link{Date}} values).
 DEFAULT: NA = internally computed from \code{\link{par}("usr")}}
 
-\item{ym}{Kept for back reference. DEFAULT: TRUE}
+\item{trunc}{Vector with two values: Number of days/seconds to truncate
+at the left and right end of lrange. DEFAULT: NA}
 
 \item{mgp}{MarGin Placement. Suggested not to change this, since
 _tcl and _line defaults are chosen for the DEFAULT: c(3,1,0)}
@@ -89,13 +91,18 @@ monthAxis(side=3, nym_half=2) # if axis > 2 years, label only partially
 
 timePlot(2e3)
 monthAxis()   # long time series (>nym_none) only have years labeled
-monthAxis(side=3, font=2)
+ma <- monthAxis(side=3, font=2)
+abline(v=ma$mtics, col=8)
+abline(v=ma$ytics)          # vertical lines in graph - now add lines/points
+
 
 timePlot(900)
 monthAxis(side=3, mtcl=0) # no tick lines between months
 monthAxis(ycex=1.4, ytcl=2, lwd.ticks=2)
 monthAxis(yline=1, col.axis=4, col=4)
 monthAxis(mcex=1, col.axis="red", yformat=" ") # no years labeled
+timePlot(900)
+monthAxis(nmonths=1) # year labeled for short period as well
 
 timePlot(800)
 monthAxis()

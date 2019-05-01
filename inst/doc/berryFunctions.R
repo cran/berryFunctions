@@ -3,8 +3,8 @@
 #  library(berryFunctions)
 
 ## ----instgit, eval=FALSE-------------------------------------------------
-#  source("https://raw.githubusercontent.com/brry/berryFunctions/master/R/instGit.R")
-#  instGit("brry/berryFunctions")
+#  if(!requireNamespace("remotes", quitly=TRUE)) install.packages("remotes")
+#  remotes::install_github("brry/berryFunctions", build_opts="--no-manual")
 
 ## ----library, echo=FALSE-------------------------------------------------
 library(berryFunctions)
@@ -165,9 +165,6 @@ distance(A,B, 3,5)
 # remove leading and trailing white space: removeSpace
 s <- c("space at end     ", "  white at begin", "  both ", " special ^  ")
 removeSpace(s)
-
-# calculate confidence interval (and other EDA values): ci, cie
-ci(  c(5:8,3,14) )
 
 # sequence given by range or vector of values: seqR
 seqR(range=c(12,6), by=-2)

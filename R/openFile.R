@@ -13,7 +13,7 @@
 #' \dontrun{ # excluded from CRAN checks, file opening not wanted
 #' openFile("README.md")
 #' openFile("Tests.R")
-#' openFile("dummydummydoesntexist.R")
+#' is.error(openFile("dummydummydoesntexist.R"), TRUE, TRUE)
 #' openFile(tempdir())
 #' }
 #' #' # To open folders with system2:
@@ -29,6 +29,7 @@ file,
 ...
 )
 {
+file <- normalizePath(file, winslash="/", mustWork=FALSE)
 checkFile(file)
 file <- shQuote(file) # to handle space in "C:/Program Files/R/..."
 linux <- Sys.info()["sysname"]=="Linux"

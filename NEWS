@@ -7,28 +7,15 @@ Any feedback is welcome, per email or on github.com/brry/berryFunctions
 ToDo-list
 ---------------------------------------
 - textField: support srt. Enable positioning with xy.coords as in legend. expr=F if labels contain expression. Adjust adj parameter based on pos and offset: if(!is.null(pos)), I want the field to still be drawn with adj, but have it based on pos
-- implement is.error and getColumn (eg spiralDate) wherever applicable
-- reference to sortDF in addRow, insertRow, etc
-- colPoints: if z is matrix, use image/filled.contour/heatmap instead of points
-- colPointsLegend: improve text placement position for large/small legend fields
-- contemplate moving tryStack and traceCall to own package, maybe "trace"
-- plot(c(50,1000), c(2500,35000), log="yx", axes=F) ; logAxis(1:2) # Error 'at' and 'labels' lengths differ, 9 != 12
-- insertRows: r <- r + seq_along(r)-1
-- late 2017: delete dataDWD, readDWD, funTinn, ci
-- colPoints: zlog=TRUE
-- linReg: col, colline, colband
+- colPoints: add argument zlog=TRUE
+- linLogHist + linLogTrans: check test warnings and remove reason (rainbow2!)
+- late 2019: delete exTime, instGit, timeAxis, toUpper1, rainbow2
 - lsc: better example dataset, optim problems
-- implement identical(FALSE, legargs) wherever owa is used and that makes sense
-- exp4p: allow initial values for optim, try to improve with nls(y~expfun(p,x=x), start=as.list(param) )
-- climateGraph documentation Roxygen issue (escaping unicode)
-- tryStack: if silent=TRUE, put warnings and messages into final output (all of them, not just last one)
+- tryStack: if silent=TRUE, put all warnings and messages into final output (not just last one)
 - tryStack: example warning with log(-1:6) for non-repeated call stack
 - tryStack: mapply, do.call etc put function name in next element
-- ciBand: check if at all x values yl,ym,yu are in ascending order
-- instGit: check versions of dependencies
-- catPal for categorical palettes
-- funSource: add option "local" for settings without internet connection
-- tstop, twarning and tmessage with traceCall
+- if tryStack+traceCall moved to own pkg trace, add tstop, twarning and tmessage with traceCall
+- getColumn: consider renaming argument x
 
 
 
@@ -39,8 +26,39 @@ actual NEWS
 -----------------------------
 -----------------------------
 
+Version 1.18.1 (2019-04-30)
+- monthAxis: lrange option improved, trunc option added
+- createPres: bgblack + navbullets options + Rlogo added
+- linReg: can supress parts of the legend
+- lsc: NAs handled correctly
+- newFilename: message improved
+- sortDF+getColumn: option quiet added
+- dataStr: returns results, df-only option added
+- checkFile: folders checked without leading slashes
+- funSource: opens less URLs, gains local option, has better examples
+- many dontrun examples corrected, sped up
+- combineFiles: adds filename for Rstudio outline
+- monthAxis: examples added
+- sortDF+getColumn: used and referenced where needed
+- logAxis(1:2) bug removed
+- linREg: gains argument col
+- climateGraph(compress=TRUE) bug removed for all rain<100
+- palette functions moved into a single file
+- ciBand: checks order of yl,ym,yu
+- l2df+l2array: handle data.frame inputs better
+- colPoints: uses image for matrix input
+New function: testExamples, learnVocab, catPal
+Removed functions: ci, funTinn
 
-Version 1.17. (2018--)
+
+-----------------------------
+-----------------------------
+
+
+Version 1.17.0 (2018-03-24)
+- createPres+pdfpng: now opens file if wanted
+- climateGraph: table writing corrected when compress=TRUE
+- normalizePathCP: now works on Mac/Solaris as well
 New function: roundedRect
 
 

@@ -27,15 +27,18 @@ is.error( checkFile("FileThatDoesntExist.txt")  )
 checkFile("FileThatDoesntExist.txt", warnonly=TRUE)
 checkFile("FileThatDoesntExist.txt", warnonly=TRUE, trace=FALSE)
 
+checkFile("./", warnonly=TRUE)
+checkFile(c("./",".//"), warnonly=TRUE)
+
 \dontrun{## Excluded from CRAN checks because of file creation
 # Vectorized:
 file.create("DummyFile2.txt")
 checkFile(paste0("DummyFile",1:3,".txt"), warnonly=TRUE)
-checkFile(paste0("DummyFile",1:3,".txt") )
+is.error(checkFile(paste0("DummyFile",1:3,".txt") ), TRUE, TRUE)
 file.remove("DummyFile2.txt")
 
-compareFiles("dummy.nonexist", "dummy2.nonexist")
-checkFile("dummy.nonexist")
+is.error(compareFiles("dummy.nonexist", "dummy2.nonexist"), TRUE, TRUE)
+is.error(checkFile("dummy.nonexist"), TRUE, TRUE)
 }
 
 dingo <- function(k="brute.nonexist", trace=TRUE)

@@ -24,13 +24,18 @@
 #' 
 #' timePlot(2e3)
 #' monthAxis()   # long time series (>nym_none) only have years labeled
-#' monthAxis(side=3, font=2)
+#' ma <- monthAxis(side=3, font=2)
+#' abline(v=ma$mtics, col=8)
+#' abline(v=ma$ytics)          # vertical lines in graph - now add lines/points
+#' 
 #' 
 #' timePlot(900)
 #' monthAxis(side=3, mtcl=0) # no tick lines between months
 #' monthAxis(ycex=1.4, ytcl=2, lwd.ticks=2)
 #' monthAxis(yline=1, col.axis=4, col=4)
 #' monthAxis(mcex=1, col.axis="red", yformat=" ") # no years labeled
+#' timePlot(900)
+#' monthAxis(nmonths=1) # year labeled for short period as well
 #' 
 #' timePlot(800)
 #' monthAxis()
@@ -84,7 +89,8 @@
 #' @param las      LabelAxisStyle for orientation of labels. DEFAULT: 1 (upright)
 #' @param lrange   Label range (two \code{\link{Date}} values).
 #'                 DEFAULT: NA = internally computed from \code{\link{par}("usr")}
-#' @param ym       Kept for back reference. DEFAULT: TRUE
+#' @param trunc    Vector with two values: Number of days/seconds to truncate
+#'                 at the left and right end of lrange. DEFAULT: NA
 #' @param mgp      MarGin Placement. Suggested not to change this, since
 #'                 _tcl and _line defaults are chosen for the DEFAULT: c(3,1,0)
 #' @param mt,ml,yt,yl Lists with further arguments passed to \code{\link{axis}},
@@ -111,7 +117,7 @@ mline    = -1,
 yline    = 0.2,
 las      = 1,
 lrange   = NA,
-ym       = TRUE,
+trunc    = NA,
 mgp      = c(3,1,0),
 mt=NULL, ml=NULL, yt=NULL, yl=NULL,
 quiet=FALSE,
@@ -122,7 +128,6 @@ quiet=FALSE,
 op <- par(mgp=mgp)
 on.exit(par(op), add=TRUE)
 if(yformat=="") warning("yformat='' gives unexpected labeling. Did you mean yformat=' '?")
-if(!ym) warning("For ym=FALSE behaviour, use timeAxis (no longer monthAxis).")
 if(nmonths>=12) nmonths <- 11
 if(length(mlabels)!=12)
  {
@@ -132,17 +137,20 @@ if(length(mlabels)!=12)
 names(mlabels) <- round0(1:12, pre=2)
 
 # get Date range from current graph or from input:
-if(any(is.na(lrange)))
+if(anyNA(lrange))
   {
   lrange <- par("usr")[if(side%%2) 1:2 else 3:4]
   }
 else
   {
   # lrange class check:
-  if(!inherits(lrange, "Date")) stop("class(lrange) must be 'Date', not '",
-                                     toString(class(lrange)), "'.")
+  if(!inherits(lrange, c("Date","POSIXlt"))) stop("class(lrange) must be 
+               'Date' or 'POSIXlt', not '", toString(class(lrange)), "'.")
   lrange <- range(lrange, na.rm=TRUE)
   }
+trunc <- rep(trunc, length.out=2) # recycle trunc
+if(!is.na(trunc[1])) lrange[1] <- lrange[1] + trunc[1]
+if(!is.na(trunc[2])) lrange[2] <- lrange[2] - trunc[2]
 
 # time default (TRUE if values at axis are very large):
 if(is.na(time)) time <- lrange[1]>1e5
