@@ -216,7 +216,7 @@ if(!missing(data)) # get x, y and z from data.frame
 if(is.vector(z))
    {
    if(!(length(x)==length(y) & length(x)==length(z)))
-      stop("Vectors x,y,z are not all of the same length!")
+      stop("Vectors x,y,z are not all of the same length! (",length(x),",",length(y),",",length(z),")")
    x <- x ;   y <- y ;   z <- z
    } else
 # c) z is a matrix: class(z) = matrix, data.frame, array (2D) - as in image, persp
@@ -225,8 +225,8 @@ if(is.vector(z))
    if(missing(x)) {x <- 1:ncol(z) ; if(missing(xlab)) xlab <- "x" }
    if(missing(y)) {y <- 1:nrow(z) ; if(missing(ylab)) ylab <- "y" }
    if(!(length(x)==ncol(z) & length(y)==nrow(z)))
-     stop("Dimension of z (ncol*nrow=",ncol(z),",",nrow(z),
-          ") is not length(x) * length(y) (=",length(x),",",length(y),")!")
+     stop("Dimension of z (ncol*nrow=",ncol(z),"*",nrow(z),
+          ") is not length(x) * length(y) (=",length(x),"*",length(y),")!")
    }
 # error checking:
 if(diff(range(z, finite=TRUE))==0) if(!quiet) warning("All z-values are equal.")

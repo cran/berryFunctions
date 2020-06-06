@@ -9,7 +9,7 @@ ToDo-list
 - textField: support srt. Enable positioning with xy.coords as in legend. expr=F if labels contain expression. Adjust adj parameter based on pos and offset: if(!is.null(pos)), I want the field to still be drawn with adj, but have it based on pos
 - colPoints: add argument zlog=TRUE
 - linLogHist + linLogTrans: check test warnings and remove reason (rainbow2!)
-- late 2019: delete exTime, instGit, timeAxis, toUpper1, rainbow2
+- monthAxis: remove warning to timeAxis for short time ranges + change behaviour?
 - lsc: better example dataset, optim problems
 - tryStack: if silent=TRUE, put all warnings and messages into final output (not just last one)
 - tryStack: example warning with log(-1:6) for non-repeated call stack
@@ -22,6 +22,19 @@ ToDo-list
 ---------------------------------------
 actual NEWS
 ---------------------------------------
+
+-----------------------------
+-----------------------------
+
+Version 1.19.0 (2020-06-05)
+- several additional arguments for functions dataStr, seqR, packagePath, popleaf, monthAxis, groupHist
+- almost.equal now has scale=1 as default
+- better messages in learnVocab, colPoints
+- newFilename now handles file_1.ext
+- testExamples suppress pbapply progbars in logfiles
+New functions: yearPlot, sumatraInitialize, openPDF
+Removed functions: exTime, instGit, toUpper1
+
 
 -----------------------------
 -----------------------------
@@ -47,7 +60,7 @@ Version 1.18.1 (2019-04-30)
 - ciBand: checks order of yl,ym,yu
 - l2df+l2array: handle data.frame inputs better
 - colPoints: uses image for matrix input
-New function: testExamples, learnVocab, catPal
+New functions: testExamples, learnVocab, catPal
 Removed functions: ci, funTinn
 
 

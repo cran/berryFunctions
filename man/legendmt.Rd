@@ -4,9 +4,20 @@
 \alias{legendmt}
 \title{legend with multiline title}
 \usage{
-legendmt(x, y = NULL, legend, title, x.intersp = 1, fill = NA,
-  col = par("col"), border = NA, lty = NA, lwd = NA, pch = NA,
-  ...)
+legendmt(
+  x,
+  y = NULL,
+  legend,
+  title,
+  x.intersp = 1,
+  fill = NA,
+  col = par("col"),
+  border = NA,
+  lty = NA,
+  lwd = NA,
+  pch = NA,
+  ...
+)
 }
 \arguments{
 \item{x, y, legend}{Arguments as in \code{\link{legend}}}
@@ -28,7 +39,7 @@ Note that this is in development and not all inputs are correctly vectorized yet
 \examples{
 plot(1:10)
   legend("topleft", letters[1:4], col=1:4, pch=1, title="very long title to be split up")
-legendmt("topleft", letters[1:4], col=1:4, pch=1, title="very long title\\nnow splat up")
+legendmt("topleft", letters[1:4], col=1:4, pch=1, title="very long title\nnow splat up")
 
 # Alternative:
 plot(1:10)

@@ -1,8 +1,8 @@
 Package: berryFunctions
 Type: Package
 Title: Function Collection Related to Plotting and Hydrology
-Version: 1.18.2
-Date: 2019-04-29
+Version: 1.19.1
+Date: 2020-06-06
 Imports: grDevices, graphics, stats, utils, abind
 Suggests: RColorBrewer, pbapply, knitr, rmarkdown, gstat, RCurl,
         colorspace
@@ -14,10 +14,10 @@ Description: Draw horizontal histograms, color scattered points by 3rd dimension
     fit multiple functions.
 License: GPL (>= 2)
 URL: https://github.com/brry/berryFunctions
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr
 BugReports: https://github.com/brry/berryFunctions
 NeedsCompilation: no
-Packaged: 2019-05-01 11:55:23 UTC; Berry
+Packaged: 2020-06-06 13:25:26 UTC; berry
 Repository: CRAN
-Date/Publication: 2019-05-01 19:40:07 UTC
+Date/Publication: 2020-06-06 15:30:03 UTC

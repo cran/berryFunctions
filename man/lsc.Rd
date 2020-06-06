@@ -4,11 +4,24 @@
 \alias{lsc}
 \title{Linear storage cascade, unit hydrograph}
 \usage{
-lsc(P, Q, area = 50, Qbase = Q[1], n = 2, k = 3, x = 1:length(P),
-  fit = 1:length(Q), plot = TRUE,
-  main = "Precipitation and discharge", plotsim = TRUE,
-  returnsim = FALSE, type = c("o", "l"), legx = "center",
-  legy = NULL, ...)
+lsc(
+  P,
+  Q,
+  area = 50,
+  Qbase = Q[1],
+  n = 2,
+  k = 3,
+  x = 1:length(P),
+  fit = 1:length(Q),
+  plot = TRUE,
+  main = "Precipitation and discharge",
+  plotsim = TRUE,
+  returnsim = FALSE,
+  type = c("o", "l"),
+  legx = "center",
+  legy = NULL,
+  ...
+)
 }
 \arguments{
 \item{P}{Vector with precipitation values \bold{in mm in hourly spacing}}
@@ -54,7 +67,7 @@ linear storage cascade. Plot observed & simulated data
 \examples{
 
 qpfile <- system.file("extdata/Q_P.txt", package="berryFunctions")
-qp <- read.table(qpfile, sep="\\t", dec=",", header=TRUE)
+qp <- read.table(qpfile, sep="\t", dec=",", header=TRUE)
 calib <- qp[1:90,]
 valid <- qp[-(1:90),]
 
@@ -139,7 +152,7 @@ lsc(calib$P, calib$Q, area=1.6) # not bad indeed
 \url{http://ponce.sdsu.edu/onlineuhcascade.php}\cr
    Skript 'Abflusskonzentration' zur Vorlesungsreihe Abwasserentsorgung I von Prof. Krebs an der TU Dresden\cr
   \url{http://tu-dresden.de/die_tu_dresden/fakultaeten/fakultaet_forst_geo_und_hydrowissenschaften/fachrichtung_wasserwesen/isiw/sww/lehre/dateien/abwasserbehandlung/uebung_ws09_10/uebung_awe_1_abflusskonzentration.pdf}\cr
-  \url{http://www.uni-potsdam.de/fs-g3/file.php?fileserver=klausuren&file=\%2FMaster_of_Science\%2FHydroII_Lernzettel.pdf}
+  \url{https://github.com/brry/misc/blob/master/HydroII-Lernzettel.pdf}
 }
 \seealso{
 \code{\link{unitHydrograph}}, \code{\link{superPos}}, \code{\link{nse}}, \code{\link{rmse}}.

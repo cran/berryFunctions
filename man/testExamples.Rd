@@ -4,11 +4,19 @@
 \alias{testExamples}
 \title{Test examples in a package}
 \usage{
-testExamples(path = packagePath("."), commentDontrun = FALSE,
-  selection = NULL, logfolder = "ExampleTestLogs",
-  elogfile = "errors.txt", wlogfile = "warnings.txt",
-  tlogfile = "times.txt", plotfile = "plots.pdf",
-  tellcurrentfile = TRUE, ...)
+testExamples(
+  path = packagePath("."),
+  commentDontrun = FALSE,
+  selection = NULL,
+  logfolder = "ExampleTestLogs",
+  elogfile = "errors.txt",
+  wlogfile = "warnings.txt",
+  tlogfile = "times.txt",
+  plotfile = "plots.pdf",
+  tellcurrentfile = TRUE,
+  telldocument = TRUE,
+  ...
+)
 }
 \arguments{
 \item{path}{Path to package. For internal function \code{testExample}, 
@@ -37,6 +45,9 @@ DEFAULT: "plots.pdf"}
 
 \item{tellcurrentfile}{Logical: At the beginning of each file, message the
 name and current time in the console?}
+
+\item{telldocument}{Message reminder to run \code{devtools::document()}? 
+DEFAULT: TRUE}
 
 \item{\dots}{Further arguments passed to internal function \code{testExample}
 and from there to \code{tools::\link{Rd2ex}}}

@@ -6,6 +6,7 @@
 #' @keywords package
 #' @importFrom tools Rd2ex
 #' @importFrom grDevices dev.off pdf
+#' @importFrom utils read.table
 #' @export
 #' @examples
 #' # testExamples(selection=1:10)
@@ -28,6 +29,8 @@
 #'                       DEFAULT: "plots.pdf"
 #' @param tellcurrentfile Logical: At the beginning of each file, message the
 #'                       name and current time in the console?
+#' @param telldocument   Message reminder to run \code{devtools::document()}? 
+#'                       DEFAULT: TRUE
 #' @param \dots          Further arguments passed to internal function \code{testExample}
 #'                       and from there to \code{tools::\link{Rd2ex}}
 #'
@@ -41,17 +44,24 @@ wlogfile="warnings.txt",
 tlogfile="times.txt",
 plotfile="plots.pdf",
 tellcurrentfile=TRUE,
+telldocument=TRUE,
 ...
 )
 {
-message("Make sure you have run devtools::document() recently!")
+if(telldocument) message("Make sure you have run devtools::document() recently!")
 if(!file.exists(logfolder)) dir.create(logfolder)
-owd <- setwd(logfolder)
+elogfile <- normalizePathCP(paste0(sub("/$","",logfolder),"/",elogfile))
+wlogfile <- normalizePathCP(paste0(sub("/$","",logfolder),"/",wlogfile))
+tlogfile <- normalizePathCP(paste0(sub("/$","",logfolder),"/",tlogfile))
+plotfile <- normalizePathCP(paste0(sub("/$","",logfolder),"/",plotfile))
+owd <- setwd(logfolder) # examples may write to disc at relative path
 on.exit(setwd(owd), add=TRUE)
-#elogfile <- paste0(sub("/$", "", logfolder), "/", elogfile)
-#wlogfile <- paste0(sub("/$", "", logfolder), "/", wlogfile)
-#tlogfile <- paste0(sub("/$", "", logfolder), "/", tlogfile)
-#plotfile <- paste0(sub("/$", "", logfolder), "/", plotfile)
+# Suppress progbars in logfiles:
+if(requireNamespace("pbapply", quietly=TRUE))
+  {
+  pbtype <- pbapply::pboptions(type="none")
+  on.exit(pbapply::pboptions(type=pbtype$type), add=TRUE)
+  }
 # Get the man pages in the package:
 manfiles <- dir(paste0(path,"/man"), full.names=TRUE)
 if(!is.null(selection)) manfiles <- manfiles[selection]
