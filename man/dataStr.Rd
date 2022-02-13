@@ -4,9 +4,19 @@
 \alias{dataStr}
 \title{str of datasets}
 \usage{
-dataStr(only = NULL, msg = FALSE, package = NULL, ...)
+dataStr(
+  heads = FALSE,
+  only = NULL,
+  msg = heads,
+  package = NULL,
+  view = TRUE,
+  ...
+)
 }
 \arguments{
+\item{heads}{Logical: display heads of all data.frames? 
+If TRUE, \code{only} is ignored. DEFAULT: FALSE}
+
 \item{only}{Charstring class: give information only about objects of that class.
 Can also be TRUE to sort output by nrow/ncol
 DEFAULT: NULL (ignore)}
@@ -15,24 +25,30 @@ DEFAULT: NULL (ignore)}
 
 \item{package}{Package name. DEFAULT: NULL}
 
+\item{view}{Open dataframe with \code{\link{View}} (in Rstudio, if available)? DEFAULT: TRUE}
+
 \item{\dots}{Other arguments passed to \code{\link{data}}}
 }
 \value{
-invisible data.frame. Mainly prints via \code{\link{message}} in a for loop.
+invisible data.frame. If \code{msg=TRUE}, prints via \code{\link{message}} in a for loop.
 }
 \description{
 Print the \code{\link{str}} of each dataset returned by \code{\link{data}}
 }
 \examples{
 
+\dontrun{ ## View should not be used in examples
 dataStr() # all loaded packages on search path (package=NULL)
 # dataStr(package="datasets") # only datasets in base R package datasets
-dataStr(TRUE) # sorted by nrow / ncol
-
+dataStr(only=TRUE) # sorted by nrow / ncol
 d <- dataStr(only="data.frame") # data.frames only
+sort(sapply(d$Object, function(dd) {sum(is.na(get(dd)))})) # datasets with NAs
 head(d)
 if(interactive()) View(d) # to sort in Rstudio Viewer
 d[,c("Object","ncol","nrow")]
+
+dataStr(heads=TRUE) # heads of all data.frames
+}
 
 }
 \seealso{
