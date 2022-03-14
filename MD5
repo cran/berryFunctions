@@ -1,4 +1,4 @@
-b3f23eb41bb11e60da1729a509184a1b *DESCRIPTION
+8a242086ad8a093a9f97c9377164613f *DESCRIPTION
 c42b8e3220ba8ffa50a49f8fca397003 *NAMESPACE
 9d4c22ab6095d1a5126c184535daa4b1 *NEWS
 41d652302f069fa5555edd7d6f5e6da7 *R/TFtest.R
@@ -16,7 +16,7 @@ ba21bc139bcff488462e1dc172f21235 *R/berryFunctions-package.R
 6bc76490b6ee03e31d52e2db40de8261 *R/checkFile.R
 f035ab1f23aab1dfbe25de37c80bcb54 *R/ciBand.R
 cdac89dc30a38abae637aae4cbcf6fa4 *R/circle.R
-232cc380f0f10d0b3ef04fea70420452 *R/classify.R
+4c6d0a311b8f241cdf8ec78279d09cb5 *R/classify.R
 6ab806d9bdf72560c40b3e8f1092beba *R/climateGraph.R
 a3b429ffaa3699079a945849b6403b3e *R/colPoints.R
 ff7748672cafa9efdf134177ed5c4256 *R/colPointsHist.R
@@ -73,7 +73,7 @@ f193fe8c7a4dfc3eb98c484fc9cd71fb *R/nameSample.R
 7ac2b897b5459b03748e58cee8bff330 *R/normPlot.R
 6e802da483a26308ce0ab61e2108ff2d *R/normTest.R
 2ccff2aa4d10b5b3121e3ebdcb2a418f *R/normalizePathCP.R
-3f30879de85aad41a88e84038f664501 *R/openFile.R
+91013670ded6bac0b29cc0625a3dab05 *R/openFile.R
 085e981195e531bbbc76e3961ad3f795 *R/openPDF.R
 065c08bde52eaa8cfca18332002be859 *R/owa.R
 069cef49275c187c81d10de6725a43f2 *R/packagePath.R
@@ -100,7 +100,7 @@ c9a954b864fbce41a5f271e4d8ef4822 *R/smallPlot.R
 3a3f6d571135a38fbd65572b2afd5106 *R/sortDF.R
 a098bc021b33d31dd33f13529e012072 *R/spiralDate.R
 1b6e7e7c515191413e07dceb12da29cc *R/spiralDateAnim.R
-96d62b65cd05e2069f39333fc650bebc *R/sumatraInitialize.R
+1af3ad7360a845e46ad914b027660d1e *R/sumatraInitialize.R
 df2f783a9491f9d914778bc2f0ee7628 *R/superPos.R
 334a426bae45dcc5090ca6c104bc3bd4 *R/tableColVal.R
 93261231291475181e241fe539211639 *R/testExamples.R
@@ -118,7 +118,7 @@ b7c3d10bf99879d4f45744eb7e980010 *R/write.tab.R
 e8a1ad94dc93b5aeba803335da31622e *build/vignette.rds
 0ca4d06983fea7fc9fc6f60f112ec929 *inst/doc/berryFunctions.R
 338e12c885ba0b30682c8c45e7735703 *inst/doc/berryFunctions.Rmd
-4b1127af6f0700206eb272c3087dcf09 *inst/doc/berryFunctions.html
+0757e8aacefa387594a4d01fe7e00705 *inst/doc/berryFunctions.html
 b7103341c21511628c682b41e4efd270 *inst/extdata/Anhang.pdf
 046b65f1b130aa470befa2eb65f6f620 *inst/extdata/Q_P.txt
 8e0c51650b8a63f110fa7b09e699e9c4 *inst/extdata/Rlogo.png
@@ -244,7 +244,7 @@ b346a5170a40ac73f6c7a2423b948729 *man/showPal.Rd
 a4fc4adffbfbe79917b57eb07898627e *man/sortDF.Rd
 392057aafa21c1f601d76e5b8f215ba5 *man/spiralDate.Rd
 522c7a0398f2da29517ccaa50a626a07 *man/spiralDateAnim.Rd
-57f7363b58c5e34c14b13b4e73287c81 *man/sumatraInitialize.Rd
+f6966f2952d65f09d93dbc311c627f7a *man/sumatraInitialize.Rd
 0690e41b6ef2707088ac445a67623489 *man/superPos.Rd
 8b1bdb477108be3df054e48dbf07382f *man/tableColVal.Rd
 c04c0f4957d7d6e0f79d528f3e4feaea *man/testExamples.Rd
