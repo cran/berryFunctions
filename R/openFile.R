@@ -18,10 +18,11 @@
 #' is.error(openFile("dummydummydoesntexist.R"), TRUE, TRUE)
 #' openFile(tempdir())
 #' }
-#' #' # To open folders with system2:
+#' #' # To open folders (not files) with system2:
 #' # "nautilus" on linux ubuntu
 #' # "open" or "dolphin" on mac
 #' # "explorer" or "start" on windows
+#' # But open / xdg-open seems to work as well
 #' 
 #' @param file Filename to be opened, as character string.
 #' @param \dots Further arguments passed to \code{\link{system2}}
@@ -34,9 +35,14 @@ file,
 file <- normalizePath(file, winslash="/", mustWork=FALSE)
 checkFile(file)
 file <- shQuote(file) # to handle space in "C:/Program Files/R/..."
-unix <- Sys.info()["sysname"] %in% c("Linux", "FreeBSD")
-out <- try(if(!unix) system2("open", file, ...) else   # Windows
-                      system2("xdg-open", file, ...),  # Unix
+sysname <- Sys.info()["sysname"]
+out <- try(switch(sysname,
+                  "Linux"   = system2("xdg-open", file, ...),
+                  "FreeBSD" = system2("handlr", paste("open",file), ...),
+                  system2("open", file, ...)  # Windows
+                  ),
            silent=TRUE)
+# out: 127 if failed, 124 for timeout, 0 for success
+
 return(invisible(out))
 }

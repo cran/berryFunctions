@@ -156,6 +156,17 @@ rmse(QOBS, QSIM)
 # R squared (coefficient of determination): rsquare
 rsquare(QOBS, QSIM)
 
+## ----trace--------------------------------------------------------------------
+lower <- function(a, s) {tmessage("some stuff with ", a+10, skip=s); a}
+upper <- function(b, skip=0) lower(b+5, skip)
+upper(3) 
+
+## ----tryStack-----------------------------------------------------------------
+lower <- function(a) {message("fake message, a = ", a); a+10}
+middle <- function(b) {plot(b, main=b) ; warning("fake warning, b = ", b); lower(b) }
+upper <- function(c) {cat("printing c:", c, "\n") ; middle(c)}
+tryStack(upper("42") )
+
 ## ----misc---------------------------------------------------------------------
 # distance between two points on a plane: distance
 A <- c(3,  9,-1)  ;  B <- c(7, -2, 4)
@@ -224,5 +235,5 @@ na9()[c(1:4,13,30)]
 
 ## ----misc2--------------------------------------------------------------------
 # Kind regards from
-set.seed(1248272); paste(sample(letters,5,rep=T),collapse='')
+set.seed(8833277); paste(sample(letters,5,rep=T),collapse='')
 
