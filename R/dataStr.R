@@ -21,6 +21,8 @@
 #' d[,c("Object","ncol","nrow")]
 #' 
 #' dataStr(heads=TRUE) # heads of all data.frames
+#' 
+#' # dataStr(package="hms") # no datasets in package
 #' }
 #' 
 #' @param heads   Logical: display heads of all data.frames? 
@@ -47,6 +49,8 @@ d <- data(..., package=package, envir=env)$results
 d <- as.data.frame(d, stringsAsFactors=FALSE)
 d <- d[d$Package!=".",] # From local objects
 # change things like  "beaver1 (beavers)"  to  "beaver1"
+if(nrow(d)==0) stop("No datasets found with 'package' set to ", 
+                    toString(package),".")
 itemsplit <- strsplit(d$Item, split=" ", fixed=TRUE)
 d$Object <- sapply(itemsplit, "[", 1)
 d$Call <- sapply(itemsplit, "[", 2)
@@ -71,6 +75,7 @@ d$length <- NA
 d$nrow <- NA
 d$ncol <- NA
 d$class <- NA
+d$elements <- NA
 for(i in 1:nrow(d))
   {
   x <- d[i,, drop=FALSE]
@@ -80,6 +85,7 @@ for(i in 1:nrow(d))
   d[i,"length"] <- if(inherits(obj, "data.frame")) NA else length(obj)
   d[i,"nrow"] <- replace(nrow(obj), is.null(nrow(obj)), NA)
   d[i,"ncol"] <- replace(ncol(obj), is.null(ncol(obj)), NA)
+  if(is.data.frame(obj) | is.list(obj)) d[i,"elements"] <- toString(sapply(obj, class))
   doprint <- TRUE
   if(!is.null(only) && !isTRUE(only)) doprint <- inherits(obj, only)
   if(msg & doprint)
