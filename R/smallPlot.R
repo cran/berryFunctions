@@ -9,7 +9,7 @@
 #' @section Warning: setting mai etc does not work!
 #' @author Berry Boessenkool, \email{berry-b@@gmx.de}, 2014-2016
 #' @seealso \code{\link{colPointsLegend}} for an example of usage.
-#'          \code{\link[TeachingDemos]{subplot}} and \code{\link[ade4]{add.scatter}}
+#'          \code{subplot} in the archived \href{https://cran.r-project.org/package=TeachingDemos}{TeachingDemos} package and \code{\link[ade4]{add.scatter}}
 #'          for alternative solutions to this problem that do not set margins.
 #' @keywords hplot dplot aplot
 #' @importFrom graphics par plot.new rect strheight strwidth text
@@ -96,7 +96,7 @@
 #' smallPlot(plot(1:10), mar=c(1,3,1,0), x1=0,x2=0.2, y1=0.2,y2=0.8, bg=4, outer=TRUE)
 #' # plot(1:10) # now in a weird location (par("mfrow") is 4x4 after layout)
 #' 
-#' @param expr expression creating a plot. Can be code within {braces}.
+#' @param expr expression creating a plot. Can be code within curly braces.
 #' @param x1,x2,y1,y2 Position of small plot, relative to current figure region [0:1].
 #'                    DEFAULT: x: 0.05-0.7, y: 0.5-1
 #' @param outer Logical. Should inset plot be placed in the device outer margin region

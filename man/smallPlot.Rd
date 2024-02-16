@@ -23,7 +23,7 @@ smallPlot(
 )
 }
 \arguments{
-\item{expr}{expression creating a plot. Can be code within {braces}.}
+\item{expr}{expression creating a plot. Can be code within curly braces.}
 
 \item{x1, x2, y1, y2}{Position of small plot, relative to current figure region [0:1].
 DEFAULT: x: 0.05-0.7, y: 0.5-1}
@@ -161,7 +161,7 @@ smallPlot(plot(1:10), mar=c(1,3,1,0), x1=0,x2=0.2, y1=0.2,y2=0.8, bg=4, outer=TR
 }
 \seealso{
 \code{\link{colPointsLegend}} for an example of usage.
-         \code{\link[TeachingDemos]{subplot}} and \code{\link[ade4]{add.scatter}}
+         \code{subplot} in the archived \href{https://cran.r-project.org/package=TeachingDemos}{TeachingDemos} package and \code{\link[ade4]{add.scatter}}
          for alternative solutions to this problem that do not set margins.
 }
 \author{
